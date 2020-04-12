@@ -2,15 +2,17 @@ PImage[] shipGraphic = new PImage[2];
 int shipImageIndex = 0;
 boolean rotateLeft = false;
 boolean rotateRight = false;
+boolean shipShooting = false;
+boolean shotFinished = false;
 float shipRotationSpeed = 0.1;
 
 float shipRotation = 0; // radians
 int bulletIndex = 0;
 float shipThrust = 0.5;
 
-
-float[] bulletRotations = new float[20];
-float[] bulletLocations = new float[20];
+int maxBullets = 50;
+float[] bulletRotations = new float[maxBullets];
+float[] bulletLocations = new float[maxBullets];
 
 PVector acceleration;
 PVector velocity;
@@ -61,6 +63,8 @@ void moveShip(){
 }
 
 void bulletHandler(){
+  
+  // Render all bullets / update location
   translate(location.x, location.y);
   for (int i = 0; i < bulletRotations.length; i++) {
     rotate(bulletRotations[i]);
@@ -68,6 +72,19 @@ void bulletHandler(){
     bulletLocations[i] += 10;
     rotate(-bulletRotations[i]);
   }
+  // if ship is shooting, spawn bullets
+  // if bullet count gets too high, overwrite old bullets
+  if(shipShooting && !shotFinished){
+    println("ship rotation is " + shipRotation);
+    if (bulletIndex > maxBullets-1){
+       bulletIndex = 0; 
+    }
+    bulletRotations[bulletIndex] = shipRotation; 
+    bulletLocations[bulletIndex] = 0;
+    bulletIndex ++;
+    shotFinished = true;
+  }
+    
 }
 
 
@@ -85,13 +102,8 @@ void keyPressed() {
     velocity.y = velocity.y + acceleration.y;
   }
    if (key == ' ') {
-    bulletRotations[bulletIndex] = shipRotation; 
-    bulletLocations[bulletIndex] = 0;
-    println("ship rotation is " + shipRotation);
-    bulletIndex ++;
-    if (bulletIndex > 10){
-       bulletIndex = 0; 
-    }
+    shipShooting = true;
+    shotFinished = false;
   }
 }
 
@@ -106,5 +118,8 @@ void keyReleased() {
   if (key == 'w') {
     shipImageIndex = 0;
   }
-
+  if (key == ' ') {
+    shipShooting = false;
+    shotFinished = true;
+  }
 }
