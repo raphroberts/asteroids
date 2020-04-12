@@ -101,10 +101,6 @@ void keyPressed() {
     velocity.x = velocity.x + acceleration.x;
     velocity.y = velocity.y + acceleration.y;
   }
-   if (key == ' ') {
-    shipShooting = true;
-    shotFinished = false;
-  }
 }
 
 void keyReleased() {
@@ -119,7 +115,7 @@ void keyReleased() {
     shipImageIndex = 0;
   }
   if (key == ' ') {
-    shipShooting = false;
-    shotFinished = true;
+    shipShooting = true;
+    shotFinished = false;
   }
 }
