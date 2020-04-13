@@ -1,15 +1,24 @@
 /* Proposed changes to be made from test.pde: (comment out other file to test)
-  1) size within settings() to allow running in stand-alone files (for testing)
-  2) Refactor ship movement from keypressed into moveShip, added accelerate boolean check to maintain consistency with other keyPressed keys
-  3) Modify ship movement to respond to when 'W' is held down
-  4) Moved Ship Shooting from keyReleased into keyPressed for most instant respone. What do you think? I'm happy either way
+  UPDATE 2:
+  1) added debug mode (print stats to console if true)
+  2) Experimental bullet style + sound effect
+  3) Fixed thruster?
   
-  KNOWN ISSUES: Ship movement is jerky. I'll be happy to add this to my task list and work on it more, or if someone else comes up with a better solution we can use that
+  KNOWN ISSUES -
+  1) Holding space allows infinite quick bullet firing
 */
 
 //Added globals
+import processing.sound.*; //import sound effects library, results in console warning
+SoundFile[] soundArray = new SoundFile[3]; //index corresponds to sound of the currentWeapon index
+
 float maxSpeed = 4;
 boolean accelerate = false;
+boolean debug = true; //print stats to console for debugging purposes
+
+byte currentWeapon = 0; //index of the current weapon, 0 = green laser
+//End test 2 added globals
+
 
 PImage[] shipGraphic = new PImage[2];
 int shipImageIndex = 0;
@@ -21,7 +30,7 @@ float shipRotationSpeed = 0.1;
 
 float shipRotation = 0; // radians
 int bulletIndex = 0;
-float shipThrust = 0.5;
+float shipThrust = 0.1;
 
 int maxBullets = 50;
 float[] bulletRotations = new float[maxBullets];
@@ -36,7 +45,7 @@ void settings() {
 }
 
 void setup() {
-  size(800, 800);
+  frameRate(60);
   shipGraphic[0] = loadImage("ship_float.png");
   shipGraphic[1] = loadImage("ship_thrust.png");
   rectMode(CENTER); 
@@ -45,6 +54,9 @@ void setup() {
   acceleration.limit(0.1);
   velocity = new PVector(0, 0);
   location = new PVector(230, 230);
+  
+  //populate sounds
+  soundArray[0] = new SoundFile(this, "sounds/laserfire01.mp3");
 }
 
 void draw() {
@@ -65,6 +77,8 @@ void moveShip(){
   if (abs(velocity.y + acceleration.y) <= maxSpeed) {
     velocity.y = velocity.y + acceleration.y;
   }
+  
+  decelerateShip();  //allow ship to lose velocity when thrusted in different direction
     
   location.add(velocity);
     if (rotateLeft){
@@ -87,10 +101,29 @@ void moveShip(){
     }
     rotate(shipRotation);
     image(shipGraphic[shipImageIndex], 0, 0);
+    
+    if (debug) {
+      println("Acceleration: " + acceleration);
+      println("Velocity: " + velocity);
+      println("Location: " + location);
+    }
 }
 
-void moveShip2() {
-  
+void decelerateShip() {
+  if (acceleration.x >= 0.001) {
+    acceleration.sub(0.01, 0);
+  } else if (acceleration.x <= -0.001) {
+    acceleration.add(0.01, 0);
+  } else {
+    acceleration = new PVector(0, acceleration.y);
+  }
+  if (acceleration.y >= 0.01) {
+    acceleration.sub(0, 0.01);
+  } else if (acceleration.y <= -0.001) {
+    acceleration.add(0, 0.01);
+  } else {
+    acceleration = new PVector(acceleration.x, 0);
+  }
 }
 
 void bulletHandler(){
@@ -99,10 +132,18 @@ void bulletHandler(){
   translate(location.x, location.y);
   for (int i = 0; i < bulletRotations.length; i++) {
     rotate(bulletRotations[i]);
-    square(bulletLocations[i], 0, 5);
+    //square(bulletLocations[i], 0, 5);
+    
+    //bullet experiment
+    fill(15, 206, 0);
+    rect(bulletLocations[i], 0, 10, 5);
+    //end bullet experiment
+    
     bulletLocations[i] += 10;
     rotate(-bulletRotations[i]);
   }
+  fill(255, 255, 255); //set fill back to default
+  
   // if ship is shooting, spawn bullets
   // if bullet count gets too high, overwrite old bullets
   if(shipShooting && !shotFinished){
@@ -118,7 +159,6 @@ void bulletHandler(){
     
 }
 
-
 void keyPressed() {
   if (key == 'a') {
     rotateLeft = true;
@@ -129,10 +169,12 @@ void keyPressed() {
   if (key == 'w') {
     accelerate = true;
     shipImageIndex = 1;
+    
   }
   if (key == ' ') {
     shipShooting = true;
     shotFinished = false;
+    soundArray[0].play();
   }
 }
 
