@@ -14,8 +14,13 @@ void screenHandler(){
       
       // Game screen sprite functions
       // (Located in Sprites.PDE)
-      bulletHandler(); 
+      asteroidHandler(); 
+      bulletHandler();
       moveShip();
+      
+      // check for collisions
+      // (located in GameScreen.PDE)
+      checkCollision();
       
       break;
       
@@ -25,6 +30,8 @@ void screenHandler(){
       
     case "game over": 
       // display game overscreen
+      background(50);
+      text("GAME OVER!!", width/2, height/2); 
       break;
   }
 

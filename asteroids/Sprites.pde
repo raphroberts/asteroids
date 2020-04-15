@@ -71,6 +71,8 @@ void moveShip(){
     }
     rotate(shipRotation);
     image(shipGraphic[shipImageIndex], 0, 0);
+    rotate(-shipRotation);
+    translate(-shipLocation.x, -shipLocation.y);
     
     if (debug) {
       println("Acceleration: " + shipAcceleration);
@@ -155,9 +157,17 @@ void bulletHandler(){
  /_/ \_\___/ |_| |___|_|_\\___/___|___/ 
      
 */
+
+// temp code
+int collisionObjectX = 100;
+int collisionObjectY = 100;
  
 void asteroidHandler(){
-  // iterate through enemy array and update their positions
+  // iterate through asteroid array and update their positions
   // movement can be simple, just linear and “wrap” around screen edges
-  // as per original game
+  // as per original game.
+  
+  // temp code
+  square(collisionObjectX, collisionObjectY, 50);
+
 }

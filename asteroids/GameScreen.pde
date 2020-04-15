@@ -1,9 +1,6 @@
 
 void gameScreen() {
-  
 
-  
-  
   //drawBackground(index); // draw level background image
   //enemyHandler(); // render all enemies at their current PVectors
   //bulletHandler(); // render bullets, add new bullets if shooting
@@ -13,6 +10,16 @@ void gameScreen() {
   //renderOverlay(); // render score and level to the game screen
 }
 
+void checkCollision() {
+  // check if ship has hit the square
+  if (dist(shipLocation.x, shipLocation.y, collisionObjectX, collisionObjectY) < 50) {
+    println("ship collision");
+    currentScreen = "game over";
+  }
+  // check if bullet has hit asteroid
+  // code later
+
+}
 
 void renderOverlay() {
   // Print current score and level to the screen
