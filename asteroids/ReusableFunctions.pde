@@ -30,8 +30,7 @@ void screenHandler(){
       
     case "game over": 
       // display game overscreen
-      background(50);
-      text("GAME OVER!!", width/2, height/2); 
+      gameOverScreen();
       break;
   }
 

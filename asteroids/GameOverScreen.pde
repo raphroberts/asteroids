@@ -4,4 +4,7 @@ void gameOverScreen(){
   // Display score / level reached
   // Place “return to menu” button
   // if return to menu selected, change currentScreen (to title screen)
+  
+  background(50);
+  text("GAME OVER!!", width/2, height/2); 
 }
