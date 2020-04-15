@@ -1,51 +1,76 @@
-// GLOBAL VARS
+/* 
+    _   ___ _____ ___ ___  ___ ___ ___  ___ 
+   /_\ / __|_   _| __| _ \/ _ \_ _|   \/ __|
+  / _ \\__ \ | | | _||   / (_) | || |) \__ \
+ /_/ \_\___/ |_| |___|_|_\\___/___|___/|___/
 
-String currentScreen = "title screen"; // current screen (title, game, level up, game over)
-int gameScore; // current game score
-int currentLevel; // current game level
+ An implementation of the traditional Asteroids game
+ Note: Requires processing sound library to be installed
+ 
+ DEV NOTES:
+ Currently globals are stored inside separate PDE files to reflect what they relate to
+ Hopefully this works for everyone?
+ 
+ KNOWN ISSUES:
+ Ship fires when game screen loads
+                                            
+*/
 
-// Ship attributes
+// LIBRARIES
 
-PVector location;
-PVector velocity;
-PVector acceleration;
-float shipRotation; // current rotation of ship, (also used for bullet direction when saved to bulletArray)
-int shipMaxSpeed; // stores current maximum speed of ship (upgradeable in-game)
-int shipTurnSpeed; // (optional) stores current turn speed of ship, which could be upgradeable
-PImage shipGraphic; // the current graphic of the ship (upgrades can change the graphic)
+import processing.sound.*; //import sound library, results in console warning
 
-// Bullet attributes
+// SOUNDS
 
-float[] bulletArray; // a 2D array storing all bullets currently on screen, their rotation and distance travelled.
-int bulletSpeed; //  stores current speed (as applied to all bullets)
-PImage bulletGraphic; // the current graphic of the bullet (upgrades can change the graphic)
-int bulletStyle; // the shooting style (e.g rapid fire / dual bullet streams)
+SoundFile[] soundArray = new SoundFile[3]; //index = currentWeapon index
 
-// Enemy attributes
+// SCREENS
 
-float[] enemyArray; //  a 2D array storing all enemy locations on screen, and movement direction. Enemies can thus be added and removed on the fly.
-float enemySpeed; // speed that enemies move (increases each level)
-int numberOfEnemies; // number of enemies to place (increases each level)
+String currentScreen = "title";
+PImage[] backgroundImage = new PImage[3]; // background image array
 
-// Background images
+// DEBUG
 
-final String[] backgroundImageArray = { "title.jpg", "game.jpg", "level_up.jpg", "game_over.jpg" }; // an array of background images used in the game
-PImage backgroundImage; // current background image
+boolean debug = true; //print stats to console for debugging purposes
 
-void setup() {
-  // window size etc
-  }
+// SETTINGS
 
-void draw() {
-  screenHandler();
+void settings() {
+  size(800, 500);
 }
 
-void screenHandler() {
-  // This function handles which game screen to render based off
-  // the currentScreen value which triggers one of the following
-  // functions to be called:
-  // titleScreen(); (default)
-  // gameScreen();
-  // levelUpScreen();
-  // gameOverScreen();
+// SETUP
+
+void setup() {
+  
+  //General
+  frameRate(60);  
+  rectMode(CENTER); 
+  imageMode(CENTER); 
+  
+  //Ship setup
+  shipAcceleration = new PVector(0, 0);
+  shipAcceleration.limit(0.1);
+  initialiseShip(); // set/reset ship properties
+  shipGraphic[0] = loadImage("images/ship_float.png");
+  shipGraphic[1] = loadImage("images/ship_thrust.png");
+  
+  //Sound setup
+  soundArray[0] = new SoundFile(this, "sounds/laserfire01.mp3");
+  
+  //Screen setup
+  backgroundImage[0] = loadImage("images/title_screen.png");
+  backgroundImage[1] = loadImage("images/game_screen.png");
+  
+}
+
+
+// GAME LOOP
+
+void draw() {
+  
+  // handle game screen to display 
+  // (located in ReusableFunctions.PDE)
+  screenHandler(); 
+  
 }

@@ -1,10 +1,35 @@
-int drawBackground(int index){
-  // renders background image from provided backgroundImageArray index
-  // backgroundImage = backgroundImageArray[index]
-  // image(backgroundImage, 0, 0); “
+void screenHandler(){
+  // Function to manage screen changes
 
-  return 0; //delete this, temp to prevent error
+  switch(currentScreen) {
+    
+    case "title": 
+      // display title screen
+      background(backgroundImage[0]);
+      break;
+      
+    case "game": 
+      // display game screen
+      background(backgroundImage[1]);
+      
+      // Game screen sprite functions
+      // (Located in Sprites.PDE)
+      bulletHandler(); 
+      moveShip();
+      
+      break;
+      
+    case "level up": 
+      // display level up screen
+      break;
+      
+    case "game over": 
+      // display game overscreen
+      break;
+  }
+
 }
+
 void populateEnemiesArray() {
   // This function fetches the current number of enemies (increases per level)
   // then builds the enemyArray with random enemy PVectors.
