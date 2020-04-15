@@ -1,4 +1,4 @@
-PImage[] shipGraphic = new PImage[2];
+/*PImage[] shipGraphic = new PImage[2];
 int shipImageIndex = 0;
 boolean rotateLeft = false;
 boolean rotateRight = false;
@@ -118,4 +118,4 @@ void keyReleased() {
     shipShooting = true;
     shotFinished = false;
   }
-}
+}*/
