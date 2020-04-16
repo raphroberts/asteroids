@@ -98,6 +98,7 @@ void decelerateShip() {
   }
 }
 
+
 /*
   ___ _   _ _    _    ___ _____ ___ 
  | _ ) | | | |  | |  | __|_   _/ __|
@@ -113,6 +114,8 @@ boolean shipShooting = false;
 boolean shotFinished = false;
 int bulletIndex = 0;
 int maxBullets = 50;
+int bulletWidth = 10;
+int bulletHeight = 5;
 float[] bulletRotations = new float[maxBullets];
 float[] bulletLocations = new float[maxBullets];
 
@@ -127,7 +130,7 @@ void bulletHandler(){
     
     //bullet experiment
     fill(15, 206, 0);
-    rect(bulletLocations[i], 0, 10, 5);
+    rect(bulletLocations[i], 0, bulletWidth, bulletHeight);
     //end bullet experiment
     
     bulletLocations[i] += 10;
@@ -163,11 +166,14 @@ int collisionObjectX = 100;
 int collisionObjectY = 100;
  
 void asteroidHandler(){
+  
   // iterate through asteroid array and update their positions
   // movement can be simple, just linear and “wrap” around screen edges
   // as per original game.
   
+  //TODO: After asteroid is destroyed, random direction for offshoots
+  
   // temp code
-  square(collisionObjectX, collisionObjectY, 50);
+  //square(collisionObjectX, collisionObjectY, 50);
 
 }

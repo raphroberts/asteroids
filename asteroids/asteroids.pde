@@ -16,6 +16,9 @@
                                             
 */
 
+
+
+
 // LIBRARIES
 
 import processing.sound.*; //import sound library, results in console warning
@@ -62,6 +65,9 @@ void setup() {
   backgroundImage[0] = loadImage("images/title_screen.png");
   backgroundImage[1] = loadImage("images/game_screen.png");
   
+  //temp
+  steveSetupTemp();
+  
 }
 
 
@@ -72,5 +78,8 @@ void draw() {
   // handle game screen to display 
   // (located in ReusableFunctions.PDE)
   screenHandler(); 
+  
+  //temp
+  steveDrawTemp(); //temporary testing before pulling changes to appropriate locations
   
 }

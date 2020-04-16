@@ -10,14 +10,24 @@ void gameScreen() {
   //renderOverlay(); // render score and level to the game screen
 }
 
+void initialiseEnemyObjects() {
+  enemyObject.add(new int[] {0, 100, 100, 50});
+  
+}
+
 void checkCollision() {
   // check if ship has hit the square
-  if (dist(shipLocation.x, shipLocation.y, collisionObjectX, collisionObjectY) < 50) {
-    println("ship collision");
-    currentScreen = "game over";
-  }
+  for (int i = 0; i < enemyObject.size(); i++) {
+    //Retrieve the values from the enemyObject
+    PVector hitbox = new PVector(enemyObject.get(i)[1], enemyObject.get(i)[2]); //hitbox for this enemyObject
+    int hitboxSize = enemyObject.get(i)[3];
+    if (dist(shipLocation.x, shipLocation.y, hitbox.x, hitbox.y) <hitboxSize) {
+      println("ship collision");
+      currentScreen = "game over";
+    }
   // check if bullet has hit asteroid
   // code later
+  }
 
 }
 
