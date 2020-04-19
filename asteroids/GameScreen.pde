@@ -94,7 +94,6 @@ void checkCollision() {
     if (isBeingDamaged)
       endingShieldSound = true;  //stop sound of shield if damage is active
     isBeingDamaged = false; //ship is not currently being damaged
-    shipImageIndex = 0;
   }
 
   //a delay in ending shield sound and image to prevent instant "clicking" of shield sound, and to allow shield to power down
@@ -103,6 +102,9 @@ void checkCollision() {
       soundArray[shieldSoundIndex].pause();
       shieldSoundTick = 0;
       endingShieldSound = false;
+      // Ship reset
+      shipImageIndex = 0;
+      accelerate = false;
     }
   }
 }
