@@ -205,11 +205,21 @@ void keyPressed() {
   if (key == 'p') {
     // note: replace this with mouse interaction with button
     currentScreen = "game";
+    musicManager("none");
     generateStars();
   }
 
+  // debug keys
   if (key == 'c' && debug) {
     createAsteroid(0, 0, "large");
+  }
+  if (key == 'n' && debug) { //temp for testing songs, delete in production
+    if (playingIndex == 0)
+      musicManager("thrust");
+    else if (playingIndex == 1)
+      musicManager("thrust");
+    else if (playingIndex == 2)
+      musicManager("epic");
   }
 }
 

@@ -16,19 +16,6 @@
  
 */
 
-/*
-LATEST UPDATE:
-  - tweak ship deceleration
-  - various refactorings (incl. refactored point scoring into enemyObject destruction methods instead of the enemyObject array itself)
-  - implemented asteroid destruction sequence, new spawnings. Medium asteroids spawn between 2 or 3 small ones upon death.
-  - point scoring is now same as arcade. 100 points for destroying small rock, 50 points for medium
-  - removed ability for asteroids to spawn with a stationary velocity
-  - given enemy objects their own different damage amounts whilst in contact with ship. Medium rocks do more damage than small ones.
-  - implemented shield, including sfx. Death now only occurs if there is a collision and the shield is at or below 0. 
-  - initial gameLevel tracker. Higher gameLevel currently results in asteroids having a higher initialVelocity spawn range
-  
-  NOTE: If "c" is now pushed AND debug mode is on, a random medium asteroid will spawn (testing purposes). Does not happen if debug mode is off.
-*/
 
 // GLOBALS
 int gameLevel = 1; //auto-increment upon level up
@@ -47,9 +34,20 @@ boolean isBeingDamaged = false; //is ship currently undergoing damage?
 
 import processing.sound.*; //import sound library, results in console warning
 
+// MUSIC
+
+SoundFile[] musicArray = new SoundFile[3];
+int playingIndex = 0;
+String nowPlaying = "None";
+
+void loadMusic() { // load asynchronously only, due to potentially large file sizes 
+  musicArray[1] = new SoundFile(this, "music/s2.mp3");
+  musicArray[2] = new SoundFile(this, "music/ThrustSequence.mp3");
+}
+
 // SOUNDS
 
-SoundFile[] soundArray = new SoundFile[3];
+SoundFile[] soundArray = new SoundFile[4];
 int shieldSoundIndex;
 
 int shieldSoundEndDelay = 10;
@@ -74,12 +72,12 @@ void settings() {
 // SETUP
 
 void setup() {
-
+  
   //General
   frameRate(60);  
   rectMode(CENTER); 
   imageMode(CENTER); 
-
+  
   //Ship setup
   shipAcceleration = new PVector(0, 0);
   shipAcceleration.limit(0.1);
@@ -87,32 +85,36 @@ void setup() {
   shipLocation = new PVector(230, 230);
 
   initialiseShip(); // set/reset ship properties
-  shipGraphic[0] = loadImage("images/ship_float.png");
-  shipGraphic[1] = loadImage("images/ship_thrust.png");
-  shipGraphic[2] = loadImage("images/ship_shield.png");
+  shipGraphic[0] = requestImage("images/ship_float.png");
+  shipGraphic[1] = requestImage("images/ship_thrust.png");
+  shipGraphic[2] = requestImage("images/ship_shield.png");
 
   //Bullet setup
   bulletLocation = new PVector(230, 230);
   
   //Asteroid setup
-  enemyGraphics[0] = loadImage("images/asteroid_lg_1.png");
-  enemyGraphics[1] = loadImage("images/asteroid_lg_2.png");
-  enemyGraphics[2] = loadImage("images/asteroid_lg_3.png");
-  enemyGraphics[3] = loadImage("images/asteroid_sm_1.png");
-  enemyGraphics[4] = loadImage("images/asteroid_sm_2.png");
-  enemyGraphics[5] = loadImage("images/asteroid_sm_3.png");
-
-
+  enemyGraphics[0] = requestImage("images/asteroid_lg_1.png");
+  enemyGraphics[1] = requestImage("images/asteroid_lg_2.png");
+  enemyGraphics[2] = requestImage("images/asteroid_lg_3.png");
+  enemyGraphics[3] = requestImage("images/asteroid_sm_1.png");
+  enemyGraphics[4] = requestImage("images/asteroid_sm_2.png");
+  enemyGraphics[5] = requestImage("images/asteroid_sm_3.png");
+ 
+  
   //Sound setup
   soundArray[0] = new SoundFile(this, "sounds/laserfire01.mp3"); //bullet 1
   soundArray[1] = new SoundFile(this, "sounds/shield.mp3"); //shield activation
   soundArray[1].loop();
   soundArray[1].pause();
   shieldSoundIndex = 1;
-
+  
   //Screen setup
   backgroundImage[0] = loadImage("images/title_screen.png");
-  backgroundImage[1] = loadImage("images/game_screen.png");
+  backgroundImage[1] = requestImage("images/game_screen.png");
+  
+  thread("loadMusic"); //start an async thread to load music file sizes in the background
+  musicArray[0] = new SoundFile(this, "music/title.mp3"); //force load the title theme first, make it a short loop
+  musicManager("title");
   
   // Font and text defaults
   textSize(32);

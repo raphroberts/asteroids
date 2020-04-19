@@ -41,6 +41,7 @@ void screenHandler() {
     
     text ("Score: " + score, 20,20);
     text ("Shield: " + shieldHP, width-200, 40);
+    text ("Now Playing: " + nowPlaying + ". Press 'N' for next song", 40, height-40);
 
     break;
 
@@ -79,4 +80,62 @@ String renderButton(String buttonText, float x, float y) {
 int randomInt(int low, int high) {
   // returns a random integer
   return (int)round(random(low, high));
+}
+
+
+void musicManager(String song) {
+  stopAllSongs(); //prevent song overlap, ensure any currently playing song is first stopped
+  
+  switch (song) {
+    case "none":
+      // Stop any song that is currently playing
+      break;
+    case "title":
+      // Play title theme
+      try {
+        musicArray[0].amp(0.3);
+        musicArray[0].play();
+        musicArray[0].loop();
+        playingIndex = 0;
+      }
+      catch (NullPointerException e) {
+        println("Song not yet loaded..");
+      }
+      break;
+    case "epic":
+      try {
+        musicArray[1].amp(0.4);
+        musicArray[1].play();
+        playingIndex = 1;
+        nowPlaying = "epic - s2.mp3";
+      }
+      catch (NullPointerException e) {
+        println("Song not yet loaded..");
+      }
+      break;
+    case "thrust":
+      try {
+       musicArray[2].amp(0.4);
+       musicArray[2].play();
+       playingIndex = 2;
+       nowPlaying = "ThrustSequence.mp3";
+     }
+     catch (NullPointerException e) {
+       println("Song not yet loaded..");
+     }
+     break;
+  }
+}
+
+void stopAllSongs() {
+  for (int i = 0; i < musicArray.length; i++) {
+    try {
+      if (musicArray[i].isPlaying()) {
+        musicArray[i].stop();  
+      }
+    }
+    catch (NullPointerException e) {
+      //We can catch a NullPointerException here since it will only occur for an unloaded async sound file
+    }
+  }
 }
