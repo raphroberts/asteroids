@@ -11,7 +11,7 @@
 // SHIP GLOBALS
 
 byte currentWeapon = 0; //index of current weapon, 0 = green laser
-PImage[] shipGraphic = new PImage[2]; // ship image array
+PImage[] shipGraphic = new PImage[3]; // ship image array
 int shipImageIndex = 0;
 
 float maxSpeed = 4;
@@ -38,7 +38,6 @@ void shipHandler() {
 
 void moveShip() {
 
-  translate(shipLocation.x, shipLocation.y);
   if (accelerate) {
     shipAcceleration = new PVector(shipThrust * cos(shipRotation), shipThrust * sin(shipRotation));
   }
@@ -59,18 +58,20 @@ void moveShip() {
   if (rotateRight) {
     shipRotation += shipRotationSpeed;
   }
-  if (shipLocation.x > width) {
-    shipLocation.x = 0;
+  if (shipLocation.x > width + screenPadding) {
+    shipLocation.x = 0 - screenPadding;
   }
-  if (shipLocation.y > height) {
-    shipLocation.y = 0;
+  if (shipLocation.y > height + screenPadding) {
+    shipLocation.y = 0 - screenPadding;
   }
-  if (shipLocation.x < 0) {
-    shipLocation.x = width;
+  if (shipLocation.x < 0 - screenPadding) {
+    shipLocation.x = width + screenPadding;
   }
-  if (shipLocation.y < 0) {
-    shipLocation.y = height;
+  if (shipLocation.y < 0 - screenPadding) {
+    shipLocation.y = height + screenPadding;
   }
+  
+  translate(shipLocation.x, shipLocation.y);  
   rotate(shipRotation);
   image(shipGraphic[shipImageIndex], 0, 0);
   rotate(-shipRotation);
@@ -161,7 +162,11 @@ void drawAndMoveBullets() {
     //draw
     //image(enemyGraphics[i], objCoords.x, objCoords.y);
     fill(15, 206, 0);
-    rect(bulletCoords.x, bulletCoords.y, 10, 5);
+    translate(bulletCoords.x, bulletCoords.y);
+    rotate(shipRotation);
+    rect(0, 0, 10, 5);
+    rotate(-shipRotation);
+    translate(-bulletCoords.x, -bulletCoords.y);
     fill(255);
 
     //move
@@ -259,17 +264,17 @@ void drawAndMoveEnemies() {
     obj[2] = obj[2] + (int)objVelocity.y;
 
     //Screen overlap check
-    if (obj[1] > width) {
-      obj[1] = 0;
+    if (obj[1] > width + screenPadding) {
+      obj[1] = 0 - screenPadding;
     }
-    if (obj[2] > height) {
-      obj[2] = 0;
+    if (obj[2] > height + screenPadding) {
+      obj[2] = 0 - screenPadding;
     }
-    if (obj[1] < 0) {
-      obj[1] = width;
+    if (obj[1] < 0 - screenPadding) {
+      obj[1] = width + screenPadding;
     }
-    if (obj[2] < 0) {
-      obj[2] = height;
+    if (obj[2] < 0 - screenPadding) {
+      obj[2] = height + screenPadding;
     }
   }
 }

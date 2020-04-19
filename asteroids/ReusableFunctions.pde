@@ -10,14 +10,20 @@ void screenHandler() {
 
   case "game": 
     // display game screen
-    background(backgroundImage[1]);
+    background(0);
 
-    // Move the ship
-    moveShip();
+    // Render the starfield
+    // (located in GameScreen.PDE)
+    renderStars();
+    
+
     
     // Update bullet locations
     // (located in Sprites.PDE)
     drawAndMoveBullets();
+    
+        // Move the ship
+    moveShip();
     
     // Update bullet locations
     // (located in Sprites.PDE)
@@ -27,6 +33,9 @@ void screenHandler() {
     // (located in GameScreen.PDE)
     checkCollision();
     rechargeShield();
+    
+    // render explosion if asteroid was hit
+    renderExplosion();
     
     // render score
     

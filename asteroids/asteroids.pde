@@ -32,6 +32,7 @@ LATEST UPDATE:
 
 // GLOBALS
 int gameLevel = 1; //auto-increment upon level up
+int screenPadding = 40; // padding allowance for objects to float off screen
 
 //shield
 int maxShieldHP = 500;
@@ -88,6 +89,7 @@ void setup() {
   initialiseShip(); // set/reset ship properties
   shipGraphic[0] = loadImage("images/ship_float.png");
   shipGraphic[1] = loadImage("images/ship_thrust.png");
+  shipGraphic[2] = loadImage("images/ship_shield.png");
 
   //Bullet setup
   bulletLocation = new PVector(230, 230);
@@ -99,6 +101,7 @@ void setup() {
   enemyGraphics[3] = loadImage("images/asteroid_sm_1.png");
   enemyGraphics[4] = loadImage("images/asteroid_sm_2.png");
   enemyGraphics[5] = loadImage("images/asteroid_sm_3.png");
+
 
   //Sound setup
   soundArray[0] = new SoundFile(this, "sounds/laserfire01.mp3"); //bullet 1
@@ -113,11 +116,23 @@ void setup() {
   
   // Font and text defaults
   textSize(32);
+  
+  // generate smoke animation image array
+  generateSmoke();
 
   //temp
   createAsteroid(450, 450, "large");
   createAsteroid(750, 350, "large");
   createAsteroid(750, 350, "small");
+}
+
+void generateSmoke(){
+    // Generates smokeAnimFrames array used for smoke animation
+       
+    for (int i = 0; i < numSmokeFrames; i++){
+      smokeAnimFrameArray[i] = loadImage("images/smoke_frames/smoke_" + i + ".png");
+    }
+
 }
 
 
