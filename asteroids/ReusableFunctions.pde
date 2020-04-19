@@ -10,7 +10,7 @@ void screenHandler() {
 
   case "game": 
     // display game screen
-    background(0);
+    background(backgroundImage[1]);
 
     // Render the starfield
     // (located in GameScreen.PDE)

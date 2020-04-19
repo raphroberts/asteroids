@@ -11,14 +11,14 @@ PVector lastCollisionLocation = new PVector();
 
 // stars
 ArrayList<int[]> starObject = new ArrayList<int[]>(); 
-int numberOfStars = 50;
+int numberOfStars = 120;
 
 void generateStars() {
   // create random starfield data
 
   for (int i = 1; i <= numberOfStars; i++) {
     //index 0 = x coord, 1 = y coord, 2 = size
-    starObject.add(new int[] {randomInt(0, width), randomInt(0, height), randomInt(2, 4)});
+    starObject.add(new int[] {randomInt(0, width + screenPadding * 2), randomInt(0, height + screenPadding * 2), randomInt(2, 4)});
     //starObject.add(new int[] {100, 400, 4});
   }
 }
