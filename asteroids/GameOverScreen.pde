@@ -7,4 +7,7 @@ void gameOverScreen(){
   
   background(50);
   text("GAME OVER!!", width/2, height/2); 
+  
+  if (soundArray[shieldSoundIndex].isPlaying())
+    soundArray[shieldSoundIndex].stop();
 }

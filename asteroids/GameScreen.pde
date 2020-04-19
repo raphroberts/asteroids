@@ -225,7 +225,5 @@ void keyReleased() {
   }
   if (key == ' ') {
     gunReloaded = true;
-    shipImageIndex = 0;
-    accelerate = false;
   }
 }
