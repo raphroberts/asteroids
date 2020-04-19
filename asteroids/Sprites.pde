@@ -50,7 +50,7 @@ void moveShip() {
     shipVelocity.y = shipVelocity.y + shipAcceleration.y;
   }
 
-  //decelerateShip();  //allow ship to lose velocity when thrusted in different direction
+  decelerateShip();  //allow ship to lose velocity when thrusted in different direction
 
   shipLocation.add(shipVelocity);
   if (rotateLeft) {
@@ -84,7 +84,7 @@ void moveShip() {
 }
 
 void decelerateShip() {
-  if (shipAcceleration.x >= 0.001) {
+  if (shipAcceleration.x >= 0.01) {
     shipAcceleration.sub(0.01, 0);
   } else if (shipAcceleration.x <= -0.001) {
     shipAcceleration.add(0.01, 0);
@@ -160,13 +160,17 @@ void drawAndMoveBullets() {
 
     //draw
     //image(enemyGraphics[i], objCoords.x, objCoords.y);
-    square(bulletCoords.x, bulletCoords.y, 50);
+    fill(15, 206, 0);
+    rect(bulletCoords.x, bulletCoords.y, 10, 5);
+    fill(255);
 
     //move
     obj[1] = obj[1] + (int)(bulletSpeed * cos(obj[6])); //move in x direction given the object velocity
     obj[2] = obj[2] + (int)(bulletSpeed * sin(obj[6])); //move in y direction given the object velocity
   }
 }
+
+
 
 
 
@@ -179,7 +183,7 @@ void drawAndMoveBullets() {
  */
 
 // Array list to store enemy object data
-//index 0 = object ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = HP (>=0 if relevant, else -1), 7 = points given upon destruction
+//index 0 = object ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = HP (>=0 if relevant, else -1)
 /*
 object ID as follows. This must match the enemyGraphics ID:
  0 = large asteroid ID 1
@@ -194,19 +198,48 @@ ArrayList<int[]> enemyObject = new ArrayList<int[]>();
 // Asteroid graphic images (large and small)
 PImage[] enemyGraphics = new PImage[6]; //index should correspond to enemyObject ID
 
-
 void createAsteroid(int x, int y, String size) {
   //create an asteroid at the given x, y coords, with size = "large" or "small"
-
+  
+  //pick random asteroid from ID 0-2
+  int ID;
+  PVector initialVelocity = new PVector(0, 0);
+    
   switch (size) {
-  case "large":
-    //pick random asteroid from ID 0-2
-    int ID = randomInt(0, 2);
-    PVector initialVelocity = new PVector(randomInt(-4, 4), randomInt(-4, 4));
-
-    //index 0 = object ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = HP (>=0 if relevant, else -1), 7 = 10 (points given)
-    enemyObject.add(new int[] {ID, x, y, enemyGraphics[ID].width, (int)initialVelocity.x, (int)initialVelocity.y, 1, 10});
+    case "large":
+      ID = randomInt(0, 2);
+      initialVelocity = new PVector(random(-gameLevel + -2, gameLevel + 2), random(-gameLevel + -2, gameLevel + 2)); //initial velocity
+      initialVelocity = preventStationaryVelocity(initialVelocity);
+      
+      //index 0 = object ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = HP (>=0 if relevant, else -1), 7 = enemyDamage
+      enemyObject.add(new int[] {ID, x, y, enemyGraphics[ID].width, (int)initialVelocity.x, (int)initialVelocity.y, 1, 5});
+      break;
+  
+    case "small":
+      ID = randomInt(3, 5);
+      initialVelocity = new PVector(random(-gameLevel + -2, gameLevel + 2) * 2, random(-gameLevel + -2, gameLevel + 2) * 2); //initial velocity, small asteroid is twice as fast
+      initialVelocity = preventStationaryVelocity(initialVelocity);
+      
+      //index 0 = object ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = HP (>=0 if relevant, else -1), 7 = enemyDamage
+      enemyObject.add(new int[] {ID, x, y, enemyGraphics[ID].width * 2, (int)initialVelocity.x, (int)initialVelocity.y, 1, 1});
+      break;
+    default:
+      println("WARNING: createAsteroid called with " + size + " instead of large or small");
   }
+  
+  if (debug)
+      {
+        println("Spawned asteroid with initialVelocity: " + initialVelocity);
+      }
+}
+
+PVector preventStationaryVelocity(PVector initialVelocity) {
+  //prevent stationary objects. Give them some velocity if it has 0 velocity.
+  if ((initialVelocity.x < 1 && initialVelocity.x > 0) || (initialVelocity.x < 0 && initialVelocity.x > -1)) {     
+    initialVelocity = new PVector(random(1, 3), random(1, 3));
+    }
+    
+  return initialVelocity;
 }
 
 
@@ -219,7 +252,7 @@ void drawAndMoveEnemies() {
     PVector objVelocity = new PVector(obj[4], obj[5]);
 
     //draw
-    image(enemyGraphics[i], objCoords.x, objCoords.y);
+    image(enemyGraphics[obj[0]], objCoords.x, objCoords.y);
 
     //move
     obj[1] = obj[1] + (int)objVelocity.x;

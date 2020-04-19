@@ -16,8 +16,31 @@
  
 */
 
+/*
+LATEST UPDATE:
+  - tweak ship deceleration
+  - various refactorings (incl. refactored point scoring into enemyObject destruction methods instead of the enemyObject array itself)
+  - implemented asteroid destruction sequence, new spawnings. Medium asteroids spawn between 2 or 3 small ones upon death.
+  - point scoring is now same as arcade. 100 points for destroying small rock, 50 points for medium
+  - removed ability for asteroids to spawn with a stationary velocity
+  - given enemy objects their own different damage amounts whilst in contact with ship. Medium rocks do more damage than small ones.
+  - implemented shield, including sfx. Death now only occurs if there is a collision and the shield is at or below 0. 
+  - initial gameLevel tracker. Higher gameLevel currently results in asteroids having a higher initialVelocity spawn range
+  
+  NOTE: If "c" is now pushed AND debug mode is on, a random medium asteroid will spawn (testing purposes). Does not happen if debug mode is off.
+*/
 
+// GLOBALS
+int gameLevel = 1; //auto-increment upon level up
 
+//shield
+int maxShieldHP = 500;
+int shieldHP = maxShieldHP;
+int shieldRechargeDelay = 50; //recharge 1 point this number of frames
+int shieldRechargeTick = 0; //current recharge tick
+
+int weaponDamage = 2;
+boolean isBeingDamaged = false; //is ship currently undergoing damage?
 
 // LIBRARIES
 
@@ -25,7 +48,12 @@ import processing.sound.*; //import sound library, results in console warning
 
 // SOUNDS
 
-SoundFile[] soundArray = new SoundFile[3]; //index = currentWeapon index
+SoundFile[] soundArray = new SoundFile[3];
+int shieldSoundIndex;
+
+int shieldSoundEndDelay = 10;
+int shieldSoundTick = 0;
+boolean endingShieldSound = false;
 
 // SCREENS
 
@@ -34,7 +62,7 @@ PImage[] backgroundImage = new PImage[3]; // background image array
 
 // DEBUG
 
-boolean debug = false; //print stats to console for debugging purposes
+boolean debug = true; //print stats to console for debugging purposes
 
 // SETTINGS
 
@@ -73,7 +101,11 @@ void setup() {
   enemyGraphics[5] = loadImage("images/asteroid_sm_3.png");
 
   //Sound setup
-  soundArray[0] = new SoundFile(this, "sounds/laserfire01.mp3");
+  soundArray[0] = new SoundFile(this, "sounds/laserfire01.mp3"); //bullet 1
+  soundArray[1] = new SoundFile(this, "sounds/shield.mp3"); //shield activation
+  soundArray[1].loop();
+  soundArray[1].pause();
+  shieldSoundIndex = 1;
 
   //Screen setup
   backgroundImage[0] = loadImage("images/title_screen.png");
@@ -85,6 +117,7 @@ void setup() {
   //temp
   createAsteroid(450, 450, "large");
   createAsteroid(750, 350, "large");
+  createAsteroid(750, 350, "small");
 }
 
 

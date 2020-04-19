@@ -26,10 +26,12 @@ void screenHandler() {
     // Check for collisions
     // (located in GameScreen.PDE)
     checkCollision();
+    rechargeShield();
     
     // render score
     
     text ("Score: " + score, 20,20);
+    text ("Shield: " + shieldHP, width-200, 40);
 
     break;
 
@@ -41,6 +43,13 @@ void screenHandler() {
     // display game overscreen
     gameOverScreen();
     break;
+  }
+}
+
+void rechargeShield() {
+  if (shieldRechargeTick++ > shieldRechargeDelay && shieldHP < maxShieldHP) {
+    shieldRechargeTick = 0;
+    shieldHP = shieldHP + 1;
   }
 }
 
