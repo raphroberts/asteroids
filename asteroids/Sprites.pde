@@ -5,8 +5,8 @@
  / __| || |_ _| _ \
  \__ \ __ || ||  _/
  |___/_||_|___|_|                     
-
-*/
+ 
+ */
 
 // SHIP GLOBALS
 
@@ -25,60 +25,62 @@ PVector shipAcceleration;
 PVector shipVelocity;
 PVector shipLocation;
 
-void initialiseShip(){
+void initialiseShip() {
   shipVelocity = new PVector(0, 0);
-  shipLocation = new PVector(230, 230); 
+  shipLocation = new PVector(230, 230);
 }
 
-void shipHandler(){
+void shipHandler() {
   // if rotate key(s) pressed, rotate ship
   // if thruster pressed, apply thruster
   // limit speed to shipMaxSpeed
 }
 
-void moveShip(){
+void moveShip() {
+
+  translate(shipLocation.x, shipLocation.y);
   if (accelerate) {
     shipAcceleration = new PVector(shipThrust * cos(shipRotation), shipThrust * sin(shipRotation));
   }
-  
+
   if (abs(shipVelocity.x + shipAcceleration.x) <= maxSpeed) {
     shipVelocity.x = shipVelocity.x + shipAcceleration.x;
   }
   if (abs(shipVelocity.y + shipAcceleration.y) <= maxSpeed) {
     shipVelocity.y = shipVelocity.y + shipAcceleration.y;
   }
-  
-  decelerateShip();  //allow ship to lose velocity when thrusted in different direction
-    
+
+  //decelerateShip();  //allow ship to lose velocity when thrusted in different direction
+
   shipLocation.add(shipVelocity);
-    if (rotateLeft){
-      shipRotation -= shipRotationSpeed;
-    }
-    if (rotateRight){
-      shipRotation += shipRotationSpeed;
-    }
-    if (shipLocation.x > width){
-      shipLocation.x = 0;
-    }
-    if (shipLocation.y > height){
-      shipLocation.y = 0;
-    }
-    if (shipLocation.x < 0){
-      shipLocation.x = width;
-    }
-    if (shipLocation.y < 0){
-      shipLocation.y = height;
-    }
-    rotate(shipRotation);
-    image(shipGraphic[shipImageIndex], 0, 0);
-    rotate(-shipRotation);
-    translate(-shipLocation.x, -shipLocation.y);
-    
-    if (debug) {
-      println("Acceleration: " + shipAcceleration);
-      println("Velocity: " + shipVelocity);
-      println("Location: " + shipLocation);
-    }
+  if (rotateLeft) {
+    shipRotation -= shipRotationSpeed;
+  }
+  if (rotateRight) {
+    shipRotation += shipRotationSpeed;
+  }
+  if (shipLocation.x > width) {
+    shipLocation.x = 0;
+  }
+  if (shipLocation.y > height) {
+    shipLocation.y = 0;
+  }
+  if (shipLocation.x < 0) {
+    shipLocation.x = width;
+  }
+  if (shipLocation.y < 0) {
+    shipLocation.y = height;
+  }
+  rotate(shipRotation);
+  image(shipGraphic[shipImageIndex], 0, 0);
+  rotate(-shipRotation);
+  translate(-shipLocation.x, -shipLocation.y);
+
+  if (debug) {
+    println("Acceleration: " + shipAcceleration);
+    println("Velocity: " + shipVelocity);
+    println("Location: " + shipLocation);
+  }
 }
 
 void decelerateShip() {
@@ -104,76 +106,137 @@ void decelerateShip() {
  | _ ) | | | |  | |  | __|_   _/ __|
  | _ \ |_| | |__| |__| _|  | | \__ \
  |___/\___/|____|____|___| |_| |___/
-
-*/
+ 
+ */
 
 
 // BULLET GLOBALS
 
-boolean shipShooting = false;
-boolean shotFinished = false;
-int bulletIndex = 0;
-int maxBullets = 50;
-int bulletWidth = 10;
-int bulletHeight = 5;
-float[] bulletRotations = new float[maxBullets];
-float[] bulletLocations = new float[maxBullets];
+boolean gunReloaded = true;
+PVector bulletVelocity;
+PVector bulletLocation;
+float bulletRotation = 0; // radians
+
+int bulletSpeed = 18;
+int bulletID = 1; // can be used later for different bullet types
+float bulletSize = 1;
+
+// Array list for storing bullet data
+//index 0 = bullet ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity
+/*
+object ID can be used for bullet type, e.g:
+ 0 = green lazer
+ 1 = triple fire
+ 2 = rapid fire
+ 3 = high speed (etc.)
+ */
+ArrayList<Float[]> bulletObject = new ArrayList<Float[]>(); 
 
 
-void bulletHandler(){
-  
-  // Render all bullets / update location
-  translate(shipLocation.x, shipLocation.y);
-  for (int i = 0; i < bulletRotations.length; i++) {
-    rotate(bulletRotations[i]);
-    //square(bulletLocations[i], 0, 5);
-    
-    //bullet experiment
-    fill(15, 206, 0);
-    rect(bulletLocations[i], 0, bulletWidth, bulletHeight);
-    //end bullet experiment
-    
-    bulletLocations[i] += 10;
-    rotate(-bulletRotations[i]);
+void createBullet() {
+  // Create a new bullet when the ship fires the gun
+
+  // shoot bullet as long as gun is reloaded
+  if (gunReloaded) {
+    //create an asteroid at the given x, y coords, with size = "large" or "small"
+    soundArray[0].play();
+    bulletLocation.x = shipLocation.x;
+    bulletLocation.y = shipLocation.y;
+
+    //PVector initialVelocity = new PVector(randomInt(-4, 4), randomInt(-4, 4));
+    bulletRotation = shipRotation;
+    //index 0 = bullet ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = initial rotation
+    bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation});
   }
-  fill(255, 255, 255); //set fill back to default
-  
-  // if ship is shooting, spawn bullets
-  // if bullet count gets too high, overwrite old bullets
-  if(shipShooting && !shotFinished){
-    println("ship rotation is " + shipRotation);
-    if (bulletIndex > maxBullets-1){
-       bulletIndex = 0; 
-    }
-    bulletRotations[bulletIndex] = shipRotation; 
-    bulletLocations[bulletIndex] = 0;
-    bulletIndex ++;
-    shotFinished = true;
-  }
-    
 }
+
+void drawAndMoveBullets() {
+  //iterate through all enemyObjects and draw them, also move them
+
+  for (int i = 0; i < bulletObject.size(); i++) {
+    Float[] obj = bulletObject.get(i);
+    PVector bulletCoords = new PVector(obj[1], obj[2]);
+    PVector bulletVelocity = new PVector(obj[4], obj[5]);
+
+    //draw
+    //image(enemyGraphics[i], objCoords.x, objCoords.y);
+    square(bulletCoords.x, bulletCoords.y, 50);
+
+    //move
+    obj[1] = obj[1] + (int)(bulletSpeed * cos(obj[6])); //move in x direction given the object velocity
+    obj[2] = obj[2] + (int)(bulletSpeed * sin(obj[6])); //move in y direction given the object velocity
+  }
+}
+
+
 
 /*
     _   ___ _____ ___ ___  ___ ___ ___  
-   /_\ / __|_   _| __| _ \/ _ \_ _|   \ 
-  / _ \\__ \ | | | _||   / (_) | || |) |
+ /_\ / __|_   _| __| _ \/ _ \_ _|   \ 
+ / _ \\__ \ | | | _||   / (_) | || |) |
  /_/ \_\___/ |_| |___|_|_\\___/___|___/ 
-     
-*/
-
-// temp code
-int collisionObjectX = 100;
-int collisionObjectY = 100;
  
-void asteroidHandler(){
-  
-  // iterate through asteroid array and update their positions
-  // movement can be simple, just linear and “wrap” around screen edges
-  // as per original game.
-  
-  //TODO: After asteroid is destroyed, random direction for offshoots
-  
-  // temp code
-  //square(collisionObjectX, collisionObjectY, 50);
+ */
 
+// Array list to store enemy object data
+//index 0 = object ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = HP (>=0 if relevant, else -1), 7 = points given upon destruction
+/*
+object ID as follows. This must match the enemyGraphics ID:
+ 0 = large asteroid ID 1
+ 1 = large asteroid ID 2
+ 2 = large asteroid ID 3
+ 3 = small asteroid ID 1
+ 4 = small asteroid ID 2
+ 5 = small asteroid ID 3
+ */
+ArrayList<int[]> enemyObject = new ArrayList<int[]>(); 
+
+// Asteroid graphic images (large and small)
+PImage[] enemyGraphics = new PImage[6]; //index should correspond to enemyObject ID
+
+
+void createAsteroid(int x, int y, String size) {
+  //create an asteroid at the given x, y coords, with size = "large" or "small"
+
+  switch (size) {
+  case "large":
+    //pick random asteroid from ID 0-2
+    int ID = randomInt(0, 2);
+    PVector initialVelocity = new PVector(randomInt(-4, 4), randomInt(-4, 4));
+
+    //index 0 = object ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = HP (>=0 if relevant, else -1), 7 = 10 (points given)
+    enemyObject.add(new int[] {ID, x, y, enemyGraphics[ID].width, (int)initialVelocity.x, (int)initialVelocity.y, 1, 10});
+  }
+}
+
+
+void drawAndMoveEnemies() {
+  //iterate through all enemyObjects and draw them, also update their locations
+
+  for (int i = 0; i < enemyObject.size(); i++) {
+    int[] obj = enemyObject.get(i);
+    PVector objCoords = new PVector(obj[1], obj[2]);
+    PVector objVelocity = new PVector(obj[4], obj[5]);
+
+    //draw
+    image(enemyGraphics[i], objCoords.x, objCoords.y);
+
+    //move
+    obj[1] = obj[1] + (int)objVelocity.x;
+    obj[2] = obj[2] + (int)objVelocity.y;
+
+    //Screen overlap check
+    if (obj[1] > width) {
+      obj[1] = 0;
+    }
+    if (obj[2] > height) {
+      obj[2] = 0;
+    }
+    if (obj[1] < 0) {
+      obj[1] = width;
+    }
+    if (obj[2] < 0) {
+      obj[2] = height;
+    }
+  }
 }

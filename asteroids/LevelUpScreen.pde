@@ -6,7 +6,7 @@ void levelUpScreen() {
   // increase currentLevel var
   // increase enemySpeed and numberOfEnemies
   // If “done” pressed, call populateEnemiesArray()
-// and update currentScreen (to game screen)
+  // and update currentScreen (to game screen)
 
   initialiseShip(); // reset ship location and PVector
 }

@@ -1,22 +1,15 @@
+// Game screen globals
 
-void gameScreen() {
-
-  //drawBackground(index); // draw level background image
-  //enemyHandler(); // render all enemies at their current PVectors
-  //bulletHandler(); // render bullets, add new bullets if shooting
-  //shipHandler(); // render ship and PVectors calculations
-  //collisionDetection(); // check if enemies hit, if enemies=0 level up
-  // check if ship has been hit, if yes game over
-  //renderOverlay(); // render score and level to the game screen
-}
-
+int score = 0;
+/*
 void initialiseEnemyObjects() {
   enemyObject.add(new int[] {0, 100, 100, 50});
-  
-}
+}*/
 
 void checkCollision() {
-  // check if ship has hit the square
+  // Check for collisions between asteroid / ship and bullet / asteroid
+  
+  // check if ship has hit an asteroid
   for (int i = 0; i < enemyObject.size(); i++) {
     //Retrieve the values from the enemyObject
     PVector hitbox = new PVector(enemyObject.get(i)[1], enemyObject.get(i)[2]); //hitbox for this enemyObject
@@ -25,22 +18,29 @@ void checkCollision() {
       println("ship collision");
       currentScreen = "game over";
     }
-  // check if bullet has hit asteroid
-  // code later
   }
 
+  // check if bullet has hit an asteroid
+  // for every bullet, itterate through asteroid list and check for a collision
+  for (int i = 0; i < bulletObject.size(); i++) {
+    PVector bulletHitbox = new PVector(bulletObject.get(i)[1], bulletObject.get(i)[2]); // location of this bullet
+
+    for (int j = 0; j < enemyObject.size(); j++) {
+      //Retrieve the values from the enemyObject
+      PVector hitbox = new PVector(enemyObject.get(j)[1], enemyObject.get(j)[2]); //hitbox for this enemyObject
+      int hitboxSize = enemyObject.get(j)[3];
+      if (dist(bulletHitbox.x, bulletHitbox.y, hitbox.x, hitbox.y) <hitboxSize) {
+        bulletObject.remove(i);
+        score ++;
+      }
+    }
+    
+  }
 }
+
 
 void renderOverlay() {
   // Print current score and level to the screen
-}
-
-void collisionDetection() {
-  // Iterate through enemy array and check for collision with ship
-  // If yes, change currentScreen (to game over screen)
-  // also check if current enemy has collided with bullet
-  // if yes, remove current enemy
-  // if enemyArray.length=0, cursor(arrow); and change currentScreen (level up)
 }
 
 
@@ -55,12 +55,11 @@ void keyPressed() {
   }
   if (key == 'w') {
     accelerate = true;
-    shipImageIndex = 1;    
+    shipImageIndex = 1;
   }
   if (key == ' ') {
-    shipShooting = true;
-    shotFinished = false;
-    soundArray[0].play();
+    createBullet();
+    gunReloaded = false;
   }
   if (key == 'p') {
     // note: replace this with mouse interaction with button
@@ -69,7 +68,7 @@ void keyPressed() {
 }
 
 void keyReleased() {
-  
+
   if (key == 'a') {
     rotateLeft = false;
   }
@@ -77,6 +76,11 @@ void keyReleased() {
     rotateRight = false;
   }
   if (key == 'w') {
+    shipImageIndex = 0;
+    accelerate = false;
+  }
+  if (key == ' ') {
+    gunReloaded = true;
     shipImageIndex = 0;
     accelerate = false;
   }
