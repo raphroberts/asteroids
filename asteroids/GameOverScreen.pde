@@ -11,4 +11,5 @@ void gameOverScreen(){
   if (soundArray[shieldSoundIndex].isPlaying())
     soundArray[shieldSoundIndex].pause();
   musicManager("none");
+  boolean gameStarted = false;
 }

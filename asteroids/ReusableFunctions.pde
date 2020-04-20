@@ -231,7 +231,6 @@ void musicManager(String song) {
     case "title":
       // Play title theme
       try {
-        musicArray[0].play();
         musicArray[0].loop();
         playingIndex = 0;
       }
@@ -242,9 +241,8 @@ void musicManager(String song) {
     case "epic":
       try {
         musicArray[1].setGain(-5);
-        musicArray[1].play();
+        musicArray[1].loop();
         playingIndex = 1;
-        nowPlaying = "epic - s2.mp3";
       }
       catch (NullPointerException e) {
         println("Song not yet loaded..");
@@ -253,9 +251,8 @@ void musicManager(String song) {
     case "thrust":
       try {
        musicArray[2].setGain(-5);
-       musicArray[2].play();
+       musicArray[2].loop();
        playingIndex = 2;
-       nowPlaying = "ThrustSequence.mp3";
      }
      catch (NullPointerException e) {
        println("Song not yet loaded..");

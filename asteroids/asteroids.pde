@@ -55,14 +55,17 @@ void preloading() { //call asynchronously
  
   // Create array of music tracks
   musicArray[1] = minim.loadFile("music/s2.mp3");
+  musicArray[1].loop();
+  musicArray[1].pause();
   musicArray[2] = minim.loadFile("music/ThrustSequence.mp3");
+  musicArray[2].loop();
+  musicArray[2].pause();
 }
 
 // MUSIC
 
 //SoundFile[] musicArray = new SoundFile[3];
 int playingIndex = 0;
-String nowPlaying = "None";
 
 // SFX
 

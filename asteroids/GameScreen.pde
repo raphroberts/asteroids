@@ -129,7 +129,7 @@ void checkCollision() {
   if (collisionDetected) {
     if (!isBeingDamaged) {
       if (!endingShieldSound)
-        soundArray[shieldSoundIndex].play(); //begin sound of shield damage
+        soundArray[shieldSoundIndex].loop(); //begin sound of shield damage
       isBeingDamaged = true; //ship is currently being damaged
     }
   } else {
@@ -169,7 +169,7 @@ void damageShip(int amount) {
     shieldWarningTriggered = true;
     thread("shieldCriticalSoundSequence");
   }
-  if (shieldHP/maxShieldHP >= 0.5)
+  if (shieldHP*1.0/maxShieldHP >= 0.5)
     shieldWarningTriggered = false;
 }
 
@@ -225,7 +225,7 @@ void destroySmallAsteroidSequence(int xcoord, int ycoord) {
   score = score + 100;
 }
 
-void levelSequence() { // the main level manager, instantiator, and controller
+int levelSequence() { // the main level manager, instantiator, and controller
   int asteroidsToSpawnPerCycle = (int)pow(gameLevel, 2);
   int numberOfCycles = gameLevel + 1;
   if (gameLevel < 3) {
@@ -238,6 +238,8 @@ void levelSequence() { // the main level manager, instantiator, and controller
     if (debug)
       println("Spawning cycle: " + cycle + " of " + numberOfCycles);
     for (int asteroidCounter = 1; asteroidCounter <= asteroidsToSpawnPerCycle; asteroidCounter++) {
+      if (!gameStarted)
+        return 1;
       float rand = random(1);
       if (rand < 0.8)
           createAsteroid(0, 0, "large");
@@ -270,6 +272,8 @@ void levelSequence() { // the main level manager, instantiator, and controller
   thread("attentionLifeformSoundSequence");
   delay(2000);
   bossSequence();
+  
+  return 1;
 }
 
 /*
