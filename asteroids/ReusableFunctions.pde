@@ -142,6 +142,7 @@ void musicManager(String song) {
       // Play title theme
       try {
         musicArray[0].amp(0.3);
+        musicArray[0].rate(0.7);
         musicArray[0].play();
         musicArray[0].loop();
         playingIndex = 0;

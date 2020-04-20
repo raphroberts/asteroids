@@ -26,6 +26,11 @@ import processing.sound.*; //import sound library, results in console warning
 boolean preloadingFinished = false;
 
 void preloading() { //call asynchronously
+  //load title screen music
+  musicArray[0] = new SoundFile(this, "music/title.mp3"); //force load the title theme first, make it a short loop
+  if (currentScreen == "title")
+    musicManager("title");
+    
   //preload game sfx
   soundArray[0] = new SoundFile(this, "sounds/laserfire01.mp3"); //bullet 1
   soundArray[1] = new SoundFile(this, "sounds/shield.mp3"); //shield activation
@@ -33,12 +38,8 @@ void preloading() { //call asynchronously
   soundArray[1].pause();
   shieldSoundIndex = 1;
   preloadingFinished = true;
-  
-  // Create array of music tracks
-  musicArray[0] = new SoundFile(this, "music/title.mp3"); //force load the title theme first, make it a short loop
-  if (currentScreen == "title")
-    musicManager("title");
  
+  // Create array of music tracks
   musicArray[1] = new SoundFile(this, "music/s2.mp3");
   musicArray[2] = new SoundFile(this, "music/ThrustSequence.mp3");
 }
