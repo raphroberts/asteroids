@@ -10,16 +10,20 @@
 
 // SHIP GLOBALS
 
+// Ship weapon
 byte currentWeapon = 0; //index of current weapon, 0 = green laser
+
+// Ship graphics
 PImage[] shipGraphic = new PImage[3]; // ship image array
 int shipImageIndex = 0;
 
+// Ship movement
 float maxSpeed = 4;
 boolean accelerate = false;
 boolean rotateLeft = false;
 boolean rotateRight = false;
 float shipRotationSpeed = 0.1;
-float shipRotation = 0; // radians
+float shipRotation = -1.5; // radians
 float shipThrust = 0.1;
 PVector shipAcceleration;
 PVector shipVelocity;
@@ -30,13 +34,8 @@ void initialiseShip() {
   shipLocation = new PVector(230, 230);
 }
 
-void shipHandler() {
-  // if rotate key(s) pressed, rotate ship
-  // if thruster pressed, apply thruster
-  // limit speed to shipMaxSpeed
-}
-
 void moveShip() {
+  // Handle ship movement
 
   if (accelerate) {
     shipAcceleration = new PVector(shipThrust * cos(shipRotation), shipThrust * sin(shipRotation));
@@ -85,6 +84,8 @@ void moveShip() {
 }
 
 void decelerateShip() {
+  // Handle ship deceleration
+  
   if (shipAcceleration.x >= 0.01) {
     shipAcceleration.sub(0.01, 0);
   } else if (shipAcceleration.x <= -0.001) {
@@ -161,9 +162,10 @@ void drawAndMoveBullets() {
 
     //draw
     //image(enemyGraphics[i], objCoords.x, objCoords.y);
-    fill(15, 206, 0);
+    fill(#b6ed57);
     translate(bulletCoords.x, bulletCoords.y);
     rotate(shipRotation);
+    noStroke();
     rect(0, 0, 10, 5);
     rotate(-shipRotation);
     translate(-bulletCoords.x, -bulletCoords.y);
@@ -249,7 +251,7 @@ PVector preventStationaryVelocity(PVector initialVelocity) {
 
 
 void drawAndMoveEnemies() {
-  //iterate through all enemyObjects and draw them, also update their locations
+  // Iterate through all enemyObjects. Draw them and update their locations
 
   for (int i = 0; i < enemyObject.size(); i++) {
     int[] obj = enemyObject.get(i);

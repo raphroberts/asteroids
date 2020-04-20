@@ -17,19 +17,6 @@
 */
 
 
-// GLOBALS
-int gameLevel = 1; //auto-increment upon level up
-int screenPadding = 40; // padding allowance for objects to float off screen
-
-//shield
-int maxShieldHP = 500;
-int shieldHP = maxShieldHP;
-int shieldRechargeDelay = 50; //recharge 1 point this number of frames
-int shieldRechargeTick = 0; //current recharge tick
-
-int weaponDamage = 2;
-boolean isBeingDamaged = false; //is ship currently undergoing damage?
-
 // LIBRARIES
 
 import processing.sound.*; //import sound library, results in console warning
@@ -40,12 +27,14 @@ SoundFile[] musicArray = new SoundFile[3];
 int playingIndex = 0;
 String nowPlaying = "None";
 
-void loadMusic() { // load asynchronously only, due to potentially large file sizes 
+void loadMusic() {
+  // Create array of music tracks
+  
   musicArray[1] = new SoundFile(this, "music/s2.mp3");
   musicArray[2] = new SoundFile(this, "music/ThrustSequence.mp3");
 }
 
-// SOUNDS
+// SFX
 
 SoundFile[] soundArray = new SoundFile[4];
 int shieldSoundIndex;
@@ -72,6 +61,9 @@ void settings() {
 // SETUP
 
 void setup() {
+     
+  // Title screen setup
+  titleSetup();
   
   //General
   frameRate(60);  
@@ -82,7 +74,7 @@ void setup() {
   shipAcceleration = new PVector(0, 0);
   shipAcceleration.limit(0.1);
   shipVelocity = new PVector(0, 0);
-  shipLocation = new PVector(230, 230);
+  shipLocation = new PVector(width/2, height/2);
 
   initialiseShip(); // set/reset ship properties
   shipGraphic[0] = requestImage("images/ship_float.png");
@@ -144,6 +136,7 @@ void draw() {
 
   // handle game screen to display 
   // (located in ReusableFunctions.PDE)
+  
   screenHandler(); 
 
 }

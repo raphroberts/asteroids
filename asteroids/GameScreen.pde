@@ -1,24 +1,58 @@
 // Game screen globals
 
+//Scoring
 int score = 0;
 
-// Dead asteroid explosion vars
+//Levels
+int gameLevel = 1; //auto-increment upon level up
+int screenPadding = 40; // padding allowance for objects to float off screen
+
+// Explosion effect
 int explosionFrame;
 PImage[] smokeAnimFrameArray = new PImage[15];
 final int numSmokeFrames = 14;
 boolean asteroidDead = false;
 PVector lastCollisionLocation = new PVector();
 
-// stars
+// Starfield
 ArrayList<int[]> starObject = new ArrayList<int[]>(); 
 int numberOfStars = 120;
+
+//Shields & Damage
+int maxShieldHP = 500;
+int shieldHP = maxShieldHP;
+int shieldRechargeDelay = 50; //recharge 1 point this number of frames
+int shieldRechargeTick = 0; //current recharge tick
+int weaponDamage = 2;
+boolean isBeingDamaged = false; //is ship currently undergoing damage?
+
+/*
+  ___  __  __        _      
+ | __|/ _|/ _|___ __| |_ ___
+ | _||  _|  _/ -_) _|  _(_-<
+ |___|_| |_| \___\__|\__/__/
+             
+*/
+
+void renderExplosion() {
+  // Calculates current frame of asteroid exploding animation
+
+  if (explosionFrame < 14) {
+    image(smokeAnimFrameArray[explosionFrame], lastCollisionLocation.x, lastCollisionLocation.y);
+    if (frameCount % 2 > 0) {
+      explosionFrame += 1;
+    }
+  } else {
+    explosionFrame = 15;
+  }
+}
 
 void generateStars() {
   // create random starfield data
 
   for (int i = 1; i <= numberOfStars; i++) {
     //index 0 = x coord, 1 = y coord, 2 = size
-    starObject.add(new int[] {randomInt(0, width + screenPadding * 2), randomInt(0, height + screenPadding * 2), randomInt(2, 4)});
+    starObject.add(new int[] {randomInt(0, width + screenPadding * 2), randomInt(0, height + screenPadding * 2), randomInt(3, 4)});
     //starObject.add(new int[] {100, 400, 4});
   }
 }
@@ -30,13 +64,15 @@ void renderStars() {
     //Retrieve the X,Y coordinates of the current star
     int[] obj = starObject.get(i);
     PVector starLocation = new PVector(obj[0], obj[1]); 
-    stroke(randomInt(100, 190));
+
     strokeWeight(obj[2]);
-    if (obj[2] < 3) {
+    if (obj[2] < 4) {
+      stroke(randomInt(70, 120));
       point(starLocation.x, starLocation.y - shipLocation.y);
       point(starLocation.x, starLocation.y - shipLocation.y - (height + (screenPadding*2)));
       point(starLocation.x, starLocation.y - shipLocation.y + (height + (screenPadding*2)));
     } else {
+      stroke(randomInt(100, 190));
       if ((starLocation.y - shipLocation.y) < height / 2){
       point(starLocation.x,(starLocation.y - shipLocation.y) * 2);
       point(starLocation.x,((starLocation.y - shipLocation.y) * 2) - (height*2)+ (screenPadding*4));
@@ -47,12 +83,17 @@ void renderStars() {
 }
 
 /*
-void initialiseEnemyObjects() {
- enemyObject.add(new int[] {0, 100, 100, 50});
- }*/
+
+   ___     _ _ _    _             
+  / __|___| | (_)__(_)___ _ _  ___
+ | (__/ _ \ | | (_-< / _ \ ' \(_-<
+  \___\___/_|_|_/__/_\___/_||_/__/
+                               
+*/
 
 void checkCollision() {
   // Check for collisions between asteroid / ship and bullet / asteroid
+  
   boolean collisionDetected = false; //is there a collision this frame?
 
   // check if ship has hit an asteroid
@@ -109,32 +150,21 @@ void checkCollision() {
   }
 }
 
-
-void renderExplosion() {
-  // Render smoke animation at asteroid location
-
-  if (explosionFrame < 14) {
-    image(smokeAnimFrameArray[explosionFrame], lastCollisionLocation.x, lastCollisionLocation.y);
-    if (frameCount % 2 > 0) {
-      explosionFrame += 1;
-    }
-  } else {
-    explosionFrame = 15;
-  }
-}
-
 void damageShip(int amount) {
   //Whenever the ship receives some damage "amount", it is handled via this function
+  
   shieldHP = shieldHP - amount;
   if (shieldHP < 0) {
     println("ship collision");
     currentScreen = "game over";
   }
-  shipImageIndex = 2;
+    shipImageIndex = 2;
 }
 
 boolean damageEnemyObject(int[] obj) {
-  //index 0 = object ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = HP (>=0 if relevant, else -1)
+  // Handles damage to enemies
+  // index 0 = object ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = HP (>=0 if relevant, else -1)
+  
   obj[6] = obj[6] - weaponDamage;
 
   if (obj[6] <= 0) { // enemy object is 0 HP or lower, destroy
@@ -156,6 +186,8 @@ boolean damageEnemyObject(int[] obj) {
 }
 
 void destroyLargeAsteroidSequence(int xcoord, int ycoord) {
+  // Destroy large asteroid and break into smaller asteroids
+  
   score = score + 50;
 
   //randomly create between 2 or 3 small asteroids
@@ -171,6 +203,8 @@ void destroyLargeAsteroidSequence(int xcoord, int ycoord) {
 }
 
 void destroySmallAsteroidSequence(int xcoord, int ycoord) {
+  // Destroy smaller asteroid
+  
   //trigger explosion
   lastCollisionLocation.x = xcoord;
   lastCollisionLocation.y = ycoord;
@@ -178,6 +212,15 @@ void destroySmallAsteroidSequence(int xcoord, int ycoord) {
   asteroidDead = true;
   score = score + 100;
 }
+
+/*
+
+   ___         _           _    
+  / __|___ _ _| |_ _ _ ___| |___
+ | (__/ _ \ ' \  _| '_/ _ \ (_-<
+  \___\___/_||_\__|_| \___/_/__/
+                             
+*/
 
 
 void renderOverlay() {

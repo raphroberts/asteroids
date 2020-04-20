@@ -5,7 +5,7 @@ void screenHandler() {
 
   case "title": 
     // display title screen
-    background(backgroundImage[0]);
+    titleScreen();
     break;
 
   case "game": 
@@ -15,9 +15,7 @@ void screenHandler() {
     // Render the starfield
     // (located in GameScreen.PDE)
     renderStars();
-    
 
-    
     // Update bullet locations
     // (located in Sprites.PDE)
     drawAndMoveBullets();
@@ -57,6 +55,8 @@ void screenHandler() {
 }
 
 void rechargeShield() {
+  // Recharge shield slowly over time
+  
   if (shieldRechargeTick++ > shieldRechargeDelay && shieldHP < maxShieldHP) {
     shieldRechargeTick = 0;
     shieldHP = shieldHP + 1;
@@ -78,12 +78,15 @@ String renderButton(String buttonText, float x, float y) {
 
 
 int randomInt(int low, int high) {
-  // returns a random integer
+  // Returns a random integer
+  
   return (int)round(random(low, high));
 }
 
 
 void musicManager(String song) {
+  // Handles and plays game music
+  
   stopAllSongs(); //prevent song overlap, ensure any currently playing song is first stopped
   
   switch (song) {
@@ -128,6 +131,8 @@ void musicManager(String song) {
 }
 
 void stopAllSongs() {
+  // Stops music tracks from playing
+  
   for (int i = 0; i < musicArray.length; i++) {
     try {
       if (musicArray[i].isPlaying()) {
