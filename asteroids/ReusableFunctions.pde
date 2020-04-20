@@ -40,6 +40,15 @@ void screenHandler() {
 
   case "level up": 
     // display level up screen
+    //DELETE THIS, TEMP ONLY
+    text("Press Y to continue", width/2, height/2); //temp, delete and replace with level up screen
+    if (continueLevel) {
+      continueLevel = false;
+      gameLevel = gameLevel + 1;
+      thread("levelSequence");
+      currentScreen = "game";
+    //END DELETE THIS, TEMP ONLY
+    }
     break;
 
   case "game over": 
@@ -270,4 +279,30 @@ void stopAllSongs() {
       //We can catch a NullPointerException here since it will only occur for an unloaded async sound file
     }
   }
+}
+
+void shieldCriticalSoundSequence() {
+  //Only call this function asynchronously
+  soundArray[4].play();
+  delay(1000);
+  soundArray[5].play();
+}
+
+void attentionLifeformSoundSequence() {
+  soundArray[4].play();
+  delay(1000);
+  soundArray[4].play();
+  delay(1000);
+  soundArray[6].play();
+}
+
+void bossSequence() {
+  text("Boss sequence, level: " + gameLevel, width/2, height/2);
+  delay(2000);
+  currentScreen = "level up";
+  
+}
+
+void upgradeScreen() {
+  
 }

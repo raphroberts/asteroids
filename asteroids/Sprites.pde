@@ -266,7 +266,7 @@ void createAsteroid(int x, int y, String size) {
   
   if (debug)
       {
-        println("Spawned asteroid with initialVelocity: " + initialVelocity);
+        //println("Spawned asteroid with initialVelocity: " + initialVelocity);
       }
 }
 

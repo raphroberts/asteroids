@@ -39,6 +39,12 @@ void preloading() { //call asynchronously
   soundArray[3].loop();
   soundArray[3].pause();
   shieldSoundIndex = 3;
+  soundArray[4] = new SoundFile(this, "sounds/alarm.mp3");
+  soundArray[4].amp(0.5);
+  soundArray[5] = new SoundFile(this, "sounds/warningShield.mp3");
+  soundArray[5].rate(0.7);
+  soundArray[6] = new SoundFile(this, "sounds/attentionLifeform.mp3");
+  soundArray[6].rate(0.7);
   preloadingFinished = true;
  
   // Create array of music tracks
@@ -54,8 +60,9 @@ String nowPlaying = "None";
 
 // SFX
 
-SoundFile[] soundArray = new SoundFile[4];
+SoundFile[] soundArray = new SoundFile[10];
 int shieldSoundIndex;
+boolean shieldWarningTriggered = false;
 
 int shieldSoundEndDelay = 10;
 int shieldSoundTick = 0;
@@ -129,9 +136,9 @@ void setup() {
   changeWeapon(1);
 
   //temp
-  createAsteroid(450, 450, "large");
-  createAsteroid(750, 350, "large");
-  createAsteroid(750, 350, "small");
+  //createAsteroid(450, 450, "large");
+  //createAsteroid(750, 350, "large");
+  //createAsteroid(750, 350, "small");
   
 }
 

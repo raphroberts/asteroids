@@ -4,7 +4,7 @@
 int score = 0;
 
 //Levels
-int gameLevel = 5; //auto-increment upon level up
+int gameLevel = 1; //auto-increment upon level up
 int screenPadding = 40; // padding allowance for objects to float off screen
 
 // Explosion effect
@@ -163,6 +163,14 @@ void damageShip(int amount) {
     currentScreen = "game over";
   }
     shipImageIndex = 2;
+    
+  //trigger warning when shields are low, but only once per threshold
+  if (!shieldWarningTriggered && shieldHP*1.0/maxShieldHP <= 0.3) {
+    shieldWarningTriggered = true;
+    thread("shieldCriticalSoundSequence");
+  }
+  if (shieldHP/maxShieldHP >= 0.5)
+    shieldWarningTriggered = false;
 }
 
 boolean damageEnemyObject(int[] obj) {
@@ -195,7 +203,7 @@ void destroyLargeAsteroidSequence(int xcoord, int ycoord) {
   score = score + 50;
 
   //randomly create between 2 or 3 small asteroids
-  int smallAsteroids = randomInt(4, 7);
+  int smallAsteroids = randomInt(2, 5);
   for (int i = 1; i <= smallAsteroids; i++) {
     createAsteroid(xcoord, ycoord, "small");
   }
@@ -215,6 +223,53 @@ void destroySmallAsteroidSequence(int xcoord, int ycoord) {
   explosionFrame = 0;
   asteroidDead = true;
   score = score + 100;
+}
+
+void levelSequence() { // the main level manager, instantiator, and controller
+  int asteroidsToSpawnPerCycle = (int)pow(gameLevel, 2);
+  int numberOfCycles = gameLevel + 1;
+  if (gameLevel < 3) {
+    numberOfCycles = numberOfCycles * 2;
+  }
+  int spawnDelay = (int)(1 / (gameLevel * 0.5) * 3000);
+  if (debug)
+    println("Starting level " + gameLevel + " with " + asteroidsToSpawnPerCycle + " asteroids spawning per cycle over " + " number of cycles: " + numberOfCycles + ". Spawn delay: " + spawnDelay); // delete this 
+  for (int cycle = 1; cycle <= numberOfCycles; cycle++) {
+    if (debug)
+      println("Spawning cycle: " + cycle + " of " + numberOfCycles);
+    for (int asteroidCounter = 1; asteroidCounter <= asteroidsToSpawnPerCycle; asteroidCounter++) {
+      float rand = random(1);
+      if (rand < 0.8)
+          createAsteroid(0, 0, "large");
+      else
+          createAsteroid(0, 0, "small");
+      float randDelay = random(spawnDelay);
+      println("Spawn Delay is under: " + min((int)randDelay * numberOfCycles/cycle, (int(10000 / (gameLevel * cycle * 0.5)))));
+      if (enemyObject.size() < 2) { //early spawn if asteroids left are small in numer
+        delay(1000);
+        continue;
+      }
+      delay(min((int)randDelay * numberOfCycles/cycle, (int(10000 / (gameLevel * cycle * 0.5))))); //lower spawning cycles spawn with a greater delay 
+    }
+    for (int delay = 0; delay < 10; delay++) {
+      if (enemyObject.size() < 5) { //early spawn if asteroids left are small in numer
+        if (gameLevel <3) {
+          delay(5000);
+        }
+        else {
+          delay(2000);
+        }
+        break;
+      }
+      delay(1000);
+    }
+   
+  }
+  
+  delay(2000);
+  thread("attentionLifeformSoundSequence");
+  delay(2000);
+  bossSequence();
 }
 
 /*
@@ -262,12 +317,16 @@ void keyPressed() {
   }
   
   if (key == 'p') {
-    // note: replace this with mouse interaction with button
-    while (!preloadingFinished) //wait for preloading to finish before starting game
-      delay(100);
-    currentScreen = "game";
-    musicManager("none");
-    generateStars();
+    if (!gameStarted) {
+      gameStarted = true;
+      // note: replace this with mouse interaction with button
+      while (!preloadingFinished) //wait for preloading to finish before starting game
+        delay(100);
+      currentScreen = "game";
+      musicManager("none");
+      generateStars();
+      thread("levelSequence");
+    }
   }
 
   // debug keys
@@ -292,6 +351,9 @@ void keyPressed() {
         changeShield(1);
         changeThruster(1);
       }
+  }
+  if (key == 'y' && debug) { //temp, delete after upgrade screen implemented
+    continueLevel = true;
   }
 }
 
