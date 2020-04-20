@@ -145,8 +145,11 @@ void checkCollision() {
       shieldSoundTick = 0;
       endingShieldSound = false;
       // Ship reset
-      shipImageIndex = 0;
-      accelerate = false;
+      if (accelerate)
+        shipImageIndex = 1;
+      else 
+        shipImageIndex = 0;
+      //accelerate = false;
     }
   }
 }
@@ -253,6 +256,9 @@ void keyPressed() {
   }
   if (key == '2') {
     changeWeapon(2);
+  }
+  if (key == '3') {
+    changeWeapon(3);
   }
   
   if (key == 'p') {

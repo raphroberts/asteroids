@@ -27,16 +27,18 @@ boolean preloadingFinished = false;
 
 void preloading() { //call asynchronously
   //load title screen music
-  musicArray[0] = new SoundFile(this, "music/title.mp3"); //force load the title theme first, make it a short loop
-  if (currentScreen == "title")
-    musicManager("title");
+  //musicArray[0] = new SoundFile(this, "music/title.mp3"); //force load the title theme first, make it a short loop
+  //if (currentScreen == "title")
+  //  musicManager("title");
     
   //preload game sfx
   soundArray[0] = new SoundFile(this, "sounds/laserfire01.mp3"); //bullet 1
-  soundArray[1] = new SoundFile(this, "sounds/shield.mp3"); //shield activation
-  soundArray[1].loop();
-  soundArray[1].pause();
-  shieldSoundIndex = 1;
+  soundArray[1] = new SoundFile(this, "sounds/burstfire.mp3"); //bullet 2
+  soundArray[2] = new SoundFile(this, "sounds/laserfire02.mp3"); //bullet 3
+  soundArray[3] = new SoundFile(this, "sounds/shield.mp3"); //shield activation
+  soundArray[3].loop();
+  soundArray[3].pause();
+  shieldSoundIndex = 3;
   preloadingFinished = true;
  
   // Create array of music tracks
@@ -122,11 +124,15 @@ void setup() {
   
   // generate smoke animation image array
   generateSmoke();
+  
+  // Initialize stats
+  changeWeapon(1);
 
   //temp
   createAsteroid(450, 450, "large");
   createAsteroid(750, 350, "large");
   createAsteroid(750, 350, "small");
+  
 }
 
 void generateSmoke(){

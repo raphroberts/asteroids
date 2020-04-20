@@ -90,6 +90,23 @@ void UIManager() {
   noFill();
   strokeWeight(5);
   
+  int rechargePerc = 0;
+  
+  //draw weapon recharge time
+  if (weaponCooldown <= 10) //weapon recharge is too fast, don't bother drawing
+    rechargePerc = 100;
+  else {
+    float rechargeNorm = 100.0 / weaponCooldown; // get Normal of recharge
+    rechargePerc = (int)min((weaponCooldownTick * rechargeNorm), 100); // get % of recharge
+  }
+  
+  
+  noStroke();
+  fill(255 - (2.55 * rechargePerc) , 2.2 * rechargePerc, 0, 150); //color shield based upon HP
+  rect(100, height-10, rechargePerc, 30);
+  fill(255);
+  
+  
   if (weaponIndex == 1)
     fill(weaponFill);
   else 
@@ -108,11 +125,24 @@ void UIManager() {
   fill(255);
   text("2", 185 + weaponUIdist, height - 10);
   
+  if (weaponIndex == 3)
+    fill(weaponFill);
+  else
+    fill(weaponBlankFill);
+  rect(190 + weaponUIdist*2, height - 50, 40, 40);
+  image(iconsUI[0], 190 + weaponUIdist*2, height - 50);
+  fill(255);
+  text("3", 185 + weaponUIdist*2, height - 10);
+  
   textSize(26);
 }
 
 void changeWeapon(int index) {
   weaponIndex = index;
+  if (index == 1 || index == 2)
+    weaponCooldown = 5;
+  else if (index == 3)
+    weaponCooldown = 120;
 }
 
 void drawShieldUI() {
@@ -127,7 +157,6 @@ void drawShieldUI() {
   text("Shield: ", width - 250, 40);
   text(shieldHP, width - 120, 40);
 }
-
 
 void musicManager(String song) {
   // Handles and plays game music

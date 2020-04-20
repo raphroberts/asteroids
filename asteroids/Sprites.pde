@@ -35,8 +35,9 @@ void initialiseShip() {
 }
 
 void moveShip() {
+  weaponCooldownTick++; //increase cooldown tick
+  
   // Handle ship movement
-
   if (accelerate) {
     shipAcceleration = new PVector(shipThrust * cos(shipRotation), shipThrust * sin(shipRotation));
   }
@@ -134,27 +135,33 @@ object ID can be used for bullet type, e.g:
  */
 ArrayList<Float[]> bulletObject = new ArrayList<Float[]>(); 
 
-
 void createBullet() {
   // Create a new bullet when the ship fires the gun
-
+  println("Ticket: " + weaponCooldownTick);
+  println("Cdown: " + weaponCooldown);
   // shoot bullet as long as gun is reloaded
-  if (gunReloaded) {
+  if (gunReloaded && weaponCooldownTick > weaponCooldown) {
+    weaponCooldownTick = 0;
     //create an asteroid at the given x, y coords, with size = "large" or "small"
-    soundArray[0].play();
     bulletLocation.x = shipLocation.x;
     bulletLocation.y = shipLocation.y;
 
     //PVector initialVelocity = new PVector(randomInt(-4, 4), randomInt(-4, 4));
     bulletRotation = shipRotation;
-    //index 0 = bullet ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = initial rotation
+    //index 0 = bullet ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = initial rotation, 7 = bulletType, 8 = bullet damage
     if (weaponIndex == 1) { //standard laser gun
-      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation});
+      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation, 1.0, 2.0});
+      soundArray[0].play();
     }
     else if (weaponIndex == 2) { //triple shot
-      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation});
-      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x-20, bulletLocation.y-20, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation});
-      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x+20, bulletLocation.y+20, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation});
+      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation, 2.0, 6.0});
+      //bulletObject.add(new Float[] {float(bulletID), bulletLocation.x-20, bulletLocation.y-20, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation});
+      //bulletObject.add(new Float[] {float(bulletID), bulletLocation.x+20, bulletLocation.y+20, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation});
+      soundArray[0].play();
+    }
+    else if (weaponIndex == 3) { //laser cannon
+      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * 0.1 * cos(bulletRotation)), (bulletSpeed * 0.1 * sin(bulletRotation)), bulletRotation, 3.0, 40.0});
+      soundArray[2].play();
     }
   }
 }
@@ -166,14 +173,31 @@ void drawAndMoveBullets() {
     Float[] obj = bulletObject.get(i);
     PVector bulletCoords = new PVector(obj[1], obj[2]);
     PVector bulletVelocity = new PVector(obj[4], obj[5]);
+    int bulletType = round(obj[7]);
 
     //draw
     //image(enemyGraphics[i], objCoords.x, objCoords.y);
-    fill(#b6ed57);
+    
     translate(bulletCoords.x, bulletCoords.y);
     rotate(shipRotation);
     noStroke();
-    rect(0, 0, 10, 5);
+    
+    if (bulletType == 1) {
+      fill(#b6ed57);
+      rect(20, 0, 15, 5);
+    }
+    else if (bulletType == 2) {
+      fill(#b6ed57);
+      rect(-20, 30, 15, 5);
+      rect(20, 0, 15, 5);
+      rect(-20, -30, 15, 5);
+    }
+    else if (bulletType == 3) {
+      fill(#31A5FF);
+      rect(20, 0, 35, 10);
+    }
+    
+    
     rotate(-shipRotation);
     translate(-bulletCoords.x, -bulletCoords.y);
     fill(255);
