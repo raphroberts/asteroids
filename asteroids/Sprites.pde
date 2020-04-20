@@ -148,7 +148,14 @@ void createBullet() {
     //PVector initialVelocity = new PVector(randomInt(-4, 4), randomInt(-4, 4));
     bulletRotation = shipRotation;
     //index 0 = bullet ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = initial rotation
-    bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation});
+    if (weaponIndex == 1) { //standard laser gun
+      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation});
+    }
+    else if (weaponIndex == 2) { //triple shot
+      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation});
+      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x-20, bulletLocation.y-20, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation});
+      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x+20, bulletLocation.y+20, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation});
+    }
   }
 }
 

@@ -118,6 +118,7 @@ void checkCollision() {
         if (destroyed) { 
           // Remove asteroid
           enemyObject.remove(i);
+          break; //this enemyObject is destroyed, go back to outer loop
         }
         //TODO: Tint on enemy object if HP above 0 but still hit
       }
@@ -191,7 +192,7 @@ void destroyLargeAsteroidSequence(int xcoord, int ycoord) {
   score = score + 50;
 
   //randomly create between 2 or 3 small asteroids
-  int smallAsteroids = randomInt(2, 3);
+  int smallAsteroids = randomInt(4, 7);
   for (int i = 1; i <= smallAsteroids; i++) {
     createAsteroid(xcoord, ycoord, "small");
   }
@@ -245,8 +246,19 @@ void keyPressed() {
     createBullet();
     gunReloaded = false;
   }
+  
+  //Change weapon
+  if (key == '1') {
+    changeWeapon(1);
+  }
+  if (key == '2') {
+    changeWeapon(2);
+  }
+  
   if (key == 'p') {
     // note: replace this with mouse interaction with button
+    while (!preloadingFinished) //wait for preloading to finish before starting game
+      delay(100);
     currentScreen = "game";
     musicManager("none");
     generateStars();

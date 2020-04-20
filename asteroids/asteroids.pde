@@ -21,18 +21,33 @@
 
 import processing.sound.*; //import sound library, results in console warning
 
+// ASYNC PRE LOADING (post-title screen async loading)
+
+boolean preloadingFinished = false;
+
+void preloading() { //call asynchronously
+  //preload game sfx
+  soundArray[0] = new SoundFile(this, "sounds/laserfire01.mp3"); //bullet 1
+  soundArray[1] = new SoundFile(this, "sounds/shield.mp3"); //shield activation
+  soundArray[1].loop();
+  soundArray[1].pause();
+  shieldSoundIndex = 1;
+  preloadingFinished = true;
+  
+  // Create array of music tracks
+  musicArray[0] = new SoundFile(this, "music/title.mp3"); //force load the title theme first, make it a short loop
+  if (currentScreen == "title")
+    musicManager("title");
+ 
+  musicArray[1] = new SoundFile(this, "music/s2.mp3");
+  musicArray[2] = new SoundFile(this, "music/ThrustSequence.mp3");
+}
+
 // MUSIC
 
 SoundFile[] musicArray = new SoundFile[3];
 int playingIndex = 0;
 String nowPlaying = "None";
-
-void loadMusic() {
-  // Create array of music tracks
-  
-  musicArray[1] = new SoundFile(this, "music/s2.mp3");
-  musicArray[2] = new SoundFile(this, "music/ThrustSequence.mp3");
-}
 
 // SFX
 
@@ -91,25 +106,18 @@ void setup() {
   enemyGraphics[3] = requestImage("images/asteroid_sm_1.png");
   enemyGraphics[4] = requestImage("images/asteroid_sm_2.png");
   enemyGraphics[5] = requestImage("images/asteroid_sm_3.png");
- 
   
-  //Sound setup
-  soundArray[0] = new SoundFile(this, "sounds/laserfire01.mp3"); //bullet 1
-  soundArray[1] = new SoundFile(this, "sounds/shield.mp3"); //shield activation
-  soundArray[1].loop();
-  soundArray[1].pause();
-  shieldSoundIndex = 1;
+  iconsUI[0] = requestImage("images/dummygun.png");
+ 
+  //preload assets async
+  thread("preloading");
   
   //Screen setup
   backgroundImage[0] = loadImage("images/title_screen.png");
   backgroundImage[1] = requestImage("images/game_screen.png");
   
-  thread("loadMusic"); //start an async thread to load music file sizes in the background
-  musicArray[0] = new SoundFile(this, "music/title.mp3"); //force load the title theme first, make it a short loop
-  musicManager("title");
-  
   // Font and text defaults
-  textSize(32);
+  textSize(26);
   
   // generate smoke animation image array
   generateSmoke();
@@ -126,7 +134,6 @@ void generateSmoke(){
     for (int i = 0; i < numSmokeFrames; i++){
       smokeAnimFrameArray[i] = loadImage("images/smoke_frames/smoke_" + i + ".png");
     }
-
 }
 
 
