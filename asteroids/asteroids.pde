@@ -27,9 +27,9 @@ boolean preloadingFinished = false;
 
 void preloading() { //call asynchronously
   //load title screen music
-  //musicArray[0] = new SoundFile(this, "music/title.mp3"); //force load the title theme first, make it a short loop
-  //if (currentScreen == "title")
-  //  musicManager("title");
+  musicArray[0] = new SoundFile(this, "music/title.mp3"); //force load the title theme first, make it a short loop
+  if (currentScreen == "title")
+    musicManager("title");
     
   //preload game sfx
   soundArray[0] = new SoundFile(this, "sounds/laserfire01.mp3"); //bullet 1
