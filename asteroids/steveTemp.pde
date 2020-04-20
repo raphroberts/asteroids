@@ -15,3 +15,5 @@ color weaponFill = color(255,94,144,80);
 color weaponBlankFill = color(255, 255, 255, 50);
 
 boolean continueLevel = false; //delete this when upgrade screen is implemented
+
+//MINIM LIBRARY - attempt 1 to address sound distortion

@@ -231,8 +231,6 @@ void musicManager(String song) {
     case "title":
       // Play title theme
       try {
-        musicArray[0].amp(0.3);
-        musicArray[0].rate(0.7);
         musicArray[0].play();
         musicArray[0].loop();
         playingIndex = 0;
@@ -243,7 +241,7 @@ void musicManager(String song) {
       break;
     case "epic":
       try {
-        musicArray[1].amp(0.4);
+        musicArray[1].setGain(-5);
         musicArray[1].play();
         playingIndex = 1;
         nowPlaying = "epic - s2.mp3";
@@ -254,7 +252,7 @@ void musicManager(String song) {
       break;
     case "thrust":
       try {
-       musicArray[2].amp(0.4);
+       musicArray[2].setGain(-5);
        musicArray[2].play();
        playingIndex = 2;
        nowPlaying = "ThrustSequence.mp3";
@@ -272,7 +270,7 @@ void stopAllSongs() {
   for (int i = 0; i < musicArray.length; i++) {
     try {
       if (musicArray[i].isPlaying()) {
-        musicArray[i].stop();  
+        musicArray[i].pause();  
       }
     }
     catch (NullPointerException e) {
@@ -283,17 +281,23 @@ void stopAllSongs() {
 
 void shieldCriticalSoundSequence() {
   //Only call this function asynchronously
-  soundArray[4].play();
+  soundArray[6].setGain(-5);
+  soundArray[6].rewind();
+  soundArray[6].play();
   delay(1000);
-  soundArray[5].play();
+  soundArray[7].rewind();
+  soundArray[7].play();
 }
 
 void attentionLifeformSoundSequence() {
-  soundArray[4].play();
-  delay(1000);
-  soundArray[4].play();
-  delay(1000);
+  soundArray[6].rewind();
   soundArray[6].play();
+  delay(1000);
+  soundArray[6].rewind();
+  soundArray[6].play();
+  delay(1000);
+  soundArray[8].rewind();
+  soundArray[8].play();
 }
 
 void bossSequence() {

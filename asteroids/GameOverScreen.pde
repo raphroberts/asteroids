@@ -9,6 +9,6 @@ void gameOverScreen(){
   text("GAME OVER!!", width/2, height/2); 
   
   if (soundArray[shieldSoundIndex].isPlaying())
-    soundArray[shieldSoundIndex].stop();
+    soundArray[shieldSoundIndex].pause();
   musicManager("none");
 }

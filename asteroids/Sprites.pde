@@ -150,17 +150,24 @@ void createBullet() {
     //index 0 = bullet ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = initial rotation, 7 = bulletType, 8 = bullet damage
     if (weaponIndex == 1) { //standard laser gun
       bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation, 1.0, 2.0});
-      soundArray[0].play();
+      soundArray[bulletshotIndex].rewind();
+      soundArray[bulletshotIndex++].play();
+      if (bulletshotIndex > 2) //allow mulitple sound channels for this bullet
+        bulletshotIndex = 0;
     }
     else if (weaponIndex == 2) { //triple shot
       bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation, 2.0, 6.0});
       //bulletObject.add(new Float[] {float(bulletID), bulletLocation.x-20, bulletLocation.y-20, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation});
       //bulletObject.add(new Float[] {float(bulletID), bulletLocation.x+20, bulletLocation.y+20, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation});
-      soundArray[0].play();
+      soundArray[bulletshotIndex].rewind();
+      soundArray[bulletshotIndex++].play();
+      if (bulletshotIndex > 2) //allow mulitple sound channels for this bullet
+        bulletshotIndex = 0;
     }
     else if (weaponIndex == 3) { //laser cannon
       bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * 0.1 * cos(bulletRotation)), (bulletSpeed * 0.1 * sin(bulletRotation)), bulletRotation, 3.0, 40.0});
-      soundArray[2].play();
+      soundArray[4].rewind();
+      soundArray[4].play();
     }
   }
 }
