@@ -4,7 +4,7 @@
 int score = 0;
 
 //Levels
-int gameLevel = 1; //auto-increment upon level up
+int gameLevel = 5; //auto-increment upon level up
 int screenPadding = 40; // padding allowance for objects to float off screen
 
 // Explosion effect
@@ -77,7 +77,7 @@ void renderStars() {
       point(starLocation.x,(starLocation.y - shipLocation.y) * 2);
       point(starLocation.x,((starLocation.y - shipLocation.y) * 2) - (height*2)+ (screenPadding*4));
       point(starLocation.x,((starLocation.y - shipLocation.y) * 2) + (height*2)+ (screenPadding*4));
-    }
+      }
     }
   }
 }
@@ -281,6 +281,17 @@ void keyPressed() {
       musicManager("thrust");
     else if (playingIndex == 2)
       musicManager("epic");
+  }
+  if (key == 'b' && debug) { //temp, cycle and equip through diff shields, weapons. Normally this should only be possible at level up screen
+    if (shieldIndex == 1)
+      changeShield(2);
+    else if (shieldIndex == 2 && thrusterIndex == 1)
+      changeThruster(2);
+    else
+      {
+        changeShield(1);
+        changeThruster(1);
+      }
   }
 }
 

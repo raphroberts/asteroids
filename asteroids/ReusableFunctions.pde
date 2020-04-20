@@ -106,7 +106,7 @@ void UIManager() {
   rect(100, height-10, rechargePerc, 30);
   fill(255);
   
-  
+  //Weapon equipment
   if (weaponIndex == 1)
     fill(weaponFill);
   else 
@@ -134,6 +134,24 @@ void UIManager() {
   fill(255);
   text("3", 185 + weaponUIdist*2, height - 10);
   
+  //Shield equipment
+  text("Shield: ", 130 + weaponUIdist*5, height - 40);
+  
+  fill(weaponFill);
+  rect(180 + weaponUIdist*6, height - 50, 40, 40);
+  image(iconsUI[0], 180 + weaponUIdist*6, height - 50);
+  fill(255);
+  text(shieldName, 155 + weaponUIdist*6, height - 10);
+  
+  //Thruster equipment
+  text("Thruster: ", 130 + weaponUIdist*9, height - 40);
+  
+  fill(weaponFill);
+  rect(200 + weaponUIdist*10, height - 50, 40, 40);
+  image(iconsUI[0], 200 + weaponUIdist*10, height - 50);
+  fill(255);
+  text(thrusterName, 175 + weaponUIdist*10, height - 10);
+  
   textSize(26);
 }
 
@@ -143,6 +161,40 @@ void changeWeapon(int index) {
     weaponCooldown = 5;
   else if (index == 3)
     weaponCooldown = 120;
+}
+
+void changeShield(int index) {
+  shieldIndex = index;
+  if (index == 1) {
+    maxShieldHP = 500;
+    shieldHP = maxShieldHP;
+    shieldRechargeDelay = 50; //recharge 1 point this number of frames
+    shieldRechargeTick = 0;
+    shieldName = "Basic"; 
+  }
+  else if (index == 2) {
+    maxShieldHP = 1500;
+    shieldHP = maxShieldHP;
+    shieldRechargeDelay = 20; //recharge 1 point this number of frames
+    shieldRechargeTick = 0;
+    shieldName = "Barrier MK2"; 
+  }
+}
+
+void changeThruster(int index) {
+  thrusterIndex = index;
+  if (index == 1) {
+    shipThrust = 0.1;
+    shipRotationSpeed = 0.1;
+    maxSpeed = 4;
+    thrusterName = "Standard";
+  }
+  else if (index == 2) {
+    shipThrust = 0.2;
+    shipRotationSpeed = 0.15;
+    maxSpeed = 6;
+    thrusterName = "MK2 Emitter";
+  }
 }
 
 void drawShieldUI() {

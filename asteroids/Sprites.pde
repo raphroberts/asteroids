@@ -78,9 +78,9 @@ void moveShip() {
   translate(-shipLocation.x, -shipLocation.y);
 
   if (debug) {
-    println("Acceleration: " + shipAcceleration);
-    println("Velocity: " + shipVelocity);
-    println("Location: " + shipLocation);
+    //println("Acceleration: " + shipAcceleration);
+    //println("Velocity: " + shipVelocity);
+    //println("Location: " + shipLocation);
   }
 }
 
@@ -101,6 +101,7 @@ void decelerateShip() {
   } else {
     shipAcceleration = new PVector(shipAcceleration.x, 0);
   }
+
 }
 
 
@@ -137,8 +138,6 @@ ArrayList<Float[]> bulletObject = new ArrayList<Float[]>();
 
 void createBullet() {
   // Create a new bullet when the ship fires the gun
-  println("Ticket: " + weaponCooldownTick);
-  println("Cdown: " + weaponCooldown);
   // shoot bullet as long as gun is reloaded
   if (gunReloaded && weaponCooldownTick > weaponCooldown) {
     weaponCooldownTick = 0;
