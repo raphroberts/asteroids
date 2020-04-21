@@ -57,9 +57,19 @@ void setup() {
   shipLocation = new PVector(width/2, height/2);
 
   initialiseShip(); // set/reset ship properties
-  shipGraphic[0] = requestImage("images/ship_float.png");
-  shipGraphic[1] = requestImage("images/ship_thrust.png");
-  shipGraphic[2] = requestImage("images/ship_shield.png");
+  shipGraphic[0] = requestImage("images/ship/ship_main_triple.png");
+  shipGraphic[1] = requestImage("images/ship/ship_main_single.png");
+  shipGraphic[2] = requestImage("images/ship/ship_main_enforcer.png");
+  
+  // Thruster setup
+  thrusterGraphic[0] = requestImage("images/ship/thruster_1.png");
+  thrusterGraphic[1] = requestImage("images/ship/thruster_2.png");
+  thrusterGraphic[2] = requestImage("images/ship/thruster_3.png");
+  
+  // Shield setup
+  shieldGraphic[0] = requestImage("images/ship/ship_shield1.png");
+  shieldGraphic[1] = requestImage("images/ship/ship_shield2.png");
+  shieldGraphic[2] = requestImage("images/ship/ship_shield3.png");
 
   //Bullet setup
   bulletLocation = new PVector(230, 230);
@@ -72,7 +82,20 @@ void setup() {
   enemyGraphics[4] = requestImage("images/asteroid_sm_2.png");
   enemyGraphics[5] = requestImage("images/asteroid_sm_3.png");
   
-  iconsUI[0] = requestImage("images/dummygun.png");
+  // Weapon icons
+  iconsUI[0] = requestImage("images/icons/icon_triple.png");
+  iconsUI[1] = requestImage("images/icons/icon_single.png");
+  iconsUI[2] = requestImage("images/icons/icon_enforcer.png");
+  
+  // Shield icons
+  iconsUI[3] = requestImage("images/icons/icon_shield1.png");
+  iconsUI[4] = requestImage("images/icons/icon_shield2.png");
+  iconsUI[5] = requestImage("images/icons/icon_shield3.png");
+  
+  // Thrust icons
+  iconsUI[6] = requestImage("images/icons/icon_thrust1.png");
+  iconsUI[7] = requestImage("images/icons/icon_thrust2.png");
+  iconsUI[8] = requestImage("images/icons/icon_thrust3.png");
  
   //preload assets async
   thread("preloading");
@@ -91,19 +114,10 @@ void setup() {
   // Initialize stats
   changeWeapon(1);
 
-  //temp
-  //createAsteroid(450, 450, "large");
-  //createAsteroid(750, 350, "large");
-  //createAsteroid(750, 350, "small");
+  // Main game font
+  gameFont = createFont("data/Rajdhani-Medium.ttf", gameTextSizeMain);
+  textFont(gameFont); 
   
-}
-
-void generateSmoke(){
-    // Generates smokeAnimFrames array used for smoke animation
-       
-    for (int i = 0; i < numSmokeFrames; i++){
-      smokeAnimFrameArray[i] = loadImage("images/smoke_frames/smoke_" + i + ".png");
-    }
 }
 
 

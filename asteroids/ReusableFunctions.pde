@@ -1,5 +1,10 @@
 // FUNCTIONS AND GLOBALS THAT DON'T RELATE ONLY TO ONE SCREEN
 
+// Game font globals
+PFont gameFont;
+final int gameTextSizeMain = 16;
+final int mainFontColour = 255;
+
 /*
   ___                    _                 _ _ _           
  / __| __ ___ ___ _ _   | |_  __ _ _ _  __| | (_)_ _  __ _ 
@@ -33,7 +38,7 @@ void screenHandler() {
     // (located in Sprites.PDE)
     drawAndMoveBullets();
     
-        // Move the ship
+    // Move the ship
     moveShip();
     
     // Update bullet locations
@@ -269,7 +274,7 @@ void keyPressed() {
   }
   if (key == 'w') {
     accelerate = true;
-    shipImageIndex = 1;
+    // render thruster
   }
   if (key == ' ') {
     createBullet();
@@ -279,12 +284,15 @@ void keyPressed() {
   //Change weapon
   if (key == '1') {
     changeWeapon(1);
+    shipImageIndex = 0;
   }
   if (key == '2') {
     changeWeapon(2);
+    shipImageIndex = 1;
   }
   if (key == '3') {
     changeWeapon(3);
+    shipImageIndex = 2;
   }
   
   if (key == 'p') {

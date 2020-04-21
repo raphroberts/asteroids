@@ -17,6 +17,14 @@ byte currentWeapon = 0; //index of current weapon, 0 = green laser
 PImage[] shipGraphic = new PImage[3]; // ship image array
 int shipImageIndex = 0;
 
+// Thruster graphics
+PImage[] thrusterGraphic = new PImage[3]; // ship image array
+int thrusterImageIndex = 1;
+
+// Shield graphics
+PImage[] shieldGraphic = new PImage[3]; // ship image array
+int shieldImageIndex = 0;
+
 // Ship movement
 float maxSpeed = 4;
 boolean accelerate = false;
@@ -31,7 +39,7 @@ PVector shipLocation;
 
 void initialiseShip() {
   shipVelocity = new PVector(0, 0);
-  shipLocation = new PVector(230, 230);
+  shipLocation = new PVector(width/2, height/2);
 }
 
 void moveShip() {
@@ -73,7 +81,20 @@ void moveShip() {
   
   translate(shipLocation.x, shipLocation.y);  
   rotate(shipRotation);
+  
+  // If ship is being damaged, render shield
+  if (isBeingDamaged){
+    image(shieldGraphic[shieldImageIndex], 0, 0);
+  }
+  
+  // Render ship
   image(shipGraphic[shipImageIndex], 0, 0);
+  
+  // If ship is thrusting, render thrusters
+  if (accelerate){
+    image(thrusterGraphic[thrusterImageIndex], -50, 0);
+  }
+  
   rotate(-shipRotation);
   translate(-shipLocation.x, -shipLocation.y);
 

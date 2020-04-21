@@ -41,6 +41,14 @@ void renderExplosion() {
   }
 }
 
+void generateSmoke(){
+    // Generates smokeAnimFrames array used for explosion effect
+       
+    for (int i = 0; i < numSmokeFrames; i++){
+      smokeAnimFrameArray[i] = loadImage("images/smoke_frames/smoke_" + i + ".png");
+    }
+}
+
 void generateStars() {
   // create random starfield data
 
@@ -90,91 +98,101 @@ void renderStars() {
 PImage[] iconsUI = new PImage[10];
 
 // Positioning of UI elements
-final int weaponUIdist = 55;
+final int basicPadding = 20;
+final int weaponUIdist = 65;
 final int highlightSize = 50;
-final int iconVerticalPadding = 50;
+final int iconVerticalPadding = 20;
+final int iconHorizontalPadding = 100;
+final int shieldBarX = 100;
+final int shieldTextX = 130;
+final int shieldPaddingX = 70;
+final int barSize = 10;
+final int startingY = 40;
+final int textPaddingY = 100;
+final int shieldXPadding = 50;
+final int weaponBarPaddingY = 75;
 
-// Icon highlights
-final color weaponFill = color(255, 255, 255, 80);
-final color weaponBlankFill = color(255, 255, 255, 20);
-    
+// Icon highlights colours
+final color weaponFill = color(255, 155, 155, 80);
+final color weaponBlankFill = color(255, 255, 255, 30);
+ 
 void UIManager() {
   // Handle game overlay/UI
   
-  text ("Score: " + score, 20,40); // render score
-  //text ("Shield: " + shieldHP, width-200, 40);
-  drawShieldUI();
-  //text ("Now Playing: " + nowPlaying + ". Press 'N' for next song", 40, height-40);
-  text("Level: " + gameLevel, width/2, 40);
+  // Render score
+  textAlign(LEFT, TOP);
+  text ("Score: " + score, basicPadding,basicPadding); // render score
   
-  textSize(20);
-  text("Weapon Slot: ", 40, height - 40);
+  // Render current level
+  textAlign(CENTER, TOP);
+  text("Level: " + gameLevel, width/2, basicPadding);
+  
+  // Render shield
+  drawShieldUI();
+
   noFill();
   strokeWeight(5);
-  
   int rechargePerc = 0;
   
-  // Draw weapon recharge indicator
-  if (weaponCooldown <= 10) //weapon recharge is too fast, don't bother drawing
-    rechargePerc = 100;
+  // Calculate percentage of weapon recharge
+  if (weaponCooldown <= 10)
+    //weapon recharge is too fast, don't bother drawing
+    rechargePerc = 50;
   else {
-    float rechargeNorm = 100.0 / weaponCooldown; // get Normal of recharge
-    rechargePerc = (int)min((weaponCooldownTick * rechargeNorm), 100); // get % of recharge
+    // Get normal & percentage of recharge
+    float rechargeNorm = 50.0 / weaponCooldown;
+    rechargePerc = (int)min((weaponCooldownTick * rechargeNorm), 50);
   }
   
-  // Draw shield bar to UI
+  // Draw recharge bar to UI
   noStroke();
-  fill(255 - (2.55 * rechargePerc) , 2.2 * rechargePerc, 0, 150); //color shield based upon HP
-  rect(100, height-10, rechargePerc, 30);
+  fill(255 - (2.55 * rechargePerc) , 2.2 * rechargePerc, 0, 255); //color shield based upon HP
+  rect(170, height - weaponBarPaddingY, rechargePerc, barSize);
   fill(255);
   
-  // Draw and manage weapon equipment icons and highlighting
-  if (weaponIndex == 1)
-    fill(weaponFill);
-  else 
-    fill(weaponBlankFill);
-  rect(190, height - iconVerticalPadding, highlightSize, highlightSize);
-  image(iconsUI[0], 190, height - iconVerticalPadding);
-  fill(255);
-  text("1", 185, height - 10);
+  drawWeaponIcons();
   
-  if (weaponIndex == 2)
-    fill(weaponFill);
-  else
-    fill(weaponBlankFill);
-  rect(190 + weaponUIdist, height - iconVerticalPadding, highlightSize, highlightSize);
-  image(iconsUI[0], 190 + weaponUIdist, height - 50);
-  fill(255);
-  text("2", 185 + weaponUIdist, height - 10);
-  
-  if (weaponIndex == 3)
-    fill(weaponFill);
-  else
-    fill(weaponBlankFill);
-  rect(190 + weaponUIdist*2, height - iconVerticalPadding, highlightSize, highlightSize);
-  image(iconsUI[0], 190 + weaponUIdist*2, height - iconVerticalPadding);
-  fill(255);
-  text("3", 185 + weaponUIdist*2, height - 10);
-  
-  //Shield equipment
-  text("Shield: ", 130 + weaponUIdist*5, height - 40);
-  
+  //Shield icon and info text
   fill(weaponFill);
-  rect(180 + weaponUIdist*6, height - iconVerticalPadding, highlightSize, highlightSize);
-  image(iconsUI[0], 180 + weaponUIdist*6, height - iconVerticalPadding);
-  fill(255);
-  text(shieldName, 155 + weaponUIdist*6, height - 10);
+  image(iconsUI[4], width - shieldXPadding, height - iconVerticalPadding - basicPadding);
   
-  //Thruster equipment
-  text("Thruster: ", 130 + weaponUIdist*9, height - 40);
+  fill(mainFontColour);
+  textAlign(CENTER, TOP);
+  textLeading(gameTextSizeMain);
+  text("Shield:\n" + shieldName, width - shieldXPadding, height - textPaddingY);
   
+  // Thruster icon and info text
   fill(weaponFill);
-  rect(200 + weaponUIdist*10, height - 50, highlightSize, highlightSize);
-  image(iconsUI[0], 200 + weaponUIdist*10, height - 50);
-  fill(255);
-  text(thrusterName, 175 + weaponUIdist*10, height - 10);
+  image(iconsUI[6], width - weaponUIdist * 2, height - iconVerticalPadding - basicPadding);
   
-  textSize(26);
+  fill(mainFontColour);
+  textAlign(CENTER, TOP);
+  textLeading(gameTextSizeMain);
+  text("Thrust:\n" + thrusterName, width - weaponUIdist * 2, height - textPaddingY);
+
+}
+
+void drawWeaponIcons() {
+    // Draw weapon icons and highlighting
+  int startingX = 40;
+  
+  for (int i = 1; i <= 3; i++){
+    if (i == weaponIndex){
+      fill(weaponFill);
+      stroke(255);
+      strokeWeight(1);
+    }
+    else {
+      noFill();
+      noStroke();
+    }
+    rect(startingX, height - startingY, highlightSize, highlightSize);
+    image(iconsUI[i-1], startingX, height - startingY);
+    fill(mainFontColour);
+    text(i, startingX, height - startingY + 5 - weaponUIdist);
+    startingX += weaponUIdist;
+  }
+
 }
 
 void changeWeapon(int index) {
@@ -232,12 +250,16 @@ void drawShieldUI() {
   int shieldPerc = (int)(shieldHP * shieldNorm); // get % of shield
   
   noStroke();
-  fill(255 - (2.55 * shieldPerc) , 2.2 * shieldPerc, 0); //color shield based upon HP
-  rect(width - 100, 30, shieldPerc, 30);
-  fill(255);
+  fill(weaponBlankFill); //color shield based upon HP
+  rect(width - shieldPaddingX, basicPadding * 1.5, shieldBarX, barSize);
+    
+  fill(200 - (2.55 * shieldPerc) , 2.2 * shieldPerc, 0); //color shield based upon HP
+  rect(width - shieldPaddingX, basicPadding * 1.5, shieldPerc, barSize);
   
-  text("Shield: ", width - 250, 40);
-  text(shieldHP, width - 120, 40);
+  fill(mainFontColour);
+  textAlign(RIGHT, TOP);
+  text("Shield:", width - shieldTextX, basicPadding);
+
 }
 
 /*
