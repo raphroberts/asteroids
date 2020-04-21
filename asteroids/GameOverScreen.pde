@@ -1,3 +1,6 @@
+// FUNCTIONS AND GLOBALS THAT RELATE TO THE GAME OVER SCREEN
+
+
 void gameOverScreen(){
   // Triggers when ship is hit by enemy
   // drawBackground(index);

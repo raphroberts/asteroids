@@ -1,3 +1,5 @@
+// FUNCTIONS AND GLOBALS THAT RELATE TO THE LEVEL-UP SCREEN
+
 void levelUpScreen() {
   // (Triggered when all enemies are killed)
   // drawBackground(index);

@@ -1,11 +1,21 @@
-// Game screen globals
+// FUNCTIONS AND GLOBALS THAT RELATE TO THE MAIN GAME SCREEN
 
-//Scoring
+// Basic non-specific globals
 int score = 0;
-
-//Levels
-int gameLevel = 1; //auto-increment upon level up
 int screenPadding = 40; // padding allowance for objects to float off screen
+
+// Temp
+
+boolean continueLevel = false; //delete this when upgrade screen is implemented
+
+
+/*
+  ___  __  __        _      
+ | __|/ _|/ _|___ __| |_ ___
+ | _||  _|  _/ -_) _|  _(_-<
+ |___|_| |_| \___\__|\__/__/
+             
+*/
 
 // Explosion effect
 int explosionFrame;
@@ -17,22 +27,6 @@ PVector lastCollisionLocation = new PVector();
 // Starfield
 ArrayList<int[]> starObject = new ArrayList<int[]>(); 
 int numberOfStars = 120;
-
-//Shields & Damage
-int maxShieldHP = 500;
-int shieldHP = maxShieldHP;
-int shieldRechargeDelay = 50; //recharge 1 point this number of frames
-int shieldRechargeTick = 0; //current recharge tick
-int weaponDamage = 2;
-boolean isBeingDamaged = false; //is ship currently undergoing damage?
-
-/*
-  ___  __  __        _      
- | __|/ _|/ _|___ __| |_ ___
- | _||  _|  _/ -_) _|  _(_-<
- |___|_| |_| \___\__|\__/__/
-             
-*/
 
 void renderExplosion() {
   // Calculates current frame of asteroid exploding animation
@@ -84,12 +78,184 @@ void renderStars() {
 
 /*
 
+   ___              _           
+  / _ \__ _____ _ _| |__ _ _  _ 
+ | (_) \ V / -_) '_| / _` | || |
+  \___/ \_/\___|_| |_\__,_|\_, |
+                           |__/ 
+       
+*/
+
+// UI icons images
+PImage[] iconsUI = new PImage[10];
+
+// Positioning of UI elements
+final int weaponUIdist = 55;
+final int highlightSize = 50;
+final int iconVerticalPadding = 50;
+
+// Icon highlights
+final color weaponFill = color(255, 255, 255, 80);
+final color weaponBlankFill = color(255, 255, 255, 20);
+    
+void UIManager() {
+  // Handle game overlay/UI
+  
+  text ("Score: " + score, 20,40); // render score
+  //text ("Shield: " + shieldHP, width-200, 40);
+  drawShieldUI();
+  //text ("Now Playing: " + nowPlaying + ". Press 'N' for next song", 40, height-40);
+  text("Level: " + gameLevel, width/2, 40);
+  
+  textSize(20);
+  text("Weapon Slot: ", 40, height - 40);
+  noFill();
+  strokeWeight(5);
+  
+  int rechargePerc = 0;
+  
+  // Draw weapon recharge indicator
+  if (weaponCooldown <= 10) //weapon recharge is too fast, don't bother drawing
+    rechargePerc = 100;
+  else {
+    float rechargeNorm = 100.0 / weaponCooldown; // get Normal of recharge
+    rechargePerc = (int)min((weaponCooldownTick * rechargeNorm), 100); // get % of recharge
+  }
+  
+  // Draw shield bar to UI
+  noStroke();
+  fill(255 - (2.55 * rechargePerc) , 2.2 * rechargePerc, 0, 150); //color shield based upon HP
+  rect(100, height-10, rechargePerc, 30);
+  fill(255);
+  
+  // Draw and manage weapon equipment icons and highlighting
+  if (weaponIndex == 1)
+    fill(weaponFill);
+  else 
+    fill(weaponBlankFill);
+  rect(190, height - iconVerticalPadding, highlightSize, highlightSize);
+  image(iconsUI[0], 190, height - iconVerticalPadding);
+  fill(255);
+  text("1", 185, height - 10);
+  
+  if (weaponIndex == 2)
+    fill(weaponFill);
+  else
+    fill(weaponBlankFill);
+  rect(190 + weaponUIdist, height - iconVerticalPadding, highlightSize, highlightSize);
+  image(iconsUI[0], 190 + weaponUIdist, height - 50);
+  fill(255);
+  text("2", 185 + weaponUIdist, height - 10);
+  
+  if (weaponIndex == 3)
+    fill(weaponFill);
+  else
+    fill(weaponBlankFill);
+  rect(190 + weaponUIdist*2, height - iconVerticalPadding, highlightSize, highlightSize);
+  image(iconsUI[0], 190 + weaponUIdist*2, height - iconVerticalPadding);
+  fill(255);
+  text("3", 185 + weaponUIdist*2, height - 10);
+  
+  //Shield equipment
+  text("Shield: ", 130 + weaponUIdist*5, height - 40);
+  
+  fill(weaponFill);
+  rect(180 + weaponUIdist*6, height - iconVerticalPadding, highlightSize, highlightSize);
+  image(iconsUI[0], 180 + weaponUIdist*6, height - iconVerticalPadding);
+  fill(255);
+  text(shieldName, 155 + weaponUIdist*6, height - 10);
+  
+  //Thruster equipment
+  text("Thruster: ", 130 + weaponUIdist*9, height - 40);
+  
+  fill(weaponFill);
+  rect(200 + weaponUIdist*10, height - 50, highlightSize, highlightSize);
+  image(iconsUI[0], 200 + weaponUIdist*10, height - 50);
+  fill(255);
+  text(thrusterName, 175 + weaponUIdist*10, height - 10);
+  
+  textSize(26);
+}
+
+void changeWeapon(int index) {
+  // Handle weapon changes
+  
+  weaponIndex = index;
+  if (index == 1 || index == 2)
+    weaponCooldown = 5;
+  else if (index == 3)
+    weaponCooldown = 120;
+}
+
+void changeShield(int index) {
+  // Handle shield changes
+  
+  shieldIndex = index;
+  if (index == 1) {
+    maxShieldHP = 500;
+    shieldHP = maxShieldHP;
+    shieldRechargeDelay = 50; //recharge 1 point this number of frames
+    shieldRechargeTick = 0;
+    shieldName = "Basic"; 
+  }
+  else if (index == 2) {
+    maxShieldHP = 1500;
+    shieldHP = maxShieldHP;
+    shieldRechargeDelay = 20; //recharge 1 point this number of frames
+    shieldRechargeTick = 0;
+    shieldName = "Barrier MK2"; 
+  }
+}
+
+void changeThruster(int index) {
+  // Handle thruster changes
+  
+  thrusterIndex = index;
+  if (index == 1) {
+    shipThrust = 0.1;
+    shipRotationSpeed = 0.1;
+    maxSpeed = 4;
+    thrusterName = "Standard";
+  }
+  else if (index == 2) {
+    shipThrust = 0.2;
+    shipRotationSpeed = 0.15;
+    maxSpeed = 6;
+    thrusterName = "MK2 Emitter";
+  }
+}
+
+void drawShieldUI() {
+  // Render shield status to the UI/overlay
+  
+  float shieldNorm = 100.0 / maxShieldHP; // get Normal of shield
+  int shieldPerc = (int)(shieldHP * shieldNorm); // get % of shield
+  
+  noStroke();
+  fill(255 - (2.55 * shieldPerc) , 2.2 * shieldPerc, 0); //color shield based upon HP
+  rect(width - 100, 30, shieldPerc, 30);
+  fill(255);
+  
+  text("Shield: ", width - 250, 40);
+  text(shieldHP, width - 120, 40);
+}
+
+/*
+
    ___     _ _ _    _             
   / __|___| | (_)__(_)___ _ _  ___
  | (__/ _ \ | | (_-< / _ \ ' \(_-<
   \___\___/_|_|_/__/_\___/_||_/__/
                                
 */
+
+//Shields & Damage
+int maxShieldHP = 500;
+int shieldHP = maxShieldHP;
+int shieldRechargeDelay = 50; //recharge 1 point this number of frames
+int shieldRechargeTick = 0; //current recharge tick
+int weaponDamage = 2;
+boolean isBeingDamaged = false; //is ship currently undergoing damage?
 
 void checkCollision() {
   // Check for collisions between asteroid / ship and bullet / asteroid
@@ -225,6 +391,25 @@ void destroySmallAsteroidSequence(int xcoord, int ycoord) {
   score = score + 100;
 }
 
+void rechargeShield() {
+  // Recharge shield slowly over time
+  
+  if (shieldRechargeTick++ > shieldRechargeDelay && shieldHP < maxShieldHP) {
+    shieldRechargeTick = 0;
+    shieldHP = shieldHP + 1;
+  }
+}
+
+/*
+  _                _   __  __                                       _   
+ | |   _____ _____| | |  \/  |__ _ _ _  __ _ __ _ ___ _ __  ___ _ _| |_ 
+ | |__/ -_) V / -_) | | |\/| / _` | ' \/ _` / _` / -_) '  \/ -_) ' \  _|
+ |____\___|\_/\___|_| |_|  |_\__,_|_||_\__,_\__, \___|_|_|_\___|_||_\__|
+ 
+*/
+
+int gameLevel = 1; //auto-increment upon level up
+
 int levelSequence() { // the main level manager, instantiator, and controller
   int asteroidsToSpawnPerCycle = (int)pow(gameLevel, 2);
   int numberOfCycles = gameLevel + 1;
@@ -274,106 +459,4 @@ int levelSequence() { // the main level manager, instantiator, and controller
   bossSequence();
   
   return 1;
-}
-
-/*
-
-   ___         _           _    
-  / __|___ _ _| |_ _ _ ___| |___
- | (__/ _ \ ' \  _| '_/ _ \ (_-<
-  \___\___/_||_\__|_| \___/_/__/
-                             
-*/
-
-
-void renderOverlay() {
-  // Print current score and level to the screen
-}
-
-
-// KEYBOARD INPUT
-
-void keyPressed() {
-  if (key == 'a') {
-    rotateLeft = true;
-  }
-  if (key == 'd') {
-    rotateRight = true;
-  }
-  if (key == 'w') {
-    accelerate = true;
-    shipImageIndex = 1;
-  }
-  if (key == ' ') {
-    createBullet();
-    gunReloaded = false;
-  }
-  
-  //Change weapon
-  if (key == '1') {
-    changeWeapon(1);
-  }
-  if (key == '2') {
-    changeWeapon(2);
-  }
-  if (key == '3') {
-    changeWeapon(3);
-  }
-  
-  if (key == 'p') {
-    if (!gameStarted) {
-      gameStarted = true;
-      // note: replace this with mouse interaction with button
-      while (!preloadingFinished) //wait for preloading to finish before starting game
-        delay(100);
-      currentScreen = "game";
-      musicManager("none");
-      generateStars();
-      thread("levelSequence");
-    }
-  }
-
-  // debug keys
-  if (key == 'c' && debug) {
-    createAsteroid(0, 0, "large");
-  }
-  if (key == 'n' && debug) { //temp for testing songs, delete in production
-    if (playingIndex == 0)
-      musicManager("thrust");
-    else if (playingIndex == 1)
-      musicManager("thrust");
-    else if (playingIndex == 2)
-      musicManager("epic");
-  }
-  if (key == 'b' && debug) { //temp, cycle and equip through diff shields, weapons. Normally this should only be possible at level up screen
-    if (shieldIndex == 1)
-      changeShield(2);
-    else if (shieldIndex == 2 && thrusterIndex == 1)
-      changeThruster(2);
-    else
-      {
-        changeShield(1);
-        changeThruster(1);
-      }
-  }
-  if (key == 'y' && debug) { //temp, delete after upgrade screen implemented
-    continueLevel = true;
-  }
-}
-
-void keyReleased() {
-
-  if (key == 'a') {
-    rotateLeft = false;
-  }
-  if (key == 'd') {
-    rotateRight = false;
-  }
-  if (key == 'w') {
-    shipImageIndex = 0;
-    accelerate = false;
-  }
-  if (key == ' ') {
-    gunReloaded = true;
-  }
 }

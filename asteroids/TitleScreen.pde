@@ -1,14 +1,28 @@
+// FUNCTIONS AND GLOBALS THAT RELATE TO THE TITLE SCREEN
+
 // Title screen ship graphic
 PImage[] titleShip = new PImage[2];
+
+// Location of title screen ship
 int titleShipX;
 float titleShipY;
+
+// Speed of title screen ship
 float titleShipSpeed = 1.6;
+
+// Padding for title screen ship screen overlap
 int titleShipPadding = 140;
+
+// Ship shrink factor when it loops around
 final int titleShipShrink = 100;
+
+// Thruster animation on title ship
 int thrusterCount = 0;
+
 
 void titleSetup() {
   // set up title screen values
+  
   titleShipX = width / 2;
   titleShipY = height + titleShipPadding;
   
@@ -18,8 +32,7 @@ void titleSetup() {
   
   // initialise starfield
   generateStars();
-  
-  
+    
 }
 
 void titleScreen() {

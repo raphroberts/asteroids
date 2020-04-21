@@ -1,4 +1,4 @@
-// FUNCTIONS RELATING TO SPRITES: Ship, Asteroids, Bullets
+// FUNCTIONS AND GLOBALS RELATING TO SPRITES: Ship, Asteroids, Weapons
 
 /*
   ___ _  _ ___ ___ 
@@ -106,15 +106,15 @@ void decelerateShip() {
 
 
 /*
-  ___ _   _ _    _    ___ _____ ___ 
- | _ ) | | | |  | |  | __|_   _/ __|
- | _ \ |_| | |__| |__| _|  | | \__ \
- |___/\___/|____|____|___| |_| |___/
- 
- */
+ __      __                          
+ \ \    / /__ __ _ _ __  ___ _ _  ___
+  \ \/\/ / -_) _` | '_ \/ _ \ ' \(_-<
+   \_/\_/\___\__,_| .__/\___/_||_/__/
+                  |_|                
+*/
 
 
-// BULLET GLOBALS
+// WEAPON GLOBALS
 
 boolean gunReloaded = true;
 PVector bulletVelocity;
@@ -128,13 +128,24 @@ float bulletSize = 1;
 // Array list for storing bullet data
 //index 0 = bullet ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity
 /*
-object ID can be used for bullet type, e.g:
+ object ID can be used for bullet type, e.g:
  0 = green lazer
  1 = triple fire
  2 = rapid fire
  3 = high speed (etc.)
  */
 ArrayList<Float[]> bulletObject = new ArrayList<Float[]>(); 
+
+int weaponIndex = 1; //0 = single pulse laser
+int shieldIndex = 1;
+int thrusterIndex = 1;
+boolean gameStarted = false;
+
+int weaponCooldown = -1; //must wait this # of frames per shot 
+int weaponCooldownTick = 0; //current ticket of cooldown
+String shieldName = "Basic";
+String thrusterName = "Standard";
+
 
 void createBullet() {
   // Create a new bullet when the ship fires the gun
@@ -213,10 +224,6 @@ void drawAndMoveBullets() {
     obj[2] = obj[2] + (int)(bulletSpeed * sin(obj[6])); //move in y direction given the object velocity
   }
 }
-
-
-
-
 
 /*
    _   ___ _____ ___ ___  ___ ___ ___  
@@ -316,4 +323,21 @@ void drawAndMoveEnemies() {
       obj[2] = height + screenPadding;
     }
   }
+}
+
+
+/*
+
+  ___            
+ | _ ) ___ ______
+ | _ \/ _ (_-<_-<
+ |___/\___/__/__/
+                 
+*/
+
+void bossSequence() {
+  text("Boss sequence, level: " + gameLevel, width/2, height/2);
+  delay(2000);
+  currentScreen = "level up";
+  
 }

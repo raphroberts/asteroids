@@ -1,3 +1,16 @@
+// FUNCTIONS AND GLOBALS THAT DON'T RELATE ONLY TO ONE SCREEN
+
+/*
+  ___                    _                 _ _ _           
+ / __| __ ___ ___ _ _   | |_  __ _ _ _  __| | (_)_ _  __ _ 
+ \__ \/ _/ -_) -_) ' \  | ' \/ _` | ' \/ _` | | | ' \/ _` |
+ |___/\__\___\___|_||_| |_||_\__,_|_||_\__,_|_|_|_||_\__, |
+   
+*/
+ 
+String currentScreen = "title";
+PImage[] backgroundImage = new PImage[4]; // background image array
+
 void screenHandler() {
   // Function to manage screen changes
 
@@ -60,21 +73,16 @@ void screenHandler() {
   }
 }
 
-void rechargeShield() {
-  // Recharge shield slowly over time
-  
-  if (shieldRechargeTick++ > shieldRechargeDelay && shieldHP < maxShieldHP) {
-    shieldRechargeTick = 0;
-    shieldHP = shieldHP + 1;
-  }
-}
+/*
 
-void populateEnemiesArray() {
-  // This function fetches the current number of enemies (increases per level)
-  // then builds the enemyArray with random enemy PVectors.
-  // Note: ensure location is not too close to player’s spawn point
-}
-
+  ___          _       __              _   _             
+ | _ ) __ _ __(_)__   / _|_  _ _ _  __| |_(_)___ _ _  ___
+ | _ \/ _` (_-< / _| |  _| || | ' \/ _|  _| / _ \ ' \(_-<
+ |___/\__,_/__/_\__| |_|  \_,_|_||_\__|\__|_\___/_||_/__/
+ 
+*/
+    
+    
 String renderButton(String buttonText, float x, float y) {
   // Renders an interactive button with provided buttonText at X,Y coords
   // Used on title screen, upgrade screens, game over screen
@@ -89,137 +97,72 @@ int randomInt(int low, int high) {
   return (int)round(random(low, high));
 }
 
-void UIManager() {
-  text ("Score: " + score, 20,40); // render score
-  //text ("Shield: " + shieldHP, width-200, 40);
-  drawShieldUI();
-  //text ("Now Playing: " + nowPlaying + ". Press 'N' for next song", 40, height-40);
-  text("Level: " + gameLevel, width/2, 40);
+/*
+  __  __         _      ___ _____  __
+ |  \/  |_  _ __(_)__  / __| __\ \/ /
+ | |\/| | || (_-< / _| \__ \ _| >  < 
+ |_|  |_|\_,_/__/_\__| |___/_| /_/\_\
+     
+*/
+
+// LIBRARIES
+
+// Music/SFX Globals
+import ddf.minim.*;
+boolean preloadingFinished = false;
+
+void preloading() { //call asynchronously
+  //load title screen music
   
-  textSize(20);
-  text("Weapon Slot: ", 40, height - 40);
-  noFill();
-  strokeWeight(5);
+  musicArray[0] = minim.loadFile("music/title.mp3");
   
-  int rechargePerc = 0;
-  
-  //draw weapon recharge time
-  if (weaponCooldown <= 10) //weapon recharge is too fast, don't bother drawing
-    rechargePerc = 100;
-  else {
-    float rechargeNorm = 100.0 / weaponCooldown; // get Normal of recharge
-    rechargePerc = (int)min((weaponCooldownTick * rechargeNorm), 100); // get % of recharge
-  }
-  
-  
-  noStroke();
-  fill(255 - (2.55 * rechargePerc) , 2.2 * rechargePerc, 0, 150); //color shield based upon HP
-  rect(100, height-10, rechargePerc, 30);
-  fill(255);
-  
-  //Weapon equipment
-  if (weaponIndex == 1)
-    fill(weaponFill);
-  else 
-    fill(weaponBlankFill);
-  rect(190, height - 50, 40, 40);
-  image(iconsUI[0], 190, height - 50);
-  fill(255);
-  text("1", 185, height - 10);
-  
-  if (weaponIndex == 2)
-    fill(weaponFill);
-  else
-    fill(weaponBlankFill);
-  rect(190 + weaponUIdist, height - 50, 40, 40);
-  image(iconsUI[0], 190 + weaponUIdist, height - 50);
-  fill(255);
-  text("2", 185 + weaponUIdist, height - 10);
-  
-  if (weaponIndex == 3)
-    fill(weaponFill);
-  else
-    fill(weaponBlankFill);
-  rect(190 + weaponUIdist*2, height - 50, 40, 40);
-  image(iconsUI[0], 190 + weaponUIdist*2, height - 50);
-  fill(255);
-  text("3", 185 + weaponUIdist*2, height - 10);
-  
-  //Shield equipment
-  text("Shield: ", 130 + weaponUIdist*5, height - 40);
-  
-  fill(weaponFill);
-  rect(180 + weaponUIdist*6, height - 50, 40, 40);
-  image(iconsUI[0], 180 + weaponUIdist*6, height - 50);
-  fill(255);
-  text(shieldName, 155 + weaponUIdist*6, height - 10);
-  
-  //Thruster equipment
-  text("Thruster: ", 130 + weaponUIdist*9, height - 40);
-  
-  fill(weaponFill);
-  rect(200 + weaponUIdist*10, height - 50, 40, 40);
-  image(iconsUI[0], 200 + weaponUIdist*10, height - 50);
-  fill(255);
-  text(thrusterName, 175 + weaponUIdist*10, height - 10);
-  
-  textSize(26);
+  //musicArray[0] = new SoundFile(this, "music/title.mp3"); //force load the title theme first, make it a short loop
+  if (currentScreen == "title")
+    musicManager("title");
+    
+  //preload game sfx
+  soundArray[0] = minim.loadFile("sounds/laserfire01.mp3"); //bullet 1
+  soundArray[1] = minim.loadFile("sounds/laserfire01.mp3"); //bullet 1
+  soundArray[2] = minim.loadFile("sounds/laserfire01.mp3"); //bullet 1
+  soundArray[3] = minim.loadFile("sounds/burstfire.mp3"); //bullet 2
+  soundArray[4] = minim.loadFile("sounds/laserfire02.mp3"); //bullet 3
+  soundArray[5] = minim.loadFile("sounds/shield.mp3"); //shield activation
+  soundArray[5].loop();
+  soundArray[5].pause();
+  shieldSoundIndex = 5;
+  soundArray[6] = minim.loadFile("sounds/alarm.mp3");
+  soundArray[7] = minim.loadFile("sounds/warningShield.mp3");
+  soundArray[8] = minim.loadFile("sounds/attentionLifeform.mp3");
+  preloadingFinished = true;
+ 
+  // Create array of music tracks
+  musicArray[1] = minim.loadFile("music/s2.mp3");
+  musicArray[1].loop();
+  musicArray[1].pause();
+  musicArray[2] = minim.loadFile("music/ThrustSequence.mp3");
+  musicArray[2].loop();
+  musicArray[2].pause();
 }
 
-void changeWeapon(int index) {
-  weaponIndex = index;
-  if (index == 1 || index == 2)
-    weaponCooldown = 5;
-  else if (index == 3)
-    weaponCooldown = 120;
-}
+// MUSIC
 
-void changeShield(int index) {
-  shieldIndex = index;
-  if (index == 1) {
-    maxShieldHP = 500;
-    shieldHP = maxShieldHP;
-    shieldRechargeDelay = 50; //recharge 1 point this number of frames
-    shieldRechargeTick = 0;
-    shieldName = "Basic"; 
-  }
-  else if (index == 2) {
-    maxShieldHP = 1500;
-    shieldHP = maxShieldHP;
-    shieldRechargeDelay = 20; //recharge 1 point this number of frames
-    shieldRechargeTick = 0;
-    shieldName = "Barrier MK2"; 
-  }
-}
+//SoundFile[] musicArray = new SoundFile[3];
+int playingIndex = 0;
 
-void changeThruster(int index) {
-  thrusterIndex = index;
-  if (index == 1) {
-    shipThrust = 0.1;
-    shipRotationSpeed = 0.1;
-    maxSpeed = 4;
-    thrusterName = "Standard";
-  }
-  else if (index == 2) {
-    shipThrust = 0.2;
-    shipRotationSpeed = 0.15;
-    maxSpeed = 6;
-    thrusterName = "MK2 Emitter";
-  }
-}
+// SFX
 
-void drawShieldUI() {
-  float shieldNorm = 100.0 / maxShieldHP; // get Normal of shield
-  int shieldPerc = (int)(shieldHP * shieldNorm); // get % of shield
-  
-  noStroke();
-  fill(255 - (2.55 * shieldPerc) , 2.2 * shieldPerc, 0); //color shield based upon HP
-  rect(width - 100, 30, shieldPerc, 30);
-  fill(255);
-  
-  text("Shield: ", width - 250, 40);
-  text(shieldHP, width - 120, 40);
-}
+Minim minim;
+AudioPlayer[] musicArray = new AudioPlayer[10];
+
+
+AudioPlayer[] soundArray = new AudioPlayer[10];
+int shieldSoundIndex;
+boolean shieldWarningTriggered = false;
+int bulletshotIndex = 0;
+
+int shieldSoundEndDelay = 10;
+int shieldSoundTick = 0;
+boolean endingShieldSound = false;
 
 void musicManager(String song) {
   // Handles and plays game music
@@ -299,13 +242,105 @@ void attentionLifeformSoundSequence() {
   soundArray[8].play();
 }
 
-void bossSequence() {
-  text("Boss sequence, level: " + gameLevel, width/2, height/2);
-  delay(2000);
-  currentScreen = "level up";
-  
+
+/*
+
+   ___         _           _    
+  / __|___ _ _| |_ _ _ ___| |___
+ | (__/ _ \ ' \  _| '_/ _ \ (_-<
+  \___\___/_||_\__|_| \___/_/__/
+                             
+*/
+
+
+void renderOverlay() {
+  // Print current score and level to the screen
 }
 
-void upgradeScreen() {
+
+// KEYBOARD INPUT
+
+void keyPressed() {
+  if (key == 'a') {
+    rotateLeft = true;
+  }
+  if (key == 'd') {
+    rotateRight = true;
+  }
+  if (key == 'w') {
+    accelerate = true;
+    shipImageIndex = 1;
+  }
+  if (key == ' ') {
+    createBullet();
+    gunReloaded = false;
+  }
   
+  //Change weapon
+  if (key == '1') {
+    changeWeapon(1);
+  }
+  if (key == '2') {
+    changeWeapon(2);
+  }
+  if (key == '3') {
+    changeWeapon(3);
+  }
+  
+  if (key == 'p') {
+    if (!gameStarted) {
+      gameStarted = true;
+      // note: replace this with mouse interaction with button
+      while (!preloadingFinished) //wait for preloading to finish before starting game
+        delay(100);
+      currentScreen = "game";
+      musicManager("none");
+      generateStars();
+      thread("levelSequence");
+    }
+  }
+
+  // debug keys
+  if (key == 'c' && debug) {
+    createAsteroid(0, 0, "large");
+  }
+  if (key == 'n' && debug) { //temp for testing songs, delete in production
+    if (playingIndex == 0)
+      musicManager("thrust");
+    else if (playingIndex == 1)
+      musicManager("thrust");
+    else if (playingIndex == 2)
+      musicManager("epic");
+  }
+  if (key == 'b' && debug) { //temp, cycle and equip through diff shields, weapons. Normally this should only be possible at level up screen
+    if (shieldIndex == 1)
+      changeShield(2);
+    else if (shieldIndex == 2 && thrusterIndex == 1)
+      changeThruster(2);
+    else
+      {
+        changeShield(1);
+        changeThruster(1);
+      }
+  }
+  if (key == 'y' && debug) { //temp, delete after upgrade screen implemented
+    continueLevel = true;
+  }
+}
+
+void keyReleased() {
+
+  if (key == 'a') {
+    rotateLeft = false;
+  }
+  if (key == 'd') {
+    rotateRight = false;
+  }
+  if (key == 'w') {
+    shipImageIndex = 0;
+    accelerate = false;
+  }
+  if (key == ' ') {
+    gunReloaded = true;
+  }
 }
