@@ -332,12 +332,6 @@ void checkCollision() {
       soundArray[shieldSoundIndex].pause();
       shieldSoundTick = 0;
       endingShieldSound = false;
-      // Ship reset
-      if (accelerate)
-        shipImageIndex = 1;
-      else 
-        shipImageIndex = 0;
-      //accelerate = false;
     }
   }
 }
@@ -350,7 +344,6 @@ void damageShip(int amount) {
     println("ship collision");
     currentScreen = "game over";
   }
-    shipImageIndex = 2;
     
   //trigger warning when shields are low, but only once per threshold
   if (!shieldWarningTriggered && shieldHP*1.0/maxShieldHP <= 0.3) {

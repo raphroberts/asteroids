@@ -345,7 +345,6 @@ void keyReleased() {
     rotateRight = false;
   }
   if (key == 'w') {
-    shipImageIndex = 0;
     accelerate = false;
   }
   if (key == ' ') {
