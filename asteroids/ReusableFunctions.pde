@@ -199,6 +199,7 @@ void musicManager(String song) {
     case "title":
       // Play title theme
       try {
+        musicArray[0].rewind();
         musicArray[0].loop();
         playingIndex = 0;
       }
@@ -208,6 +209,7 @@ void musicManager(String song) {
       break;
     case "epic":
       try {
+        musicArray[1].rewind();
         musicArray[1].loop();
         musicArray[1].shiftGain(-50,-5, 5000);
         playingIndex = 1;
@@ -218,6 +220,7 @@ void musicManager(String song) {
       break;
     case "thrust":
       try {
+       musicArray[2].rewind(); 
        musicArray[2].loop();
        musicArray[2].shiftGain(-50,-10, 5000);
        playingIndex = 2;
@@ -228,6 +231,7 @@ void musicManager(String song) {
      break;
      case "victory":
        try {
+         musicArray[3].rewind();
          musicArray[3].loop();
          musicArray[3].shiftGain(-50,-10, 5000);
          playingIndex = 3;
@@ -238,6 +242,7 @@ void musicManager(String song) {
      break;
     case "upgrade":
      try {
+         musicArray[4].rewind();
          musicArray[4].loop();
          musicArray[4].shiftGain(-50,-10, 5000);
          playingIndex = 4;
@@ -248,6 +253,7 @@ void musicManager(String song) {
      break;
    case "level1":
      try {
+         musicArray[5].rewind();
          musicArray[5].play();
          musicArray[5].shiftGain(-50, -3, 5000); //out gain is -50, in gain is -1
          playingIndex = 5;
@@ -258,6 +264,7 @@ void musicManager(String song) {
      break;
   case "trueepic": 
      try {
+         musicArray[6].rewind();
          musicArray[6].loop();
          musicArray[6].shiftGain(-50, -10, 5000); //out gain is -50, in gain is -1
          playingIndex = 6;
@@ -268,6 +275,7 @@ void musicManager(String song) {
      break;
    case "modulo4": 
      try {
+         musicArray[7].rewind();
          musicArray[7].loop();
          musicArray[7].shiftGain(-50, -3, 5000); //out gain is -50, in gain is -1
          playingIndex = 7;
@@ -278,6 +286,7 @@ void musicManager(String song) {
      break;
     case "boss1": 
      try {
+         musicArray[8].rewind();
          musicArray[8].loop();
          musicArray[8].shiftGain(-50, -3, 5000); //out gain is -50, in gain is -1
          playingIndex = 8;
@@ -288,6 +297,7 @@ void musicManager(String song) {
      break;
      case "boss2": //short teaser song for level 1
      try {
+         musicArray[9].rewind();
          musicArray[9].loop();
          musicArray[9].shiftGain(-50, -3, 5000); //out gain is -50, in gain is -1
          playingIndex = 9;
