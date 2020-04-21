@@ -187,7 +187,7 @@ void musicManager(String song) {
   
   stopAllSongs(); //prevent song overlap, ensure any currently playing song is first stopped
   
-  //fade out, fade in, switch (cross over)?
+  //fade out, fade in, switch (cross over) ?
   
   switch (song) {
     case "none":
