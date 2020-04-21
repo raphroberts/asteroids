@@ -2,7 +2,7 @@
 PImage[] titleShip = new PImage[2];
 int titleShipX;
 float titleShipY;
-float titleShipSpeed = 0.3;
+float titleShipSpeed = 1.6;
 int titleShipPadding = 140;
 final int titleShipShrink = 100;
 int thrusterCount = 0;

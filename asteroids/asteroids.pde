@@ -85,7 +85,7 @@ boolean endingShieldSound = false;
 // SCREENS
 
 String currentScreen = "title";
-PImage[] backgroundImage = new PImage[3]; // background image array
+PImage[] backgroundImage = new PImage[4]; // background image array
 
 // DEBUG
 
@@ -146,6 +146,7 @@ void setup() {
   //Screen setup
   backgroundImage[0] = loadImage("images/title_screen.png");
   backgroundImage[1] = requestImage("images/game_screen.png");
+  backgroundImage[2] = requestImage("images/upgrade_screen.png");
   
   // Font and text defaults
   textSize(26);

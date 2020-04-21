@@ -40,6 +40,8 @@ void screenHandler() {
 
   case "level up": 
     // display level up screen
+    
+    background(backgroundImage[2]);
     //DELETE THIS, TEMP ONLY
     text("Press Y to continue", width/2, height/2); //temp, delete and replace with level up screen
     if (continueLevel) {
