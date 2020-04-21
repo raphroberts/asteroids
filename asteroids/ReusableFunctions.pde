@@ -138,15 +138,19 @@ void preloading() { //call asynchronously
   soundArray[6] = minim.loadFile("sounds/alarm.mp3");
   soundArray[7] = minim.loadFile("sounds/warningShield.mp3");
   soundArray[8] = minim.loadFile("sounds/attentionLifeform.mp3");
+  soundArray[9] = minim.loadFile("sounds/eliminated.mp3");
   preloadingFinished = true;
  
   // Create array of music tracks
   musicArray[1] = minim.loadFile("music/s2.mp3");
-  musicArray[1].loop();
-  musicArray[1].pause();
   musicArray[2] = minim.loadFile("music/ThrustSequence.mp3");
-  musicArray[2].loop();
-  musicArray[2].pause();
+  musicArray[3] = minim.loadFile("music/victorytheme.mp3");
+  musicArray[4] = minim.loadFile("music/upgradeTheme.mp3");
+  musicArray[5] = minim.loadFile("music/level1.mp3");
+  musicArray[6] = minim.loadFile("music/trueepic.mp3");
+  musicArray[7] = minim.loadFile("music/modulo4.mp3");
+  musicArray[8] = minim.loadFile("music/boss1.mp3");
+  musicArray[9] = minim.loadFile("music/boss2.mp3");
 }
 
 // MUSIC
@@ -169,14 +173,28 @@ int shieldSoundEndDelay = 10;
 int shieldSoundTick = 0;
 boolean endingShieldSound = false;
 
+void fadeInSongCoroutine(String startSongString) { //WARNING: START ONLY VIA a thread() method
+  //fade out current song, then fade in the given song.
+  //Must be started as a coroutine/async only
+  musicArray[playingIndex].shiftGain(musicArray[playingIndex].getGain(),-80, 5000);
+  delay(2500);
+  musicManager("none");
+  musicManager(startSongString);
+}
+
 void musicManager(String song) {
   // Handles and plays game music
   
   stopAllSongs(); //prevent song overlap, ensure any currently playing song is first stopped
   
+  //fade out, fade in, switch (cross over)?
+  
   switch (song) {
     case "none":
       // Stop any song that is currently playing
+      if (musicArray[playingIndex].isPlaying()) {
+        musicArray[playingIndex].pause();
+      }
       break;
     case "title":
       // Play title theme
@@ -190,8 +208,8 @@ void musicManager(String song) {
       break;
     case "epic":
       try {
-        musicArray[1].setGain(-5);
         musicArray[1].loop();
+        musicArray[1].shiftGain(-50,-5, 5000);
         playingIndex = 1;
       }
       catch (NullPointerException e) {
@@ -200,14 +218,84 @@ void musicManager(String song) {
       break;
     case "thrust":
       try {
-       musicArray[2].setGain(-5);
        musicArray[2].loop();
+       musicArray[2].shiftGain(-50,-10, 5000);
        playingIndex = 2;
      }
      catch (NullPointerException e) {
        println("Song not yet loaded..");
      }
      break;
+     case "victory":
+       try {
+         musicArray[3].loop();
+         musicArray[3].shiftGain(-50,-10, 5000);
+         playingIndex = 3;
+       }
+       catch (NullPointerException e) {
+         println("Song not yet loaded..");
+       } 
+     break;
+    case "upgrade":
+     try {
+         musicArray[4].loop();
+         musicArray[4].shiftGain(-50,-10, 5000);
+         playingIndex = 4;
+       }
+       catch (NullPointerException e) {
+         println("Song not yet loaded..");
+       } 
+     break;
+   case "level1":
+     try {
+         musicArray[5].play();
+         musicArray[5].shiftGain(-50, -3, 5000); //out gain is -50, in gain is -1
+         playingIndex = 5;
+       }
+       catch (NullPointerException e) {
+         println("Song not yet loaded..");
+       } 
+     break;
+  case "trueepic": 
+     try {
+         musicArray[6].loop();
+         musicArray[6].shiftGain(-50, -10, 5000); //out gain is -50, in gain is -1
+         playingIndex = 6;
+       }
+       catch (NullPointerException e) {
+         println("Song not yet loaded..");
+       } 
+     break;
+   case "modulo4": 
+     try {
+         musicArray[7].loop();
+         musicArray[7].shiftGain(-50, -3, 5000); //out gain is -50, in gain is -1
+         playingIndex = 7;
+       }
+       catch (NullPointerException e) {
+         println("Song not yet loaded..");
+       } 
+     break;
+    case "boss1": 
+     try {
+         musicArray[8].loop();
+         musicArray[8].shiftGain(-50, -3, 5000); //out gain is -50, in gain is -1
+         playingIndex = 8;
+       }
+       catch (NullPointerException e) {
+         println("Song not yet loaded..");
+       } 
+     break;
+     case "boss2": //short teaser song for level 1
+     try {
+         musicArray[9].loop();
+         musicArray[9].shiftGain(-50, -3, 5000); //out gain is -50, in gain is -1
+         playingIndex = 9;
+       }
+       catch (NullPointerException e) {
+         println("Song not yet loaded..");
+       } 
+     break;  
   }
 }
 
@@ -228,8 +316,8 @@ void stopAllSongs() {
 
 void shieldCriticalSoundSequence() {
   //Only call this function asynchronously
-  soundArray[6].setGain(-5);
   soundArray[6].rewind();
+  soundArray[6].setGain(-5);
   soundArray[6].play();
   delay(1000);
   soundArray[7].rewind();
@@ -238,9 +326,11 @@ void shieldCriticalSoundSequence() {
 
 void attentionLifeformSoundSequence() {
   soundArray[6].rewind();
+  soundArray[6].setGain(-5);
   soundArray[6].play();
   delay(1000);
   soundArray[6].rewind();
+  soundArray[6].setGain(-5);
   soundArray[6].play();
   delay(1000);
   soundArray[8].rewind();
@@ -302,7 +392,6 @@ void keyPressed() {
       while (!preloadingFinished) //wait for preloading to finish before starting game
         delay(100);
       currentScreen = "game";
-      musicManager("none");
       generateStars();
       thread("levelSequence");
     }

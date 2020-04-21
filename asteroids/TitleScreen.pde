@@ -8,7 +8,7 @@ int titleShipX;
 float titleShipY;
 
 // Speed of title screen ship
-float titleShipSpeed = 1.6;
+float titleShipSpeed = 0.3;
 
 // Padding for title screen ship screen overlap
 int titleShipPadding = 140;

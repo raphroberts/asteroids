@@ -7,6 +7,7 @@ int screenPadding = 40; // padding allowance for objects to float off screen
 // Temp
 
 boolean continueLevel = false; //delete this when upgrade screen is implemented
+String centralScreenText = "";
 
 
 /*
@@ -129,6 +130,12 @@ void UIManager() {
   
   // Render shield
   drawShieldUI();
+  
+  // Render screen text
+  textSize(36);
+  fill(#00D34D);
+  text(centralScreenText, width/2 + 100, height/2 - 100);
+  textSize(gameTextSizeMain);
 
   noFill();
   strokeWeight(5);
@@ -425,12 +432,31 @@ void rechargeShield() {
 
 int gameLevel = 1; //auto-increment upon level up
 
-int levelSequence() { // the main level manager, instantiator, and controller
+int levelSequence() { 
+  // the main level manager, instantiator, and controller
+  
+  //music sequence, modulo of the gameLevel, except level 1 which has its own theme
+  //these are all the combinations possible from modulo 4, for 4 songs (+1 for the level1 only theme)
+  if (gameLevel == 1) 
+      fadeInSongCoroutine("level1");
+  else if (gameLevel % 4 == 0)
+    fadeInSongCoroutine("trueepic");
+  else if (gameLevel % 4 == 1)
+    fadeInSongCoroutine("modulo4");
+  else if (gameLevel % 4 == 2)
+     fadeInSongCoroutine("thrust");
+  else if (gameLevel % 4 == 3) 
+    fadeInSongCoroutine("epic");
+    
+
   int asteroidsToSpawnPerCycle = (int)pow(gameLevel, 2);
   int numberOfCycles = gameLevel + 1;
-  if (gameLevel < 3) {
+  
+  if (gameLevel == 1)
+    numberOfCycles = numberOfCycles * 2 + 1;
+  else if (gameLevel == 2)
     numberOfCycles = numberOfCycles * 2;
-  }
+    
   int spawnDelay = (int)(1 / (gameLevel * 0.5) * 3000);
   if (debug)
     println("Starting level " + gameLevel + " with " + asteroidsToSpawnPerCycle + " asteroids spawning per cycle over " + " number of cycles: " + numberOfCycles + ". Spawn delay: " + spawnDelay); // delete this 
@@ -468,10 +494,25 @@ int levelSequence() { // the main level manager, instantiator, and controller
    
   }
   
-  delay(2000);
-  thread("attentionLifeformSoundSequence");
-  delay(2000);
-  bossSequence();
+  while (enemyObject.size() != 0)
+    delay(100); //wait for all asteroids to be destroyed
   
+  fadeInSongCoroutine("none");
+  
+  if (gameLevel %2 == 0) { //boss sequence only on even levels
+    bossSequence();
+  }
+  
+  //End level sequence
+  fadeInSongCoroutine("upgrade");
+  soundArray[9].rewind();
+  soundArray[9].play();
+  
+  centralScreenText = "Level " + gameLevel + " complete, Captain!";
+  delay(4000);
+  centralScreenText = "";
+  
+  //end level
+  currentScreen="level up";
   return 1;
 }

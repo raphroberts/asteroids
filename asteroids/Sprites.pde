@@ -357,8 +357,18 @@ void drawAndMoveEnemies() {
 */
 
 void bossSequence() {
-  text("Boss sequence, level: " + gameLevel, width/2, height/2);
+  thread("attentionLifeformSoundSequence");
+  
+  // Here we have 2 boss themes, alternating based upon even level number
+  if (gameLevel % 4 == 0) 
+    fadeInSongCoroutine("boss1");
+  else
+    fadeInSongCoroutine("boss2");
+    
   delay(2000);
-  currentScreen = "level up";
+  
+  centralScreenText = "TODO: Complete Boss sequence, level: " + gameLevel;
+  delay(10000);
+  centralScreenText = "";
   
 }
