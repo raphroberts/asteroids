@@ -27,6 +27,14 @@ void screenHandler() {
     break;
 
   case "game": 
+    if (debug && frameCount % 3 > 1 && !levelComplete){
+      gunReloaded = true;
+      if (shieldHP < 50){
+        shieldHP = 500;
+      }
+      createBullet();
+    }
+
     // display game screen
     background(backgroundImage[1]);
 

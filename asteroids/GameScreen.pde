@@ -97,6 +97,7 @@ void renderStars() {
 
 // UI icons images
 PImage[] iconsUI = new PImage[10];
+PImage[] levelStatusImage = new PImage[3];
 
 // Positioning of UI elements
 final int basicPadding = 20;
@@ -113,10 +114,21 @@ final int textPaddingY = 100;
 final int shieldXPadding = 50;
 final int weaponBarPaddingY = 75;
 
+// Animated image sizes
+float alertBanner = 250;
+float LevelUpBanner = 780;
+float levelUpStar = 100;
+
+// Current sizes and scaling status for "pulsing" graphic animations
+// Note: Each animated graphic uses a unique index from these arrays
+// 0 = startButton 1 = alertBanner 2 = LevelUpBanner 3 = levelUpStar
+float[] currentSize = { 0, alertBanner, LevelUpBanner, levelUpStar };
+boolean[] scaleDown = { true, true, true, true };
+
 // Icon highlights colours
 final color weaponFill = color(255, 155, 155, 80);
 final color weaponBlankFill = color(255, 255, 255, 30);
- 
+
 void UIManager() {
   // Handle game overlay/UI
   
@@ -130,12 +142,22 @@ void UIManager() {
   
   // Render shield
   drawShieldUI();
+
+  // Render status graphics
   
-  // Render screen text
-  textSize(36);
-  fill(#00D34D);
-  text(centralScreenText, width/2 + 100, height/2 - 100);
-  textSize(gameTextSizeMain);
+  if(levelComplete){
+    // animate level complete graphics
+    LevelUpBanner =  pulseImage(806, 780, 0.9, 2);
+    image(levelStatusImage[1], width/2, height/2, LevelUpBanner,114); 
+    levelUpStar =  pulseImage(108, 100, 0.7, 3);
+    image(levelStatusImage[0], width/2, height/3, levelUpStar, levelUpStar); 
+  }
+  
+  if(bossActivated){
+    // animate alertBanner
+    alertBanner =  pulseImage(263, 243, 0.3, 1);
+    image(levelStatusImage[2], width/2, height - height/5, alertBanner, alertBanner/2); 
+  }
 
   noFill();
   strokeWeight(5);
@@ -268,6 +290,30 @@ void drawShieldUI() {
   text("Shield:", width - shieldTextX, basicPadding);
 
 }
+
+float pulseImage(int maxSize, int minSize, float speed, int scaleIndex) {
+  // Calculate scale data for 'pulsing' image animations
+  // maxSiz / minSize = max/min scale limits
+  // Speed = animation speed
+  // scaleIndex = index of currentSize[] and scaleUp[] arrays to fetch & set
+  // Returns a scale factor
+
+  // Determine scale direction for given scaleIndex
+  if (currentSize[scaleIndex] >= maxSize) {
+    scaleDown[scaleIndex] = false;
+  } else if (currentSize[scaleIndex] <= minSize) {
+    scaleDown[scaleIndex] = true;
+  }
+
+  if (scaleDown[scaleIndex]) {
+    currentSize[scaleIndex] += speed;
+  } else {
+    currentSize[scaleIndex] -= speed;
+  }
+
+  return(currentSize[scaleIndex]);
+}
+
 
 /*
 
@@ -432,6 +478,10 @@ void rechargeShield() {
 
 int gameLevel = 1; //auto-increment upon level up
 
+// Level status tracking
+boolean levelComplete = false;
+boolean bossActivated = false;
+
 int levelSequence() { 
   // the main level manager, instantiator, and controller
   
@@ -500,6 +550,7 @@ int levelSequence() {
   fadeInSongCoroutine("none");
   
   if (gameLevel %2 == 0) { //boss sequence only on even levels
+    bossActivated = true;
     bossSequence();
   }
   
@@ -508,10 +559,10 @@ int levelSequence() {
   soundArray[9].rewind();
   soundArray[9].play();
   
-  centralScreenText = "Level " + gameLevel + " complete, Captain!";
+  levelComplete = true;
+  bossActivated = false;
   delay(4000);
-  centralScreenText = "";
-  
+  levelComplete = false;  
   //end level
   currentScreen="level up";
   return 1;

@@ -167,7 +167,6 @@ int weaponCooldownTick = 0; //current ticket of cooldown
 String shieldName = "Basic";
 String thrusterName = "Standard";
 
-
 void createBullet() {
   // Create a new bullet when the ship fires the gun
   // shoot bullet as long as gun is reloaded

@@ -96,6 +96,11 @@ void setup() {
   iconsUI[6] = requestImage("images/icons/icon_thrust1.png");
   iconsUI[7] = requestImage("images/icons/icon_thrust2.png");
   iconsUI[8] = requestImage("images/icons/icon_thrust3.png");
+  
+  // Level status graphics
+  levelStatusImage[0] = requestImage("images/level_status/status_1.png");
+  levelStatusImage[1] = requestImage("images/level_status/status_2.png");
+  levelStatusImage[2] = requestImage("images/level_status/status_3.png");
  
   //preload assets async
   thread("preloading");
