@@ -6,9 +6,6 @@ PImage[] titleShip = new PImage[2];
 // Asteroids logo
 PImage titleAsteroidsLogo = new PImage();
 
-// Asteroids logo starting size
-float titleBanner = 700;
-
 // Location of title screen ship
 int titleShipX;
 float titleShipY;
@@ -70,8 +67,9 @@ void titleScreen() {
     titleShip[1].resize(titleShipShrink, 0);
   }
 
-  titleBanner =  pulseImage((int)titleBanner, (int)titleBanner+20, 0.9, 2);
-  image(titleAsteroidsLogo, width/2, height/2, LevelUpBanner,114);   
+  titleBannerX =  pulseImage(575, 0, 0.6, 0, true);
+  titleBannerY =  pulseImage(125, 0, 0.6, 1, true);
+  image(titleAsteroidsLogo, width/2, height/3, titleBannerX,titleBannerY);   
 
 
 }

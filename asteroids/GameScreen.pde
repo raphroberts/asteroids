@@ -97,7 +97,6 @@ void renderStars() {
 
 // UI icons images
 PImage[] iconsUI = new PImage[10];
-PImage[] levelStatusImage = new PImage[3];
 
 // Positioning of UI elements
 final int basicPadding = 20;
@@ -113,11 +112,6 @@ final int startingY = 40;
 final int textPaddingY = 100;
 final int shieldXPadding = 50;
 final int weaponBarPaddingY = 75;
-
-// Animated image sizes
-float alertBanner = 250;
-float LevelUpBanner = 780;
-float levelUpStar = 100;
 
 // Icon highlights colours
 final color weaponFill = color(255, 155, 155, 80);
@@ -141,15 +135,15 @@ void UIManager() {
   
   if(levelComplete){
     // animate level complete graphics
-    LevelUpBanner =  pulseImage(806, 780, 0.9, 2);
+    LevelUpBanner =  pulseImage(806, 780, 0.9, 3, false);
     image(levelStatusImage[1], width/2, height/2, LevelUpBanner,114); 
-    levelUpStar =  pulseImage(108, 100, 0.7, 3);
+    levelUpStar =  pulseImage(108, 100, 0.7, 4, false);
     image(levelStatusImage[0], width/2, height/3, levelUpStar, levelUpStar); 
   }
   
   if(bossActivated){
     // animate alertBanner
-    alertBanner =  pulseImage(263, 243, 0.3, 1);
+    alertBanner =  pulseImage(263, 243, 0.3, 2, false);
     image(levelStatusImage[2], width/2, height - height/5, alertBanner, alertBanner/2); 
   }
 
