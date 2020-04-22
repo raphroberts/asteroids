@@ -220,6 +220,8 @@ void changeWeapon(int index) {
     weaponCooldown = 5;
   else if (index == 3)
     weaponCooldown = 120;
+  else if (index == 4)
+    weaponCooldown = 90;
 }
 
 void changeShield(int index) {
@@ -316,10 +318,17 @@ void checkCollision() {
 
     // check if asteroid and a bullet collide
     for (int j = 0; j < bulletObject.size(); j++) {
+      hitboxSize = obj[3];
+      Float[] bulletObj = bulletObject.get(j); 
       PVector bulletHitbox = new PVector(bulletObject.get(j)[1], bulletObject.get(j)[2]); // location of this bullet 
+      if (bulletObj[7] == 4.0)
+        hitboxSize = hitboxSize + 100; //increase hitbox size for laser beam
+      println(hitboxSize);
       if (dist(bulletHitbox.x, bulletHitbox.y, hitbox.x, hitbox.y) < hitboxSize) {
-        bulletObject.remove(j);
         boolean destroyed = damageEnemyObject(enemyObject.get(i)); //returns true if object destroyed, false if only damaged
+        // remove bullet unless its a laser beam, or remove object if its outside bounds (including laser beam)
+        if (bulletObj[7] != 4.0 || bulletObj[1] < 0 || bulletObj[1] > width || bulletObj[2] < 0 || bulletObj[2] > height) 
+          bulletObject.remove(j);
         if (destroyed) { 
           // Remove asteroid
           enemyObject.remove(i);
@@ -440,7 +449,7 @@ void rechargeShield() {
  
 */
 
-int gameLevel = 1; //auto-increment upon level up
+int gameLevel = 7; //auto-increment upon level up
 
 // Level status tracking
 boolean levelComplete = false;

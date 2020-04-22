@@ -193,6 +193,9 @@ void preloading() { //call asynchronously
   soundArray[7] = minim.loadFile("sounds/warningShield.mp3");
   soundArray[8] = minim.loadFile("sounds/attentionLifeform.mp3");
   soundArray[9] = minim.loadFile("sounds/eliminated.mp3");
+  soundArray[10] = minim.loadFile("sounds/laserbeam.mp3");
+  soundArray[11] = minim.loadFile("sounds/laserbeam.mp3");
+  soundArray[12] = minim.loadFile("sounds/laserbeam.mp3");
   preloadingFinished = true;
  
   // Create array of music tracks
@@ -218,10 +221,11 @@ Minim minim;
 AudioPlayer[] musicArray = new AudioPlayer[10];
 
 
-AudioPlayer[] soundArray = new AudioPlayer[10];
+AudioPlayer[] soundArray = new AudioPlayer[20];
 int shieldSoundIndex;
 boolean shieldWarningTriggered = false;
 int bulletshotIndex = 0;
+int laserShotIndex = 10;
 
 int shieldSoundEndDelay = 10;
 int shieldSoundTick = 0;
@@ -446,6 +450,10 @@ void keyPressed() {
   }
   if (key == '3') {
     changeWeapon(3);
+    shipImageIndex = 2;
+  }
+  if (key == '4') {
+    changeWeapon(4);
     shipImageIndex = 2;
   }
   

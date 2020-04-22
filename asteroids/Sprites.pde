@@ -196,9 +196,16 @@ void createBullet() {
         bulletshotIndex = 0;
     }
     else if (weaponIndex == 3) { //laser cannon
-      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * 0.1 * cos(bulletRotation)), (bulletSpeed * 0.1 * sin(bulletRotation)), bulletRotation, 3.0, 40.0});
+      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * 0.1 * cos(bulletRotation)), (bulletSpeed * 0.1 * sin(bulletRotation)), bulletRotation, 3.0, 250.0});
       soundArray[4].rewind();
       soundArray[4].play();
+    }
+    else if (weaponIndex == 4) {
+      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * 0.1 * cos(bulletRotation)), (bulletSpeed * 0.1 * sin(bulletRotation)), bulletRotation, 4.0, 40.0});
+      soundArray[laserShotIndex].rewind();
+      soundArray[laserShotIndex++].play();
+      if (laserShotIndex > 12) //allow mulitple sound channels for this bullet
+        laserShotIndex = 10;
     }
   }
 }
@@ -233,6 +240,10 @@ void drawAndMoveBullets() {
       fill(#31A5FF);
       rect(20, 0, 35, 10);
     }
+    else if (bulletType == 4) {
+      fill(#F60042);
+      rect(20, 0, 80, 205);
+    }
     
     
     rotate(-shipRotation);
@@ -240,8 +251,14 @@ void drawAndMoveBullets() {
     fill(255);
 
     //move
-    obj[1] = obj[1] + (int)(bulletSpeed * cos(obj[6])); //move in x direction given the object velocity
-    obj[2] = obj[2] + (int)(bulletSpeed * sin(obj[6])); //move in y direction given the object velocity
+    if (obj[7] != 4.0) { // laser beam moves faster, so check for it
+      obj[1] = obj[1] + (int)(bulletSpeed * cos(obj[6])); //move in x direction given the object velocity
+      obj[2] = obj[2] + (int)(bulletSpeed * sin(obj[6])); //move in y direction given the object velocity
+    }
+    else {
+      obj[1] = obj[1] + (int)(bulletSpeed * cos(obj[6]) * 2); 
+      obj[2] = obj[2] + (int)(bulletSpeed * sin(obj[6]) * 2); 
+    }
   }
 }
 
@@ -306,10 +323,10 @@ void createAsteroid(int x, int y, String size) {
 
 PVector preventStationaryVelocity(PVector initialVelocity) {
   //prevent stationary objects. Give them some velocity if it has 0 velocity.
-  if ((initialVelocity.x < 1 && initialVelocity.x > 0) || (initialVelocity.x < 0 && initialVelocity.x > -1)) {     
+  if ((initialVelocity.x < 1 && initialVelocity.x > 0) || (initialVelocity.x < 0 && initialVelocity.x > -1)) 
     initialVelocity = new PVector(random(1, 3), random(1, 3));
-    }
-    
+  else if ((initialVelocity.y < 1 && initialVelocity.y > 0) || (initialVelocity.y < 0 && initialVelocity.y > -1))
+    initialVelocity = new PVector(random(1, 3), random(1, 3));
   return initialVelocity;
 }
 
