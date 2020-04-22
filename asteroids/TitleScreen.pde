@@ -3,6 +3,12 @@
 // Title screen ship graphic
 PImage[] titleShip = new PImage[2];
 
+// Asteroids logo
+PImage titleAsteroidsLogo = new PImage();
+
+// Asteroids logo starting size
+float titleBanner = 700;
+
 // Location of title screen ship
 int titleShipX;
 float titleShipY;
@@ -15,7 +21,6 @@ int titleShipPadding = 140;
 
 // Ship shrink factor when it loops around
 final int titleShipShrink = 100;
-
 // Thruster animation on title ship
 int thrusterCount = 0;
 
@@ -28,6 +33,8 @@ void titleSetup() {
   
   titleShip[0] = loadImage("images/title_screen_ship.png");
   titleShip[1] = loadImage("images/title_screen_ship_thruster.png");
+  
+  titleAsteroidsLogo = loadImage("images/title_screen_title.png");
   println(titleShipY);
   
   // initialise starfield
@@ -62,17 +69,9 @@ void titleScreen() {
     titleShip[0].resize(titleShipShrink, 0);
     titleShip[1].resize(titleShipShrink, 0);
   }
-  
+
+  titleBanner =  pulseImage((int)titleBanner, (int)titleBanner+20, 0.9, 2);
+  image(titleAsteroidsLogo, width/2, height/2, LevelUpBanner,114);   
 
 
-
-  // Reset scores
-
-  // Reset enemies
-
-  //Reset ship
-
-  //Reset level
-
-  //Reset powerups
 }
