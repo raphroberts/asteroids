@@ -58,8 +58,8 @@ void setup() {
 
   initialiseSprites(); // set/reset sprites
   
-  shipGraphic[0] = requestImage("images/ship/ship_main_triple.png");
-  shipGraphic[1] = requestImage("images/ship/ship_main_single.png");
+  shipGraphic[0] = requestImage("images/ship/ship_main_single.png");
+  shipGraphic[1] = requestImage("images/ship/ship_main_triple.png");
   shipGraphic[2] = requestImage("images/ship/ship_main_enforcer.png");
   
   // Thruster setup
@@ -90,8 +90,8 @@ void setup() {
   bossBladeGraphic[1] = requestImage("images/boss/boss_blade2.png");
   
   // Weapon icons
-  iconsUI[0] = requestImage("images/icons/icon_triple.png");
-  iconsUI[1] = requestImage("images/icons/icon_single.png");
+  iconsUI[0] = requestImage("images/icons/icon_single.png");
+  iconsUI[1] = requestImage("images/icons/icon_triple.png");
   iconsUI[2] = requestImage("images/icons/icon_enforcer.png");
   
   // Shield icons
@@ -135,6 +135,15 @@ void setup() {
   gameFont = createFont("data/Rajdhani-Medium.ttf", gameTextSizeMain);
   textFont(gameFont); 
   
+  // misc - refactor?
+  soundArray[13].setGain(-20);
+  soundArray[14].setGain(-10);
+  soundArray[15].setGain(-10);
+  soundArray[16].setGain(-10);
+  soundArray[17].setGain(-1);
+  soundArray[18].setGain(-1);
+  soundArray[19].setGain(-1);
+ 
   
 }
 

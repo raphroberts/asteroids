@@ -24,6 +24,8 @@ PImage[] smokeAnimFrameArray = new PImage[15];
 final int numSmokeFrames = 14;
 boolean asteroidDead = false;
 PVector lastCollisionLocation = new PVector();
+int smallAsteroidSoundIndex = 14;
+int largeAsteroidSoundIndex = 17;
 
 // Starfield
 ArrayList<int[]> starObject = new ArrayList<int[]>(); 
@@ -165,14 +167,18 @@ void UIManager() {
   // Draw recharge bar to UI
   noStroke();
   fill(255 - (2.55 * rechargePerc), 2.2 * rechargePerc, 0, 255); //color shield based upon HP
-  rect(170, height - weaponBarPaddingY, rechargePerc, barSize);
+  if (magnusEnforcedUpgradeEnabled)
+    rect(170, height - weaponBarPaddingY, rechargePerc, barSize);
   fill(255);
 
   drawWeaponIcons();
 
   //Shield icon and info text
   fill(weaponFill);
-  image(iconsUI[4], width - shieldXPadding, height - iconVerticalPadding - basicPadding);
+  if (MK2ShieldUpgradeEnabled)
+    image(iconsUI[3], width - shieldXPadding, height - iconVerticalPadding - basicPadding);
+  else
+    image(iconsUI[4], width - shieldXPadding, height - iconVerticalPadding - basicPadding);
 
   fill(mainFontColour);
   textAlign(CENTER, TOP);
@@ -181,7 +187,10 @@ void UIManager() {
 
   // Thruster icon and info text
   fill(weaponFill);
-  image(iconsUI[6], width - weaponUIdist * 2, height - iconVerticalPadding - basicPadding);
+  if (thrusterUpgradeEnabled)
+    image(iconsUI[8], width - weaponUIdist * 2, height - iconVerticalPadding - basicPadding);
+  else
+    image(iconsUI[6], width - weaponUIdist * 2, height - iconVerticalPadding - basicPadding);
 
   fill(mainFontColour);
   textAlign(CENTER, TOP);
@@ -194,25 +203,26 @@ void drawWeaponIcons() {
   int startingX = 40;
 
   for (int i = 1; i <= 3; i++) {
-    if (i == weaponIndex) {
-      fill(weaponFill);
-      
-      stroke(255);
-      strokeWeight(1);
-    } else {
-      noFill();
-      noStroke();
-      if (i == 2 && !tripleLaserUpgradeEnabled)
-        tint(#350400);
-      else if (i == 3 && !magnusEnforcedUpgradeEnabled)
-        tint(#350400);
+    //ensure weapon is unlocked first
+    if (i == 1 || i == 2 && tripleLaserUpgradeEnabled || i == 3 && magnusEnforcedUpgradeEnabled) {
+      if (i == weaponIndex) {
+        fill(weaponFill);
+        stroke(255);
+        strokeWeight(1);
+      } else {
+        noFill();
+        noStroke();
+      }
+      rect(startingX, height - startingY, highlightSize, highlightSize);
+      image(iconsUI[i-1], startingX, height - startingY);
+      fill(mainFontColour);
+      text(i, startingX, height - startingY + 5 - weaponUIdist);
+      startingX += weaponUIdist;
+      tint(255);
     }
-    rect(startingX, height - startingY, highlightSize, highlightSize);
-    image(iconsUI[i-1], startingX, height - startingY);
-    fill(mainFontColour);
-    text(i, startingX, height - startingY + 5 - weaponUIdist);
-    startingX += weaponUIdist;
-    tint(255);
+    else {
+      startingX += weaponUIdist;
+    }
   }
 }
 
@@ -429,6 +439,11 @@ void destroyLargeAsteroidSequence(int xcoord, int ycoord) {
   lastCollisionLocation.y = ycoord;
   explosionFrame = 0;
   asteroidDead = true;
+  soundArray[largeAsteroidSoundIndex].rewind();
+  soundArray[largeAsteroidSoundIndex].skip(400);
+  soundArray[largeAsteroidSoundIndex].play();
+  if (++largeAsteroidSoundIndex > 19)
+    largeAsteroidSoundIndex = 17;
 }
 
 void destroySmallAsteroidSequence(int xcoord, int ycoord) {
@@ -440,7 +455,13 @@ void destroySmallAsteroidSequence(int xcoord, int ycoord) {
   explosionFrame = 0;
   asteroidDead = true;
   score = score + 100;
+  
+  soundArray[smallAsteroidSoundIndex].rewind();
+  soundArray[smallAsteroidSoundIndex].play();
+  if (++smallAsteroidSoundIndex > 16)
+    smallAsteroidSoundIndex = 14;
 }
+
 
 void rechargeShield() {
   // Recharge shield slowly over time
@@ -459,7 +480,7 @@ void rechargeShield() {
  
  */
 
-int gameLevel = 3; //auto-increment upon level up
+int gameLevel = 1; //auto-increment upon level up
 
 // Level status tracking
 boolean levelComplete = false;
@@ -534,31 +555,34 @@ int levelSequence() {
     bossThisLevel = true;
     bossActivated = true;
     bossSequence();
-  } else if (enemyObject.size() == 0 && bossDefeated) {
-    //End level sequence
-    fadeInSongCoroutine("upgrade");
-    soundArray[9].rewind();
-    soundArray[9].play();
-    levelComplete = true;
-    delay(2000);
-    currentScreen = "level up";
-    // Reset values for next level
-    levelComplete = false;
-    bossDefeated = false;
   }
-  else if (enemyObject.size() == 0 && !bossThisLevel) {
-    //End level sequence
-    fadeInSongCoroutine("upgrade");
-    soundArray[9].rewind();
-    soundArray[9].play();
-    levelComplete = true;
-    delay(2000);
-    currentScreen = "level up";
-    // Reset values for next level
-    levelComplete = false;
-    bossDefeated = false;
-    bossThisLevel = true;
-  }
+  //Below section was uncommented as it was causing a bug in the Upgrade Screen (causing it to be repeated twice, along with music restarting twice in a row. Might need to be fixed before uncomment?
+  //The bossSequence should probably reset all variable at the end of it, it's safe to do so after the while (!bossDefeated) delay(100); section
+  //} else if (enemyObject.size() == 0 && bossDefeated) {
+  //  //End level sequence
+  //  fadeInSongCoroutine("upgrade");
+  //  soundArray[9].rewind();
+  //  soundArray[9].play();
+  //  levelComplete = true;
+  //  delay(2000);
+  //  currentScreen = "level up";
+  //  // Reset values for next level
+  //  levelComplete = false;
+  //  bossDefeated = false;
+  //}
+  //else if (enemyObject.size() == 0 && !bossThisLevel) {
+  //  //End level sequence
+  //  fadeInSongCoroutine("upgrade");
+  //  soundArray[9].rewind();
+  //  soundArray[9].play();
+  //  levelComplete = true;
+  //  delay(2000);
+  //  currentScreen = "level up";
+  //  // Reset values for next level
+  //  levelComplete = false;
+  //  bossDefeated = false;
+  //  bossThisLevel = true;
+  //}
 //<<<<<<< HEAD
 //=======
   

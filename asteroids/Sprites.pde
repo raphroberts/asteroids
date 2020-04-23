@@ -49,10 +49,16 @@ void initialiseSprites() {
 void moveShip() {
   weaponCooldownTick++; //increase cooldown tick
   
-  // Handle ship movement
+  // Handle ship movement & thruster sound
   if (accelerate) {
     shipAcceleration = new PVector(shipThrust * cos(shipRotation), shipThrust * sin(shipRotation));
+    if (!soundArray[13].isPlaying()) {
+      soundArray[13].rewind();
+      soundArray[13].play();
+    }
   }
+  else if (soundArray[13].isPlaying())
+    soundArray[13].pause();
 
   if (abs(shipVelocity.x + shipAcceleration.x) <= maxSpeed) {
     shipVelocity.x = shipVelocity.x + shipAcceleration.x;
@@ -243,10 +249,6 @@ void drawAndMoveBullets() {
     else if (bulletType == 3) {
       fill(#31A5FF);
       rect(20, 0, 35, 10);
-    }
-    else if (bulletType == 4) {
-      fill(#F60042);
-      rect(20, 0, 80, 205);
     }
     
     

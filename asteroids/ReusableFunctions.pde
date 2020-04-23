@@ -51,6 +51,7 @@ void screenHandler() {
       createBullet();
     }
     */
+    //currentScreen="level up";
 
     // display game screen
     background(backgroundImage[1]);
@@ -200,6 +201,13 @@ void preloading() { //call asynchronously
   soundArray[10] = minim.loadFile("sounds/laserbeam.mp3");
   soundArray[11] = minim.loadFile("sounds/laserbeam.mp3");
   soundArray[12] = minim.loadFile("sounds/laserbeam.mp3");
+  soundArray[13] = minim.loadFile("sounds/thruster.mp3");
+  soundArray[14] = minim.loadFile("sounds/smallRockDestroy.wav");
+  soundArray[15] = minim.loadFile("sounds/smallRockDestroy.wav");
+  soundArray[16] = minim.loadFile("sounds/smallRockDestroy.wav");
+  soundArray[17] = minim.loadFile("sounds/largeRockDestroy.wav");
+  soundArray[18] = minim.loadFile("sounds/largeRockDestroy.wav");
+  soundArray[19] = minim.loadFile("sounds/largeRockDestroy.wav");
   preloadingFinished = true;
  
   // Create array of music tracks
