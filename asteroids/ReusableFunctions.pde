@@ -263,6 +263,7 @@ void musicManager(String song) {
       try {
         musicArray[0].rewind();
         musicArray[0].loop();
+        musicArray[0].skip(15000);
         playingIndex = 0;
       }
       catch (NullPointerException e) {
