@@ -10,6 +10,9 @@ boolean magnusEnforcedUpgradeEnabled = false;
 boolean MK2ShieldUpgradeEnabled = false;
 
 void upgradeScreen() {
+  //temp upgrade fix, remove taken upgrades
+  activeUpgradeOnlyFix();
+  
   background(backgroundImage[1]);
   //background(backgroundImage[2]);
   //LevelUpBanner =  pulseImage(806, 780, 0.9, 3, false);
@@ -37,8 +40,6 @@ void upgradeScreen() {
   else {
     image(upgradeScreenImage[1], width/2 + 150, height - 160);
   }
-  
-  
   
   
   if (upgradeScreenIndex == 0) {
@@ -146,6 +147,15 @@ void upgradeScreen() {
   }
   
   
+}
+
+void activeUpgradeOnlyFix() {
+  if (upgradeScreenIndex == 0 && tripleLaserUpgradeEnabled)
+    upgradeScreenIndex++;
+  if (upgradeScreenIndex == 1 && magnusEnforcedUpgradeEnabled)
+    upgradeScreenIndex++;
+  if (upgradeScreenIndex == 2 && MK2ShieldUpgradeEnabled)
+    upgradeScreenIndex = 0;
 }
 
 void mouseReleased() { //generic function for all mouseReleased throughout the game. Refactor somewhere central. Can be used for other things, just ensure mouseDown = false is kept
