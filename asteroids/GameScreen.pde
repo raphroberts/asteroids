@@ -568,8 +568,8 @@ int levelSequence() {
     bossDefeated = false;
     bossThisLevel = true;
   }
-<<<<<<< HEAD
-=======
+//<<<<<<< HEAD
+//=======
   
   //End level sequence
   fadeInSongCoroutine("upgrade");
@@ -581,6 +581,6 @@ int levelSequence() {
   delay(4000);
   //end level
   currentScreen="level up";
->>>>>>> 26e48e969d1735d530e93e2a36f65ef3a6dba0d6
+//>>>>>>> 26e48e969d1735d530e93e2a36f65ef3a6dba0d6
   return 1;
 }
