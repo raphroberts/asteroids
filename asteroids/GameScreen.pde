@@ -145,6 +145,7 @@ void UIManager() {
     // animate alertBanner
     alertBanner =  pulseImage(263, 243, 0.3, 2, false);
     image(levelStatusImage[2], width/2, height - height/5, alertBanner, alertBanner/2); 
+    spawnBoss();
   }
 
   noFill();
@@ -453,7 +454,7 @@ int gameLevel = 7; //auto-increment upon level up
 
 // Level status tracking
 boolean levelComplete = false;
-boolean bossActivated = false;
+boolean bossActivated = true;
 
 int levelSequence() { 
   // the main level manager, instantiator, and controller

@@ -5,9 +5,17 @@
    |_|\___|_|_|_| .__/ \__\___/\__,_\___|
                 |_|                      
 */
+PVector bossLocation = new PVector(0,0);
 
-void temp(){
-  // Temp code
+// Boss graphics
+PImage[] bossGraphic = new PImage[1]; // ship image array
+int bossGraphicIndex = 0;
+
+void spawnBoss(){
+  // Spawns the boss
+  
+
+  
 }
 
 /*

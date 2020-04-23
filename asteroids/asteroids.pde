@@ -82,6 +82,9 @@ void setup() {
   enemyGraphics[4] = requestImage("images/asteroid_sm_2.png");
   enemyGraphics[5] = requestImage("images/asteroid_sm_3.png");
   
+  // Boss setup
+  bossGraphic[0] = requestImage("images/asteroid_lg_1.png");
+
   // Weapon icons
   iconsUI[0] = requestImage("images/icons/icon_triple.png");
   iconsUI[1] = requestImage("images/icons/icon_single.png");
