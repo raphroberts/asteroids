@@ -457,10 +457,6 @@ void keyPressed() {
     changeWeapon(3);
     shipImageIndex = 2;
   }
-  if (key == '4') {
-    changeWeapon(4);
-    shipImageIndex = 2;
-  }
   
   if (key == 'p') {
     if (!gameStarted) {

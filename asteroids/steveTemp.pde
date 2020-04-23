@@ -150,12 +150,18 @@ void upgradeScreen() {
 }
 
 void activeUpgradeOnlyFix() {
-  if (upgradeScreenIndex == 0 && tripleLaserUpgradeEnabled)
-    upgradeScreenIndex++;
-  if (upgradeScreenIndex == 1 && magnusEnforcedUpgradeEnabled)
-    upgradeScreenIndex++;
-  if (upgradeScreenIndex == 2 && MK2ShieldUpgradeEnabled)
-    upgradeScreenIndex = 0;
+  boolean found = false;
+    while (!found) {
+    if (upgradeScreenIndex == 0 && tripleLaserUpgradeEnabled)
+      upgradeScreenIndex++;
+    if (upgradeScreenIndex == 1 && magnusEnforcedUpgradeEnabled)
+      upgradeScreenIndex++;
+    if (upgradeScreenIndex == 2 && MK2ShieldUpgradeEnabled)
+      upgradeScreenIndex = 0;
+    else {
+      found = true;
+    }
+  }
 }
 
 void mouseReleased() { //generic function for all mouseReleased throughout the game. Refactor somewhere central. Can be used for other things, just ensure mouseDown = false is kept
