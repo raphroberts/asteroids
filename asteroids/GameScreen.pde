@@ -196,17 +196,23 @@ void drawWeaponIcons() {
   for (int i = 1; i <= 3; i++) {
     if (i == weaponIndex) {
       fill(weaponFill);
+      
       stroke(255);
       strokeWeight(1);
     } else {
       noFill();
       noStroke();
+      if (i == 2 && !tripleLaserUpgradeEnabled)
+        tint(#350400);
+      else if (i == 3 && !magnusEnforcedUpgradeEnabled)
+        tint(#350400);
     }
     rect(startingX, height - startingY, highlightSize, highlightSize);
     image(iconsUI[i-1], startingX, height - startingY);
     fill(mainFontColour);
     text(i, startingX, height - startingY + 5 - weaponUIdist);
     startingX += weaponUIdist;
+    tint(255);
   }
 }
 
@@ -217,7 +223,7 @@ void changeWeapon(int index) {
   if (index == 1 || index == 2)
     weaponCooldown = 5;
   else if (index == 3)
-    weaponCooldown = 120;
+    weaponCooldown = 60;
   else if (index == 4)
     weaponCooldown = 90;
 }
@@ -562,5 +568,19 @@ int levelSequence() {
     bossDefeated = false;
     bossThisLevel = true;
   }
+<<<<<<< HEAD
+=======
+  
+  //End level sequence
+  fadeInSongCoroutine("upgrade");
+  soundArray[9].rewind();
+  soundArray[9].play();
+  
+  levelComplete = true;
+  bossActivated = false;
+  delay(4000);
+  //end level
+  currentScreen="level up";
+>>>>>>> 26e48e969d1735d530e93e2a36f65ef3a6dba0d6
   return 1;
 }

@@ -6,6 +6,7 @@ final int gameTextSizeMain = 16;
 final int mainFontColour = 255;
 
 PImage[] levelStatusImage = new PImage[3];
+PImage[] upgradeScreenImage = new PImage[10];
 
 // Animated image initial sizes
 float alertBanner = 250;
@@ -78,20 +79,21 @@ void screenHandler() {
     renderExplosion();
     
     UIManager();
+    //currentScreen = "level up"; // temp instant transition
     break;
 
   case "level up": 
     // display level up screen
+    if (!continueLevel)
+      upgradeScreen();
     
-    background(backgroundImage[2]);
-    //DELETE THIS, TEMP ONLY
-    text("Press Y to continue", width/2, height/2); //temp, delete and replace with level up screen
     if (continueLevel) {
       continueLevel = false;
+      levelComplete = false;  
       gameLevel = gameLevel + 1;
-      thread("levelSequence");
       currentScreen = "game";
-    //END DELETE THIS, TEMP ONLY
+      thread("levelSequence");
+      
     }
     break;
 
@@ -446,11 +448,11 @@ void keyPressed() {
     changeWeapon(1);
     shipImageIndex = 0;
   }
-  if (key == '2') {
+  if (key == '2' && tripleLaserUpgradeEnabled) {
     changeWeapon(2);
     shipImageIndex = 1;
   }
-  if (key == '3') {
+  if (key == '3' && magnusEnforcedUpgradeEnabled) {
     changeWeapon(3);
     shipImageIndex = 2;
   }
@@ -493,9 +495,6 @@ void keyPressed() {
         changeShield(1);
         changeThruster(1);
       }
-  }
-  if (key == 'y' && debug) { //temp, delete after upgrade screen implemented
-    continueLevel = true;
   }
 }
 
