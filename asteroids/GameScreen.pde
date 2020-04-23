@@ -197,18 +197,24 @@ void drawWeaponIcons() {
   for (int i = 1; i <= 3; i++){
     if (i == weaponIndex){
       fill(weaponFill);
+      
       stroke(255);
       strokeWeight(1);
     }
     else {
       noFill();
       noStroke();
+      if (i == 2 && !tripleLaserUpgradeEnabled)
+        tint(#350400);
+      else if (i == 3 && !magnusEnforcedUpgradeEnabled)
+        tint(#350400);
     }
     rect(startingX, height - startingY, highlightSize, highlightSize);
     image(iconsUI[i-1], startingX, height - startingY);
     fill(mainFontColour);
     text(i, startingX, height - startingY + 5 - weaponUIdist);
     startingX += weaponUIdist;
+    tint(255);
   }
 
 }
@@ -220,7 +226,7 @@ void changeWeapon(int index) {
   if (index == 1 || index == 2)
     weaponCooldown = 5;
   else if (index == 3)
-    weaponCooldown = 120;
+    weaponCooldown = 60;
   else if (index == 4)
     weaponCooldown = 90;
 }
@@ -450,7 +456,7 @@ void rechargeShield() {
  
 */
 
-int gameLevel = 7; //auto-increment upon level up
+int gameLevel = 1; //auto-increment upon level up
 
 // Level status tracking
 boolean levelComplete = false;
@@ -536,7 +542,6 @@ int levelSequence() {
   levelComplete = true;
   bossActivated = false;
   delay(4000);
-  levelComplete = false;  
   //end level
   currentScreen="level up";
   return 1;

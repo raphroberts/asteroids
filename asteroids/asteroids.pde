@@ -108,6 +108,11 @@ void setup() {
   levelStatusImage[0] = requestImage("images/level_status/status_1.png");
   levelStatusImage[1] = requestImage("images/level_status/status_2.png");
   levelStatusImage[2] = requestImage("images/level_status/status_3.png");
+  
+  // Upgrade screen UI graphics
+  upgradeScreenImage[0] = requestImage("images/arrow_left.png");
+  upgradeScreenImage[1] = requestImage("images/arrow_right.png");
+  upgradeScreenImage[2] = requestImage("images/upgradeTextTripleLaser.png");
  
   //preload assets async
   thread("preloading");
