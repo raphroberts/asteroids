@@ -376,6 +376,8 @@ void drawAndMoveEnemies() {
                  
 */
 
+
+
 void bossSequence() {
   thread("attentionLifeformSoundSequence");
   
@@ -390,5 +392,8 @@ void bossSequence() {
   centralScreenText = "TODO: Complete Boss sequence, level: " + gameLevel;
   delay(10000);
   centralScreenText = "";
+  
+  while (!bossDefeated)
+    delay(100);
   
 }

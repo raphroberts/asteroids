@@ -468,7 +468,7 @@ void rechargeShield() {
  
  */
 
-int gameLevel = 1; //auto-increment upon level up
+int gameLevel = 2; //auto-increment upon level up
 
 // Level status tracking
 boolean levelComplete = false;
