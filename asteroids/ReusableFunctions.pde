@@ -85,6 +85,7 @@ void screenHandler() {
 
   case "level up": 
     // display level up screen
+    shieldHP = maxShieldHP; // replenish shield
     if (!continueLevel)
       upgradeScreen();
     

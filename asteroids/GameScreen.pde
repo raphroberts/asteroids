@@ -284,6 +284,8 @@ void drawShieldUI() {
 
   fill(200 - (2.55 * shieldPerc), 2.2 * shieldPerc, 0); //color shield based upon HP
   rect(width - shieldPaddingX, basicPadding * 1.5, shieldPerc, barSize);
+  fill(255);
+  text(shieldHP, width - shieldPaddingX, basicPadding * 1.5 + 2);
 
   fill(mainFontColour);
   textAlign(RIGHT, TOP);
