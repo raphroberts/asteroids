@@ -6,6 +6,9 @@
                 |_|                      
 */
 
+  // Boss object
+  ArrayList<int[]> bossObject = new ArrayList<int[]>(); 
+
   // Boss PVectors
   PVector bossLocation;
   PVector bossBladeRotation = new PVector(10,10); 
@@ -25,10 +28,19 @@
   
   // Positioning data
   int bossBladeOffsetY = 30;
+  
+  // Collision data
+  int bossSize = 70;
+  int bossStrength = 10000;
+  
+  boolean bossDefeated = false;
+  boolean bossThisLevel = false;
 
-
-void spawnBoss(){
-  // Spawns the boss
+void handleBoss(){
+  // Handles boss related functionality
+  
+  text("Boss power remaining: " + bossStrength, 300, 50); 
+          
   //get vector pointing from ship to Boss
   PVector target = PVector.sub (shipLocation,bossLocation);
   
@@ -41,10 +53,6 @@ void spawnBoss(){
   // Move the boss vector towards the ship
   bossLocation.add (target);
   
-  // draw the ship
-  println(bossLocation.x);
-  println(bossLocation.y);
-  
   bossBladeAngle = bossBladeAngle + 4;
   
   translate(bossLocation.x, bossLocation.y + bossBladeOffsetY);
@@ -53,7 +61,7 @@ void spawnBoss(){
   rotate(- radians(bossBladeAngle));
   translate(- bossLocation.x, - bossLocation.y - bossBladeOffsetY);
   image(bossGraphic[bossGraphicIndex], bossLocation.x, bossLocation.y);
-  
+  bossGraphicIndex = 0;
   
 }
 

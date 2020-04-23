@@ -151,7 +151,7 @@ int bulletID = 1; // can be used later for different bullet types
 float bulletSize = 1;
 
 // Array list for storing bullet data
-//index 0 = bullet ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity
+//index 0 = bullet ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = initial rotation, 7 = bulletType, 8 = bullet damage
 /*
  object ID can be used for bullet type, e.g:
  0 = green lazer

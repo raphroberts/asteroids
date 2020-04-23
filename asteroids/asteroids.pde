@@ -23,7 +23,7 @@
 */
 
 // Debug switch (renders var information when enabled)
-boolean debug = false; //print stats to console for debugging purposes
+boolean debug = true; //print stats to console for debugging purposes
 
 // SETTINGS
 
