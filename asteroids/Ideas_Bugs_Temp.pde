@@ -5,16 +5,55 @@
    |_|\___|_|_|_| .__/ \__\___/\__,_\___|
                 |_|                      
 */
-PVector bossLocation = new PVector(0,0);
 
-// Boss graphics
-PImage[] bossGraphic = new PImage[1]; // ship image array
-int bossGraphicIndex = 0;
+  // Boss PVectors
+  PVector bossLocation;
+  PVector bossBladeRotation = new PVector(10,10); 
+  
+  // Boss graphics
+  PImage[] bossGraphic = new PImage[2]; // ship image array
+  int bossGraphicIndex = 0;
+  PImage[] bossBladeGraphic = new PImage[2]; // ship image array
+  int bossBladeGraphicIndex = 0;
+  
+    // Animation data
+  float bossBladeAngle;
+  
+  // Movement data
+  PVector target;
+  float bossSpeed = .3;
+  
+  // Positioning data
+  int bossBladeOffsetY = 30;
+
 
 void spawnBoss(){
   // Spawns the boss
+  //get vector pointing from ship to Boss
+  PVector target = PVector.sub (shipLocation,bossLocation);
   
+  // normalize to a unit vector in which each component is [0..1]
+  target.normalize();
 
+  // multiply target vector by speed to get vector from [0..speed]
+  target.mult (bossSpeed);
+  
+  // Move the boss vector towards the ship
+  bossLocation.add (target);
+  
+  // draw the ship
+  println(bossLocation.x);
+  println(bossLocation.y);
+  
+  bossBladeAngle = bossBladeAngle + 4;
+  
+  translate(bossLocation.x, bossLocation.y + bossBladeOffsetY);
+  rotate( radians(bossBladeAngle) );
+  image(bossBladeGraphic[bossBladeGraphicIndex], 0, 0);
+  rotate(- radians(bossBladeAngle));
+  translate(- bossLocation.x, - bossLocation.y - bossBladeOffsetY);
+  image(bossGraphic[bossGraphicIndex], bossLocation.x, bossLocation.y);
+  
   
 }
 

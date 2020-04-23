@@ -10,5 +10,5 @@ void levelUpScreen() {
   // If “done” pressed, call populateEnemiesArray()
   // and update currentScreen (to game screen)
 
-  initialiseShip(); // reset ship location and PVector
+  initialiseSprites(); // reset ship location and PVector
 }

@@ -26,6 +26,10 @@ PImage[] shieldGraphic = new PImage[3]; // ship image array
 int shieldImageIndex = 0;
 
 // Ship movement
+
+PVector shipAcceleration;
+PVector shipVelocity;
+  
 float maxSpeed = 4;
 boolean accelerate = false;
 boolean rotateLeft = false;
@@ -33,13 +37,13 @@ boolean rotateRight = false;
 float shipRotationSpeed = 0.1;
 float shipRotation = -1.5; // radians
 float shipThrust = 0.1;
-PVector shipAcceleration;
-PVector shipVelocity;
-PVector shipLocation;
+PVector shipLocation = new PVector(width/2, height/2);
 
-void initialiseShip() {
+void initialiseSprites() {
   shipVelocity = new PVector(0, 0);
-  shipLocation = new PVector(width/2, height/2);
+  shipLocation = new PVector(width/2,height/2); 
+  bossLocation = new PVector(width/2,-height/3);
+
 }
 
 void moveShip() {

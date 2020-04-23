@@ -32,7 +32,7 @@ void settings() {
 }
 
 // SETUP
-
+  
 void setup() {
   
   // we pass this to Minim so that it can load files from the data directory
@@ -56,7 +56,8 @@ void setup() {
   shipVelocity = new PVector(0, 0);
   shipLocation = new PVector(width/2, height/2);
 
-  initialiseShip(); // set/reset ship properties
+  initialiseSprites(); // set/reset sprites
+  
   shipGraphic[0] = requestImage("images/ship/ship_main_triple.png");
   shipGraphic[1] = requestImage("images/ship/ship_main_single.png");
   shipGraphic[2] = requestImage("images/ship/ship_main_enforcer.png");
@@ -83,8 +84,11 @@ void setup() {
   enemyGraphics[5] = requestImage("images/asteroid_sm_3.png");
   
   // Boss setup
-  bossGraphic[0] = requestImage("images/asteroid_lg_1.png");
-
+  bossGraphic[0] = requestImage("images/boss/boss_main.png");
+  bossGraphic[1] = requestImage("images/boss/boss_main2.png");
+  bossBladeGraphic[0] = requestImage("images/boss/boss_blade.png");
+  bossBladeGraphic[1] = requestImage("images/boss/boss_blade2.png");
+  
   // Weapon icons
   iconsUI[0] = requestImage("images/icons/icon_triple.png");
   iconsUI[1] = requestImage("images/icons/icon_single.png");
