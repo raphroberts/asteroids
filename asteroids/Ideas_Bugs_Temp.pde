@@ -86,8 +86,11 @@ void handleBoss(){
     // animate blinking light
     if (bossGraphicIndex == 0){
       bossGraphicIndex = 3;
-      soundArray[21].rewind();
-      soundArray[21].play();
+      if (!bossLaughed) {
+        soundArray[21].rewind();
+        soundArray[21].play();
+        bossLaughed = true;
+      }
     }
     bossSpeed = 1.6;
   }
@@ -104,6 +107,8 @@ void handleBoss(){
   }
   
 }
+
+boolean bossLaughed = false;
 
 /*
   ___    _             
