@@ -5,7 +5,7 @@ PFont gameFont;
 final int gameTextSizeMain = 16;
 final int mainFontColour = 255;
 
-PImage[] levelStatusImage = new PImage[3];
+PImage[] levelStatusImage = new PImage[4];
 PImage[] upgradeScreenImage = new PImage[10];
 
 // Animated image initial sizes
@@ -42,23 +42,19 @@ void screenHandler() {
     break;
 
   case "game": 
-  /*
-    if (debug && frameCount % 3 > 1 && !levelComplete){
-      gunReloaded = true;
-      if (shieldHP < 50){
-        shieldHP = 500;
-      }
-      createBullet();
-    }
-    */
-    //currentScreen="level up";
-
+    // Display game screen
+    
     // display game screen
     background(backgroundImage[1]);
 
     // Render the starfield
     // (located in GameScreen.PDE)
     renderStars();
+    
+    // If rapidFire enabled and standard gun selected, shoot a bullet
+    if ( rapidFireUpgradeEnabled && frameCount % 5 > 3 && !levelComplete && weaponIndex == 1){
+      createBullet();
+    }
 
     // Update bullet locations
     // (located in Sprites.PDE)
@@ -86,6 +82,10 @@ void screenHandler() {
   case "level up": 
     // display level up screen
     shieldHP = maxShieldHP; // replenish shield
+    
+    // Reset sprite positions
+    initialiseSprites();
+    
     if (!continueLevel)
       upgradeScreen();
     
@@ -97,11 +97,6 @@ void screenHandler() {
       thread("levelSequence");
       
     }
-    break;
-
-  case "game over": 
-    // display game overscreen
-    gameOverScreen();
     break;
   }
 }
@@ -429,12 +424,6 @@ void attentionLifeformSoundSequence() {
                              
 */
 
-
-void renderOverlay() {
-  // Print current score and level to the screen
-}
-
-
 // KEYBOARD INPUT
 
 void keyPressed() {
@@ -448,9 +437,16 @@ void keyPressed() {
     accelerate = true;
     // render thruster
   }
+  
   if (key == ' ') {
     createBullet();
-    gunReloaded = false;
+    // check for rapidfire upgrade (rapidfire only available on standard gun)
+   if (rapidFireUpgradeEnabled && weaponIndex == 1){
+      gunReloaded = true;
+    }
+    else {
+      gunReloaded = false;
+    }
   }
   
   //Change weapon
@@ -516,6 +512,13 @@ void keyReleased() {
     accelerate = false;
   }
   if (key == ' ') {
-    gunReloaded = true;
+   // check for rapidfire upgrade (rapidfire only available on standard gun)
+   if (rapidFireUpgradeEnabled && weaponIndex == 1){
+      gunReloaded = false;
+    }
+    else {
+      gunReloaded = true;
+    }
   }
+
 }

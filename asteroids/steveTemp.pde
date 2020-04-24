@@ -1,5 +1,5 @@
 int upgradeScreenIndex = 0;
-int upgradeScreenIndexLimit = 3;
+int upgradeScreenIndexLimit = 4;
 boolean leftArrowTintActive = false;
 boolean rightArrowTintActive = false;
 boolean upgradeTintActive = false;
@@ -9,6 +9,7 @@ boolean tripleLaserUpgradeEnabled = false;
 boolean magnusEnforcedUpgradeEnabled = false;
 boolean MK2ShieldUpgradeEnabled = false;
 boolean thrusterUpgradeEnabled = false;
+boolean rapidFireUpgradeEnabled = false;
 
 void upgradeScreen() {
   accelerate = false;
@@ -129,6 +130,25 @@ void upgradeScreen() {
     fill(255);
     text("Stats\nMax Speed: 4\nManvouerability: 7", width - 100, height / 2);
   }
+
+  else if (upgradeScreenIndex == 4) {
+    // Rapid fire upgrade
+     if (upgradeTintActive) {
+        tint(#FFA295);
+        image(iconsUI[9], width/2, height - 160);  
+        tint(255);
+      }
+      else {
+        image(iconsUI[9], width/2, height - 160);  
+      }
+    //text("Triple Pulse Laser", width/2, height - 100);
+    textSize(gameTextSizeMain);
+    image(upgradeScreenImage[2], width/2, height - 20);
+    //strokeWeight(1);
+    //text("Through unique engineering, three standard lasers are combined together to fire at once, offering a three times greater combined rpm, with the same damage per bullet.", width/2, height - 50);
+    fill(255);
+    text("Rapid fire upgrade", width - 100, height / 2);
+  }
   
   if (mouseX >= width/2 - upgradeScreenImage[2].width/2 && mouseX <= width/2 - upgradeScreenImage[2].width/3.5 &&
       mouseY >= height - 20 - upgradeScreenImage[2].height && mouseY <= height - upgradeScreenImage[2].height/2) { // Raph.. please forgive me. I'm a lost soul when it comes to this sort of thing!
@@ -170,6 +190,11 @@ void upgradeScreen() {
         thrusterImageIndex = 2;
         changeThruster(2);
       }
+      else if (upgradeScreenIndex == 4) {
+        rapidFireUpgradeEnabled = true;
+        gunReloaded = false;
+        iconsUI[0] = requestImage("images/icons/icon_single2.png");
+      }
       continueLevel = true;  
     }
     else if (leftArrowTintActive) {
@@ -195,6 +220,8 @@ void activeUpgradeOnlyFix() {
     if (upgradeScreenIndex == 2 && MK2ShieldUpgradeEnabled)
       cycleUpgradeUI();
     if (upgradeScreenIndex == 3 && thrusterUpgradeEnabled)
+      cycleUpgradeUI();
+    if (upgradeScreenIndex == 4 && rapidFireUpgradeEnabled)
       cycleUpgradeUI();
     else {
       found = true;

@@ -104,10 +104,14 @@ void setup() {
   iconsUI[7] = requestImage("images/icons/icon_thrust2.png");
   iconsUI[8] = requestImage("images/icons/icon_thrust3.png");
   
+  // Offline weapon
+  iconsUI[9] = requestImage("images/icons/icon_offline.png");
+  
   // Level status graphics
   levelStatusImage[0] = requestImage("images/level_status/status_1.png");
   levelStatusImage[1] = requestImage("images/level_status/status_2.png");
   levelStatusImage[2] = requestImage("images/level_status/status_3.png");
+  levelStatusImage[3] = requestImage("images/dead.png");
   
   // Upgrade screen UI graphics
   upgradeScreenImage[0] = requestImage("images/arrow_left.png");
@@ -143,7 +147,6 @@ void setup() {
   soundArray[17].setGain(-1);
   soundArray[18].setGain(-1);
   soundArray[19].setGain(-1);
- 
   
 }
 

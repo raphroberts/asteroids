@@ -221,6 +221,7 @@ void drawWeaponIcons() {
       tint(255);
     }
     else {
+      image(iconsUI[9], startingX, height - startingY);
       startingX += weaponUIdist;
     }
   }
@@ -278,6 +279,7 @@ void drawShieldUI() {
   float shieldNorm = 100.0 / maxShieldHP; // get Normal of shield
   int shieldPerc = (int)(shieldHP * shieldNorm); // get % of shield
 
+  text("Shield", width - 150, basicPadding);
   noStroke();
   fill(weaponBlankFill); //color shield based upon HP
   rect(width - shieldPaddingX, basicPadding * 1.5, shieldBarX, barSize);
@@ -285,11 +287,11 @@ void drawShieldUI() {
   fill(200 - (2.55 * shieldPerc), 2.2 * shieldPerc, 0); //color shield based upon HP
   rect(width - shieldPaddingX, basicPadding * 1.5, shieldPerc, barSize);
   fill(255);
-  text(shieldHP, width - shieldPaddingX, basicPadding * 1.5 + 2);
-
-  fill(mainFontColour);
-  textAlign(RIGHT, TOP);
-  text("Shield:", width - shieldTextX, basicPadding);
+  
+  if (maxShieldHP > 500 && shieldHP > 500){
+    fill(200, 0, 0);
+    rect(width - shieldPaddingX, basicPadding * 2, shieldPerc, barSize/2);
+  }
 }
 
 /*
@@ -558,35 +560,7 @@ int levelSequence() {
     bossActivated = true;
     bossSequence();
   }
-  //Below section was uncommented as it was causing a bug in the Upgrade Screen (causing it to be repeated twice, along with music restarting twice in a row. Might need to be fixed before uncomment?
-  //The bossSequence should probably reset all variable at the end of it, it's safe to do so after the while (!bossDefeated) delay(100); section
-  //} else if (enemyObject.size() == 0 && bossDefeated) {
-  //  //End level sequence
-  //  fadeInSongCoroutine("upgrade");
-  //  soundArray[9].rewind();
-  //  soundArray[9].play();
-  //  levelComplete = true;
-  //  delay(2000);
-  //  currentScreen = "level up";
-  //  // Reset values for next level
-  //  levelComplete = false;
-  //  bossDefeated = false;
-  //}
-  //else if (enemyObject.size() == 0 && !bossThisLevel) {
-  //  //End level sequence
-  //  fadeInSongCoroutine("upgrade");
-  //  soundArray[9].rewind();
-  //  soundArray[9].play();
-  //  levelComplete = true;
-  //  delay(2000);
-  //  currentScreen = "level up";
-  //  // Reset values for next level
-  //  levelComplete = false;
-  //  bossDefeated = false;
-  //  bossThisLevel = true;
-  //}
-//<<<<<<< HEAD
-//=======
+
   
   //End level sequence
   fadeInSongCoroutine("upgrade");
@@ -598,6 +572,5 @@ int levelSequence() {
   delay(4000);
   //end level
   currentScreen="level up";
-//>>>>>>> 26e48e969d1735d530e93e2a36f65ef3a6dba0d6
   return 1;
 }

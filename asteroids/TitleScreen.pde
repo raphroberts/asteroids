@@ -3,9 +3,6 @@
 // Title screen ship graphic
 PImage[] titleShip = new PImage[2];
 
-// Asteroids logo
-PImage titleAsteroidsLogo = new PImage();
-
 // Location of title screen ship
 int titleShipX;
 float titleShipY;
@@ -30,9 +27,6 @@ void titleSetup() {
   
   titleShip[0] = loadImage("images/title_screen_ship.png");
   titleShip[1] = loadImage("images/title_screen_ship_thruster.png");
-  
-  titleAsteroidsLogo = loadImage("images/title_screen_title.png");
-  println(titleShipY);
   
   // initialise starfield
   generateStars();
@@ -65,11 +59,7 @@ void titleScreen() {
     titleShipX = randomInt(0, width);
     titleShip[0].resize(titleShipShrink, 0);
     titleShip[1].resize(titleShipShrink, 0);
-  }
-
-  titleBannerX =  pulseImage(575, 0, 0.6, 0, true);
-  titleBannerY =  pulseImage(125, 0, 0.6, 1, true);
-  image(titleAsteroidsLogo, width/2, height/3, titleBannerX,titleBannerY);   
+  } 
 
 
 }

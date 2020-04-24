@@ -35,13 +35,14 @@ boolean accelerate = false;
 boolean rotateLeft = false;
 boolean rotateRight = false;
 float shipRotationSpeed = 0.1;
-float shipRotation = -1.5; // radians
+float shipRotation = -1.56; // radians
 float shipThrust = 0.1;
 PVector shipLocation = new PVector(width/2, height/2);
 
 void initialiseSprites() {
-  shipVelocity = new PVector(0, 0);
-  shipLocation = new PVector(width/2,height/2); 
+  shipRotation = -1.56; // radians
+  shipVelocity = new PVector(0, -0.1);
+  shipLocation = new PVector(width/2,height-height/3); 
   bossLocation = new PVector(width/2,-height/3);
 
 }
