@@ -14,7 +14,7 @@
   PVector bossBladeRotation = new PVector(10,10); 
   
   // Boss graphics
-  PImage[] bossGraphic = new PImage[2]; // ship image array
+  PImage[] bossGraphic = new PImage[3]; // ship image array
   int bossGraphicIndex = 0;
   PImage[] bossBladeGraphic = new PImage[2]; // ship image array
   int bossBladeGraphicIndex = 0;
@@ -28,11 +28,17 @@
   
   // Positioning data
   int bossBladeOffsetY = 30;
+  int bossIndicatorOffsetY = 5;
   
   // Collision data
   int bossSize = 70;
+  int bossInitialStrength = 10000;
   int bossStrength = 10000;
   
+  // Indicator rotation
+  float indicatorRotation;
+  
+  // State tracking
   boolean bossDefeated = false;
   boolean bossThisLevel = false;
 
@@ -55,13 +61,26 @@ void handleBoss(){
   
   bossBladeAngle = bossBladeAngle + 4;
   
+  // render spinning blade
   translate(bossLocation.x, bossLocation.y + bossBladeOffsetY);
   rotate( radians(bossBladeAngle) );
   image(bossBladeGraphic[bossBladeGraphicIndex], 0, 0);
   rotate(- radians(bossBladeAngle));
   translate(- bossLocation.x, - bossLocation.y - bossBladeOffsetY);
+  
+  // render boss body
   image(bossGraphic[bossGraphicIndex], bossLocation.x, bossLocation.y);
   bossGraphicIndex = 0;
+  
+  // render boss health indicator
+  indicatorRotation = norm(bossStrength, 0, bossInitialStrength);
+  indicatorRotation *= 4.5;
+  translate(bossLocation.x, bossLocation.y + bossIndicatorOffsetY);
+  rotate( + indicatorRotation );
+  image(bossGraphic[2], 0, 0);
+  rotate( - indicatorRotation );
+  translate( - bossLocation.x, - bossLocation.y - bossIndicatorOffsetY);
+  
   
 }
 

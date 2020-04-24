@@ -86,6 +86,7 @@ void setup() {
   // Boss setup
   bossGraphic[0] = requestImage("images/boss/boss_main.png");
   bossGraphic[1] = requestImage("images/boss/boss_main2.png");
+  bossGraphic[2] = requestImage("images/boss/boss_main3.png");
   bossBladeGraphic[0] = requestImage("images/boss/boss_blade.png");
   bossBladeGraphic[1] = requestImage("images/boss/boss_blade2.png");
   
