@@ -86,6 +86,8 @@ void handleBoss(){
     // animate blinking light
     if (bossGraphicIndex == 0){
       bossGraphicIndex = 3;
+      soundArray[21].rewind();
+      soundArray[21].play();
     }
     bossSpeed = 1.6;
   }

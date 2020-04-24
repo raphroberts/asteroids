@@ -209,6 +209,8 @@ void preloading() { //call asynchronously
   soundArray[17] = minim.loadFile("sounds/largeRockDestroy.wav");
   soundArray[18] = minim.loadFile("sounds/largeRockDestroy.wav");
   soundArray[19] = minim.loadFile("sounds/largeRockDestroy.wav");
+  soundArray[20] = minim.loadFile("sounds/prespeech.mp3");
+  soundArray[21] = minim.loadFile("sounds/bosslaugh.wav");
   
   soundArray[13].setGain(-20);
   soundArray[14].setGain(-10);
@@ -243,7 +245,7 @@ Minim minim;
 AudioPlayer[] musicArray = new AudioPlayer[10];
 
 
-AudioPlayer[] soundArray = new AudioPlayer[20];
+AudioPlayer[] soundArray = new AudioPlayer[30];
 int shieldSoundIndex;
 boolean shieldWarningTriggered = false;
 int bulletshotIndex = 0;
@@ -426,6 +428,10 @@ void attentionLifeformSoundSequence() {
   delay(1000);
   soundArray[8].rewind();
   soundArray[8].play();
+  delay(4000);
+  soundArray[20].rewind();
+  soundArray[20].play();
+  
 }
 
 

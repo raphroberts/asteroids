@@ -514,7 +514,7 @@ void rechargeShield() {
  
  */
 
-int gameLevel = 1; //auto-increment upon level up
+int gameLevel = 2; //auto-increment upon level up
 
 // Level status tracking
 boolean levelComplete = false;
@@ -544,12 +544,12 @@ int levelSequence() {
     numberOfCycles = numberOfCycles * 2 + 1;
   else if (gameLevel == 2)
     numberOfCycles = numberOfCycles * 2;
-/*
+
   if (debug){
     asteroidsToSpawnPerCycle = 1;
     numberOfCycles = 1;
   }
-*/
+
   int spawnDelay = (int)(1 / (gameLevel * 0.5) * 3000);
   if (debug)
     println("Starting level " + gameLevel + " with " + asteroidsToSpawnPerCycle + " asteroids spawning per cycle over " + " number of cycles: " + numberOfCycles + ". Spawn delay: " + spawnDelay); // delete this 
