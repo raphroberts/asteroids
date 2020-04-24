@@ -14,7 +14,7 @@
   PVector bossBladeRotation = new PVector(10,10); 
   
   // Boss graphics
-  PImage[] bossGraphic = new PImage[3]; // ship image array
+  PImage[] bossGraphic = new PImage[4]; // ship image array
   int bossGraphicIndex = 0;
   PImage[] bossBladeGraphic = new PImage[2]; // ship image array
   int bossBladeGraphicIndex = 0;
@@ -41,11 +41,16 @@
   // State tracking
   boolean bossDefeated = false;
   boolean bossThisLevel = false;
+  boolean deathAnimationFinished = false;
 
 void handleBoss(){
   // Handles boss related functionality
   
-  text("Boss power remaining: " + bossStrength, 300, 50); 
+  // if boss is within health range, he gets mad and plunges towards player
+  if (bossStrength < 5000 && bossStrength > 1000){
+    bossGraphicIndex = 3;
+    bossSpeed = 1.2;
+  } 
           
   //get vector pointing from ship to Boss
   PVector target = PVector.sub (shipLocation,bossLocation);
@@ -81,6 +86,12 @@ void handleBoss(){
   rotate( - indicatorRotation );
   translate( - bossLocation.x, - bossLocation.y - bossIndicatorOffsetY);
   
+  //while (!deathAnimationFinished) {
+    //play a bunch of explosion effects
+    // move boss downward so he falls off the screen
+    
+    //delay(100);
+  //}
   
 }
 
