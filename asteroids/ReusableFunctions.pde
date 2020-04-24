@@ -204,6 +204,15 @@ void preloading() { //call asynchronously
   soundArray[17] = minim.loadFile("sounds/largeRockDestroy.wav");
   soundArray[18] = minim.loadFile("sounds/largeRockDestroy.wav");
   soundArray[19] = minim.loadFile("sounds/largeRockDestroy.wav");
+  
+  soundArray[13].setGain(-20);
+  soundArray[14].setGain(-10);
+  soundArray[15].setGain(-10);
+  soundArray[16].setGain(-10);
+  soundArray[17].setGain(-1);
+  soundArray[18].setGain(-1);
+  soundArray[19].setGain(-1);
+  
   preloadingFinished = true;
  
   // Create array of music tracks

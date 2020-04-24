@@ -140,13 +140,7 @@ void setup() {
   textFont(gameFont); 
   
   // misc - refactor?
-  soundArray[13].setGain(-20);
-  soundArray[14].setGain(-10);
-  soundArray[15].setGain(-10);
-  soundArray[16].setGain(-10);
-  soundArray[17].setGain(-1);
-  soundArray[18].setGain(-1);
-  soundArray[19].setGain(-1);
+  
   
 }
 
