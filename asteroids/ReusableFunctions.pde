@@ -98,6 +98,11 @@ void screenHandler() {
       
     }
     break;
+  
+  case "game over": 
+    // display game overscreen
+    gameOverScreen();
+    break;
   }
 }
 

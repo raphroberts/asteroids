@@ -276,22 +276,51 @@ void changeThruster(int index) {
 void drawShieldUI() {
   // Render shield status to the UI/overlay
 
-  float shieldNorm = 100.0 / maxShieldHP; // get Normal of shield
-  int shieldPerc = (int)(shieldHP * shieldNorm); // get % of shield
-
-  text("Shield", width - 150, basicPadding);
+  text("Shield", width - 195, basicPadding);
   noStroke();
-  fill(weaponBlankFill); //color shield based upon HP
-  rect(width - shieldPaddingX, basicPadding * 1.5, shieldBarX, barSize);
-
-  fill(200 - (2.55 * shieldPerc), 2.2 * shieldPerc, 0); //color shield based upon HP
-  rect(width - shieldPaddingX, basicPadding * 1.5, shieldPerc, barSize);
-  fill(255);
+  float shieldNorm;
+  int shieldPerc;
   
-  if (maxShieldHP > 500 && shieldHP > 500){
-    fill(200, 0, 0);
+  if (shieldHP > 500){
+    // Ship has been upgraded so there will be two shield bars
+    
+    // render standard shield at full
+    fill(0, 200, 0);
+    rect(width - shieldPaddingX, basicPadding * 1.5, shieldBarX, barSize);
+
+    // calculate upraded shield percentage
+    shieldNorm = 100.0 / (maxShieldHP - 500); // get Normal of shield
+    shieldPerc = (int)((shieldHP - 500) * shieldNorm); // get % of shield
+
+    // render blank "underlay"
+    fill(weaponBlankFill); //color shield based upon HP
+    rect(width - shieldPaddingX, basicPadding * 2, shieldBarX, barSize/2);
+    
+    // render upraded shield value
+    fill(200 - (2.55 * shieldPerc), 0, 2.2 * shieldPerc); //color shield based upon HP
     rect(width - shieldPaddingX, basicPadding * 2, shieldPerc, barSize/2);
+    fill(255);
+    text(shieldPerc, width - 150, basicPadding);
   }
+  else {
+    // shield has not been upgraded, only one shield bar is rendered
+    
+    // calculate shield percentage
+    shieldNorm = 100.0 / initialHP; // get Normal of shield
+    shieldPerc = (int)(shieldHP * shieldNorm); // get % of shield
+    
+    // render blank "underlay"
+    fill(weaponBlankFill); //color shield based upon HP
+    rect(width - shieldPaddingX, basicPadding * 1.5, shieldBarX, barSize);
+    
+    // render standard shield value
+    fill(200 - (2.55 * shieldPerc), 2.2 * shieldPerc, 0); //color shield based upon HP
+    rect(width - shieldPaddingX, basicPadding * 1.5, shieldPerc, barSize);
+    fill(255);
+    text(shieldPerc, width - 150, basicPadding);
+  }
+  
+  
 }
 
 /*
@@ -304,7 +333,8 @@ void drawShieldUI() {
  */
 
 //Shields & Damage
-int maxShieldHP = 500;
+int initialHP = 500;
+int maxShieldHP = initialHP;
 int shieldHP = maxShieldHP;
 int shieldRechargeDelay = 50; //recharge 1 point this number of frames
 int shieldRechargeTick = 0; //current recharge tick
@@ -396,11 +426,11 @@ void damageShip(int amount) {
   }
 
   //trigger warning when shields are low, but only once per threshold
-  if (!shieldWarningTriggered && shieldHP*1.0/maxShieldHP <= 0.3) {
+  if (!shieldWarningTriggered && shieldHP*1.0/initialHP <= 0.3) {
     shieldWarningTriggered = true;
     thread("shieldCriticalSoundSequence");
   }
-  if (shieldHP*1.0/maxShieldHP >= 0.5)
+  if (shieldHP*1.0/initialHP >= 0.5)
     shieldWarningTriggered = false;
 }
 
