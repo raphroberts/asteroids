@@ -24,7 +24,8 @@
   
   // Movement data
   PVector target;
-  float bossSpeed = .3;
+  final float bossInitialSpeed = .3;
+  float bossSpeed = bossInitialSpeed;
   
   // Positioning data
   int bossBladeOffsetY = 30;
@@ -45,13 +46,7 @@
 
 void handleBoss(){
   // Handles boss related functionality
-  
-  // if boss is within health range, he gets mad and plunges towards player
-  if (bossStrength < 5000 && bossStrength > 1000){
-    bossGraphicIndex = 3;
-    bossSpeed = 1.2;
-  } 
-          
+
   //get vector pointing from ship to Boss
   PVector target = PVector.sub (shipLocation,bossLocation);
   
@@ -86,12 +81,25 @@ void handleBoss(){
   rotate( - indicatorRotation );
   translate( - bossLocation.x, - bossLocation.y - bossIndicatorOffsetY);
   
-  //while (!deathAnimationFinished) {
-    //play a bunch of explosion effects
-    // move boss downward so he falls off the screen
-    
-    //delay(100);
-  //}
+  // if boss is within health range, he gets mad and plunges towards player
+  if (bossStrength < 5000 && bossStrength > 100){
+    // animate blinking light
+    if (bossGraphicIndex == 0){
+      bossGraphicIndex = 3;
+    }
+    bossSpeed = 1.6;
+  }
+  else if(bossStrength < 1){
+   // stop boss following player and play explosion animations
+   target = new PVector(bossLocation.x,height * 2); 
+   bossSpeed = bossInitialSpeed;
+   renderExplosion();
+   if(explosionFrame == 15){
+     explosionFrame = 0;
+     lastCollisionLocation.x = bossLocation.x + random(-125,125);
+     lastCollisionLocation.y = bossLocation.y + random(-35,35);
+   }
+  }
   
 }
 
