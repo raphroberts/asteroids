@@ -428,9 +428,6 @@ void attentionLifeformSoundSequence() {
   delay(1000);
   soundArray[8].rewind();
   soundArray[8].play();
-  delay(4000);
-  soundArray[20].rewind();
-  soundArray[20].play();
   
 }
 
