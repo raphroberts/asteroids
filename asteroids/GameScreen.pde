@@ -34,7 +34,7 @@ int numberOfStars = 120;
 void renderExplosion() {
   // Calculates current frame of asteroid exploding animation
 
-  if (explosionFrame < 14) {
+  if (explosionFrame < 14 && lastCollisionLocation.y != 0) {
     image(smokeAnimFrameArray[explosionFrame], lastCollisionLocation.x, lastCollisionLocation.y);
     if (frameCount % 2 > 0) {
       explosionFrame += 1;
@@ -355,7 +355,7 @@ void checkCollision() {
         bossGraphicIndex = 1;
 
         // Boss loses strength equivalent to current bullet's power
-        bossStrength -= (bulletObject.get(j)[8]);
+        bossStrength -= (bulletObject.get(j)[2]);
         // remove the offending bullet
         bulletObject.remove(j);
         if (bossStrength < 1) {
