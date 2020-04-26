@@ -355,7 +355,7 @@ void checkCollision() {
         bossGraphicIndex = 1;
 
         // Boss loses strength equivalent to current bullet's power
-        bossStrength -= (bulletObject.get(j)[2]);
+        bossStrength -= (bulletObject.get(j)[8]);
         // remove the offending bullet
         bulletObject.remove(j);
         if (bossStrength < 1) {

@@ -5,11 +5,11 @@ boolean rightArrowTintActive = false;
 boolean upgradeTintActive = false;
 boolean mouseDown = true; //a disgusting hack, but Processing has no mouseReleased boolean, only a function
 
-boolean tripleLaserUpgradeEnabled = false;
+boolean tripleLaserUpgradeEnabled = true;
 boolean magnusEnforcedUpgradeEnabled = true;
-boolean MK2ShieldUpgradeEnabled = false;
-boolean thrusterUpgradeEnabled = false;
-boolean rapidFireUpgradeEnabled = false;
+boolean MK2ShieldUpgradeEnabled = true;
+boolean thrusterUpgradeEnabled = true;
+boolean rapidFireUpgradeEnabled = true;
 
 void upgradeScreen() {
   accelerate = false;
