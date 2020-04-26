@@ -40,10 +40,17 @@ float shipThrust = 0.1;
 PVector shipLocation = new PVector(width/2, height/2);
 
 void initialiseSprites() {
+  
+  // Reset ship PVector
   shipRotation = -1.56; // radians
   shipVelocity = new PVector(0, -0.1);
   shipLocation = new PVector(width/2,height-height/3); 
   bossLocation = new PVector(width/2,-height/3);
+  
+  // Return boss to full health
+  bossStrength = bossInitialStrength;
+  bossSpeed = bossInitialSpeed;
+  bossDefeated = false;
 
 }
 
@@ -191,14 +198,14 @@ void createBullet() {
     bulletRotation = shipRotation;
     //index 0 = bullet ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = initial rotation, 7 = bulletType, 8 = bullet damage
     if (weaponIndex == 1) { //standard laser gun
-      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation, 1.0, 2.0});
+      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation, 1.0, 10.0});
       soundArray[bulletshotIndex].rewind();
       soundArray[bulletshotIndex++].play();
       if (bulletshotIndex > 2) //allow mulitple sound channels for this bullet
         bulletshotIndex = 0;
     }
     else if (weaponIndex == 2) { //triple shot
-      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation, 2.0, 6.0});
+      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation, 2.0, 20.0});
       //bulletObject.add(new Float[] {float(bulletID), bulletLocation.x-20, bulletLocation.y-20, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation});
       //bulletObject.add(new Float[] {float(bulletID), bulletLocation.x+20, bulletLocation.y+20, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation});
       soundArray[bulletshotIndex].rewind();
@@ -207,7 +214,7 @@ void createBullet() {
         bulletshotIndex = 0;
     }
     else if (weaponIndex == 3) { //laser cannon
-      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * 0.1 * cos(bulletRotation)), (bulletSpeed * 0.1 * sin(bulletRotation)), bulletRotation, 3.0, 250.0});
+      bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * 0.1 * cos(bulletRotation)), (bulletSpeed * 0.1 * sin(bulletRotation)), bulletRotation, 3.0, 140.0});
       soundArray[4].rewind();
       soundArray[4].play();
     }
@@ -379,9 +386,49 @@ void drawAndMoveEnemies() {
                  
 */
 
+  // Boss object
+  ArrayList<int[]> bossObject = new ArrayList<int[]>(); 
 
+  // Boss PVectors
+  PVector bossLocation;
+  PVector bossBladeRotation = new PVector(10,10); 
+  
+  // Boss graphics
+  PImage[] bossGraphic = new PImage[4]; // ship image array
+  int bossGraphicIndex = 0;
+  PImage[] bossBladeGraphic = new PImage[2]; // ship image array
+  int bossBladeGraphicIndex = 0;
+  
+    // Animation data
+  float bossBladeAngle;
+  
+  // Movement data
+  PVector target;
+  final float bossInitialSpeed = .3;
+  float bossSpeed = bossInitialSpeed;
+  
+  // Positioning data
+  int bossBladeOffsetY = 30;
+  int bossIndicatorOffsetY = 5;
+  
+  // Collision data
+  int bossSize = 70;
+  final int bossInitialStrength = 1000;
+  int bossStrength = bossInitialStrength;
+  
+  // Indicator rotation
+  float indicatorRotation;
+  
+  // State tracking
+  boolean bossDefeated = false;
+  boolean bossThisLevel = false;
+  boolean deathAnimationFinished = false;
+  boolean bossLaughed = false;
+  
 
 void bossSequence() {
+  // Start the boss sequence
+  
   thread("attentionLifeformSoundSequence");
   
   // Here we have 2 boss themes, alternating based upon even level number
@@ -392,11 +439,70 @@ void bossSequence() {
     
   delay(2000);
   
-  centralScreenText = "TODO: Complete Boss sequence, level: " + gameLevel;
-  delay(10000);
-  centralScreenText = "";
-  
   while (!bossDefeated)
     delay(100);
+  
+}
+
+void handleBoss(){
+  // Handles boss related functionality
+
+  //get vector pointing from ship to Boss
+  PVector target = PVector.sub (shipLocation,bossLocation);
+  
+  // normalize to a unit vector in which each component is [0..1]
+  target.normalize();
+
+  // multiply target vector by speed to get vector from [0..speed]
+  target.mult (bossSpeed);
+  
+  // Move the boss vector towards the ship
+  bossLocation.add (target);
+  
+  // Spin and render his blade
+  bossBladeAngle = bossBladeAngle + 4;
+  translate(bossLocation.x, bossLocation.y + bossBladeOffsetY);
+  rotate( radians(bossBladeAngle) );
+  image(bossBladeGraphic[bossBladeGraphicIndex], 0, 0);
+  rotate(- radians(bossBladeAngle));
+  translate(- bossLocation.x, - bossLocation.y - bossBladeOffsetY);
+  
+  // Render his body
+  image(bossGraphic[bossGraphicIndex], bossLocation.x, bossLocation.y);
+  bossGraphicIndex = 0;
+  
+  // Render his health indicator
+  indicatorRotation = norm(bossStrength, 0, bossInitialStrength);
+  indicatorRotation *= 4.5;
+  translate(bossLocation.x, bossLocation.y + bossIndicatorOffsetY);
+  rotate( + indicatorRotation );
+  image(bossGraphic[2], 0, 0);
+  rotate( - indicatorRotation );
+  translate( - bossLocation.x, - bossLocation.y - bossIndicatorOffsetY);
+  
+  // if boss is within health range, he gets mad and plunges towards player
+  if (bossStrength < bossInitialStrength/2){
+    // animate blinking light
+    if (bossGraphicIndex == 0){
+      bossGraphicIndex = 3;
+      if (!bossLaughed) {
+        soundArray[21].rewind();
+        soundArray[21].play();
+        bossLaughed = true;
+      }
+    }
+    bossSpeed = 1.6;
+  }
+  if(bossStrength < 1){
+   // stop boss following player and play explosion animations
+   target = new PVector(bossLocation.x,height * 2); 
+   bossSpeed = bossInitialSpeed;
+   renderExplosion();
+   if(explosionFrame == 15){
+     explosionFrame = 0;
+     lastCollisionLocation.x = bossLocation.x + random(-125,125);
+     lastCollisionLocation.y = bossLocation.y + random(-35,35);
+   }
+  }
   
 }

@@ -6,7 +6,7 @@ boolean upgradeTintActive = false;
 boolean mouseDown = true; //a disgusting hack, but Processing has no mouseReleased boolean, only a function
 
 boolean tripleLaserUpgradeEnabled = false;
-boolean magnusEnforcedUpgradeEnabled = false;
+boolean magnusEnforcedUpgradeEnabled = true;
 boolean MK2ShieldUpgradeEnabled = false;
 boolean thrusterUpgradeEnabled = false;
 boolean rapidFireUpgradeEnabled = false;
