@@ -345,7 +345,10 @@ void checkCollision() {
   // Check for collisions between asteroid / ship and bullet / asteroid
 
   boolean collisionDetected = false; //is there a collision this frame?
-
+ 
+ // TEMP FOR TESTING
+ bossDefeated = true;
+ 
   if (bossActivated) {
     // Iterate over every bullet and check if it collided with the boss
     for (int j = 0; j < bulletObject.size(); j++) {

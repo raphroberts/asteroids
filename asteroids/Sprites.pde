@@ -415,7 +415,7 @@ void drawAndMoveEnemies() {
   int bossSize = 80;
   final int bossInitialStrength = 1000;
   int bossStrength = bossInitialStrength;
-  final float bossDamage = 0.2;
+  final float bossDamage = 0.03;
   
   // Indicator rotation
   float indicatorRotation;
