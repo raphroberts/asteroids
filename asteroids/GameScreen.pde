@@ -335,7 +335,7 @@ void drawShieldUI() {
 //Shields & Damage
 int initialHP = 500;
 int maxShieldHP = initialHP;
-int shieldHP = maxShieldHP;
+float shieldHP = maxShieldHP;
 int shieldRechargeDelay = 50; //recharge 1 point this number of frames
 int shieldRechargeTick = 0; //current recharge tick
 int weaponDamage = 2;
@@ -347,7 +347,7 @@ void checkCollision() {
   boolean collisionDetected = false; //is there a collision this frame?
 
   if (bossActivated) {
-    // iterate over every bullet and check if it collided with the boss
+    // Iterate over every bullet and check if it collided with the boss
     for (int j = 0; j < bulletObject.size(); j++) {
       PVector bulletHitbox = new PVector(bulletObject.get(j)[1], bulletObject.get(j)[2]);
       if (dist(bulletHitbox.x, bulletHitbox.y, bossLocation.x, bossLocation.y) < bossSize) {
@@ -361,6 +361,12 @@ void checkCollision() {
         if (bossStrength < 1) {
           bossDefeated = true;
         }
+      }
+      // Check if ship has collided with the boss
+      if (shipLocation.x > bossLocation.x - bossSize * 2 && shipLocation.x < bossLocation.x + bossSize * 2 && shipLocation.y > bossLocation.y - bossSize * 1.5 && shipLocation.y < bossLocation.y + bossSize * 1.5 ){
+        // damage the ship
+        damageShip(bossDamage);
+        collisionDetected = true;
       }
     }
   } else {      
@@ -416,7 +422,7 @@ void checkCollision() {
   }
 }
 
-void damageShip(int amount) {
+void damageShip(float amount) {
   //Whenever the ship receives some damage "amount", it is handled via this function
 
   shieldHP = shieldHP - amount;

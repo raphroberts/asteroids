@@ -412,9 +412,10 @@ void drawAndMoveEnemies() {
   int bossIndicatorOffsetY = 5;
   
   // Collision data
-  int bossSize = 70;
+  int bossSize = 80;
   final int bossInitialStrength = 1000;
   int bossStrength = bossInitialStrength;
+  final float bossDamage = 0.2;
   
   // Indicator rotation
   float indicatorRotation;
