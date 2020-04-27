@@ -71,7 +71,7 @@ void renderCurrentUpgrade(){
 
 String[] upGradeTitles = { "Continuous Fire", "Triple shot", "Enforcer", "Shield MK 2", "Thruster MK 2" };
 String[] upGradeDescriptions = { "Upgrades single shot cannon to fire continuously when holding down the fire button", "Shoot three streams of bullets", "Charges a high power laser beam", "Increase shield capacity", "Increases ship speed" };
-boolean[] upGradeActive = { true, false, false, false, false };
+boolean[] upGradeActive = { false, false, false, false, false };
 
 void upgradeScreen() {
   // Handles selection of ship upgrades
@@ -242,8 +242,10 @@ renderCurrentUpgrade();
   
   if (mousePressed && !mouseDown) {
     mouseDown = true;
+    
+    // If an upgrade was selected, activate it and continue the game
     if (upgradeTintActive) {
-      //upgrade selected. Enable upgrade
+      
       
       if (upgradeScreenIndex == 0) {
         rapidFireUpgradeEnabled = true;
@@ -266,10 +268,11 @@ renderCurrentUpgrade();
       }
       noCursor();
       
-      // Mark upgrade as completed, then continue game
       upGradeActive[upgradeScreenIndex] = true;
       continueLevel = true;  
     }
+    
+    // If a navigation arrow was pressed, scroll to the next/previous upgrade
     else if (leftArrowTintActive) {
       upgradeScreenIndex --;
       if (upgradeScreenIndex < 0)
