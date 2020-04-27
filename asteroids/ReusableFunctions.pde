@@ -15,9 +15,6 @@ float levelUpStar = 100;
 float titleBannerX = 530;
 float titleBannerY = 80;
 
-// Cursor graphic
-PImage cursor;
-
 /*
   ___                    _                 _ _ _           
  / __| __ ___ ___ _ _   | |_  __ _ _ _  __| | (_)_ _  __ _ 

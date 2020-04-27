@@ -178,7 +178,7 @@ void UIManager() {
   if (MK2ShieldUpgradeEnabled)
     image(iconsUI[3], width - shieldXPadding, height - iconVerticalPadding - basicPadding);
   else
-    image(iconsUI[4], width - shieldXPadding, height - iconVerticalPadding - basicPadding);
+    image(iconsUI[7], width - shieldXPadding, height - iconVerticalPadding - basicPadding);
 
   fill(mainFontColour);
   textAlign(CENTER, TOP);

@@ -141,8 +141,9 @@ void setup() {
   gameFont = createFont("data/Rajdhani-Medium.ttf", gameTextSizeMain);
   textFont(gameFont); 
   
-  // misc - refactor?
+  // upgrade screen graphics
   cursor = loadImage("images/cursor.png");
+  upgradeLock = loadImage("images/already_upgraded.png");
   
 }
 

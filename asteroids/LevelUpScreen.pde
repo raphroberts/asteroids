@@ -4,6 +4,10 @@
 int upgradeScreenIndex = 0;
 int upgradeScreenIndexLimit = 4;
 
+// Graphics
+PImage cursor;
+PImage upgradeLock;
+
 // Navigation arrows
 boolean leftArrowTintActive = false;
 boolean rightArrowTintActive = false;
@@ -44,7 +48,7 @@ void renderCurrentUpgrade(){
   // Render current upgrade
   
   for (int i = 0; i <= upgradeScreenIndexLimit; i++){
-    // if we are at the current upgrade index
+    // Render the upgrade unless it has already been activated
     if (i == upgradeScreenIndex){
       // pulse the upgrade if the mouse is hovering over it
       if (upgradeTintActive) {
@@ -57,14 +61,17 @@ void renderCurrentUpgrade(){
       text(upGradeTitles[i], width/2, 300);
       textSize(16);
       text(upGradeDescriptions[i], width/2, 270, width/2, 100);
+      if (upGradeActive[i]){
+        image(upgradeLock, width/2, height/2);
+      }
     } 
   } 
   
 }
 
 String[] upGradeTitles = { "Continuous Fire", "Triple shot", "Enforcer", "Shield MK 2", "Thruster MK 2" };
-String[] upGradeDescriptions = { "The single shot weapon can fire continuously by holding down the fire button", "Shoot three streams of bullets", "Charges a high power laser beam", "Increase shield capacity", "Increases ship speed" };
-boolean[] upGradeActive = { false, false, false, false, false };
+String[] upGradeDescriptions = { "Upgrades single shot cannon to fire continuously when holding down the fire button", "Shoot three streams of bullets", "Charges a high power laser beam", "Increase shield capacity", "Increases ship speed" };
+boolean[] upGradeActive = { true, false, false, false, false };
 
 void upgradeScreen() {
   // Handles selection of ship upgrades
@@ -87,7 +94,7 @@ void upgradeScreen() {
   }
     
   //temp upgrade fix, remove taken upgrades  
-  activeUpgradeOnlyFix();
+  //activeUpgradeOnlyFix();
   
   background(backgroundImage[2]);
 
@@ -236,7 +243,8 @@ renderCurrentUpgrade();
   if (mousePressed && !mouseDown) {
     mouseDown = true;
     if (upgradeTintActive) {
-      //upgrade selected. Enable upgrade, continue game;
+      //upgrade selected. Enable upgrade
+      
       if (upgradeScreenIndex == 0) {
         rapidFireUpgradeEnabled = true;
         gunReloaded = false;
@@ -257,6 +265,9 @@ renderCurrentUpgrade();
         changeThruster(2);
       }
       noCursor();
+      
+      // Mark upgrade as completed, then continue game
+      upGradeActive[upgradeScreenIndex] = true;
       continueLevel = true;  
     }
     else if (leftArrowTintActive) {
