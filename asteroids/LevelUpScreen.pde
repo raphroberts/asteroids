@@ -15,11 +15,64 @@ boolean tripleLaserUpgradeEnabled = false;
 boolean magnusEnforcedUpgradeEnabled = false;
 boolean MK2ShieldUpgradeEnabled = false;
 boolean thrusterUpgradeEnabled = false;
-boolean rapidFireUpgradeEnabled = true;
+boolean rapidFireUpgradeEnabled = false;
+
+// Button animation data
+float upgradeArrow = 47;
+float upgradeButtonIcon = 50;
+color tintValue = color(255, 0, 255);
+
+// Positioning data
+int upGradeOffset = 40;
+
+void pulseUpgrade(int pulseIndex){
+  // Make upgrade icon pulse
+  
+  tint(tintValue);
+  upgradeButtonIcon =  pulseImage(50, 40, 0.9, 5, false);
+  image(iconsUI[pulseIndex], width/2, height/4 + upGradeOffset, upgradeButtonIcon, upgradeButtonIcon); 
+  tint(255);
+}
+
+void stopPulseUpgrade(int pulseIndex){
+  // Stop upgrade icon from pulsing
+  
+  image(iconsUI[pulseIndex], width/2, height/4 + upGradeOffset);  
+}
+
+void renderCurrentUpgrade(){
+  // Render current upgrade
+  
+  for (int i = 0; i <= upgradeScreenIndexLimit; i++){
+    // if we are at the current upgrade index
+    if (i == upgradeScreenIndex){
+      // pulse the upgrade if the mouse is hovering over it
+      if (upgradeTintActive) {
+        pulseUpgrade(i);
+      }
+      else {
+        stopPulseUpgrade(i); 
+      }
+      textSize(26);
+      text(upGradeTitles[i], width/2, 300);
+      textSize(16);
+      text(upGradeDescriptions[i], width/2, 270, width/2, 100);
+    } 
+  } 
+  
+}
+
+String[] upGradeTitles = { "Continuous Fire", "Triple shot", "Enforcer", "Shield MK 2", "Thruster MK 2" };
+String[] upGradeDescriptions = { "The single shot weapon can fire continuously by holding down the fire button", "Shoot three streams of bullets", "Charges a high power laser beam", "Increase shield capacity", "Increases ship speed" };
+boolean[] upGradeActive = { false, false, false, false, false };
 
 void upgradeScreen() {
   // Handles selection of ship upgrades
   
+ // Set cursor to crosshair image
+  cursor(cursor);
+  
+  // Not sure what this is for steve?
   accelerate = false;
   
   // Skip upgrade screen if all upgrades already taken
@@ -39,36 +92,37 @@ void upgradeScreen() {
   background(backgroundImage[2]);
 
   
-  fill(#FF6F57);
-  textSize(26);
 
   if (leftArrowTintActive) {
-    tint(#FFA295);
-    image(upgradeScreenImage[0], width/4, height / 2);
+    tint(tintValue);
+    upgradeArrow =  pulseImage(48, 37, 0.9, 5, false);
+    image(upgradeScreenImage[0], width/8, height/2, upgradeArrow, upgradeArrow * 2); 
     tint(255);
   }
   else {
-    image(upgradeScreenImage[0], width/4, height / 2);
+    image(upgradeScreenImage[0], width/8, height / 2);
   }
   
   if (rightArrowTintActive) {
-    tint(#FFA295);
-    image(upgradeScreenImage[1], width - width/4, height /2);
+    tint(tintValue);
+    upgradeArrow =  pulseImage(48, 37, 0.9, 5, false);
+    image(upgradeScreenImage[1], width - width/8, height/2, upgradeArrow, upgradeArrow * 2); 
     tint(255);
   }
   else {
-    image(upgradeScreenImage[1], width - width/4, height /2);
+    image(upgradeScreenImage[1], width - width/8, height /2);
   }
-  
-  
+
+renderCurrentUpgrade();
+
+/*  
+  // Triple pulse laser upgrade
   if (upgradeScreenIndex == 0) {
     if (upgradeTintActive) {
-      tint(#FFA295);
-      image(shipGraphic[1], width/2, height/2);  
-      tint(255);
+      pulseUpgrade(1);
     }
     else {
-      image(shipGraphic[1], width/2, height/2);  
+      stopPulseUpgrade(1); 
     }
     // Triple pulse laser upgrade
     textSize(gameTextSizeMain);
@@ -154,23 +208,25 @@ void upgradeScreen() {
     fill(255);
     text("Rapid fire upgrade", width - 100, height / 2);
   }
-  
-  if (mouseX >= width/2 - upgradeScreenImage[2].width/2 && mouseX <= width/2 - upgradeScreenImage[2].width/3.5 &&
-      mouseY >= height - 20 - upgradeScreenImage[2].height && mouseY <= height - upgradeScreenImage[2].height/2) { // Raph.. please forgive me. I'm a lost soul when it comes to this sort of thing!
+ */
+ 
+  // Check if mouse is hovering over arrows
+  if (mouseX >= width - width/3) { 
+    rightArrowTintActive = true;
+  }
+  else {
+    rightArrowTintActive = false;
+  }
+  if (mouseX <= width/3) { 
     leftArrowTintActive = true;
   }
   else {
     leftArrowTintActive = false;
   }
-  if (mouseX >= width/2 - upgradeScreenImage[2].width/2 + 300 && mouseX <= width/2 - upgradeScreenImage[2].width/3.5 + 300 &&
-      mouseY >= height - 20 - upgradeScreenImage[2].height && mouseY <= height - upgradeScreenImage[2].height/2) {
-      rightArrowTintActive = true;
-      }
-  else {
-    rightArrowTintActive = false;
-  }
-  if (mouseX >= width/2 - upgradeScreenImage[2].width/2 + 150 && mouseX <= width/2 - upgradeScreenImage[2].width/3.5 + 150 &&
-      mouseY >= height - 20 - upgradeScreenImage[2].height && mouseY <= height - upgradeScreenImage[2].height/2) {
+  
+  // Check if mouse is hovering over upgrade
+  
+  if (mouseX >= width/3 && mouseX <= width - width/3) {
     upgradeTintActive = true;
       }
   else {
@@ -181,38 +237,42 @@ void upgradeScreen() {
     mouseDown = true;
     if (upgradeTintActive) {
       //upgrade selected. Enable upgrade, continue game;
-      if (upgradeScreenIndex == 0)
-        tripleLaserUpgradeEnabled = true;
-      else if (upgradeScreenIndex == 1)
-        magnusEnforcedUpgradeEnabled = true;
-      else if (upgradeScreenIndex == 2) {
-        MK2ShieldUpgradeEnabled = true;
-        shieldImageIndex = 2;
-        changeShield(2);  
-      }
-      else if (upgradeScreenIndex == 3) {
-        thrusterUpgradeEnabled = true;
-        thrusterImageIndex = 2;
-        changeThruster(2);
-      }
-      else if (upgradeScreenIndex == 4) {
+      if (upgradeScreenIndex == 0) {
         rapidFireUpgradeEnabled = true;
         gunReloaded = false;
         iconsUI[0] = requestImage("images/icons/icon_single2.png");
       }
+      else if (upgradeScreenIndex == 1)
+        tripleLaserUpgradeEnabled = true;
+      else if (upgradeScreenIndex == 2)
+        magnusEnforcedUpgradeEnabled = true;
+      else if (upgradeScreenIndex == 3) {
+        MK2ShieldUpgradeEnabled = true;
+        shieldImageIndex = 2;
+        changeShield(2);  
+      }
+      else if (upgradeScreenIndex == 4) {
+        thrusterUpgradeEnabled = true;
+        thrusterImageIndex = 2;
+        changeThruster(2);
+      }
+      noCursor();
       continueLevel = true;  
     }
     else if (leftArrowTintActive) {
-      if (--upgradeScreenIndex < 0)
+      upgradeScreenIndex --;
+      if (upgradeScreenIndex < 0)
         upgradeScreenIndex = upgradeScreenIndexLimit;
     }
     else if (rightArrowTintActive) {
-      if (++upgradeScreenIndex > upgradeScreenIndexLimit)
+      upgradeScreenIndex ++;
+      if (upgradeScreenIndex > upgradeScreenIndexLimit)
         upgradeScreenIndex = 0;
     }
   }
 }
 
+/*
 void activeUpgradeOnlyFix() {
   boolean found = false;
   int currentIndex = upgradeScreenIndex;
@@ -234,8 +294,11 @@ void activeUpgradeOnlyFix() {
     iterations++;
   }
 }
+*/
 
 void cycleUpgradeUI() {
+  
+  // Cycle through weapon upgrades
   if (leftArrowTintActive) 
     upgradeScreenIndex--;
   else if (rightArrowTintActive)

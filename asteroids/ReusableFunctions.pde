@@ -15,6 +15,9 @@ float levelUpStar = 100;
 float titleBannerX = 530;
 float titleBannerY = 80;
 
+// Cursor graphic
+PImage cursor;
+
 /*
   ___                    _                 _ _ _           
  / __| __ ___ ___ _ _   | |_  __ _ _ _  __| | (_)_ _  __ _ 
@@ -25,15 +28,10 @@ float titleBannerY = 80;
  
 String currentScreen = "title";
 PImage[] backgroundImage = new PImage[4]; // background image array
-// Current sizes and scaling status for "pulsing" graphic animations
-// Note: Each animated graphic uses a unique index from these arrays
-// 0 = startButton 1 = alertBanner 2 = LevelUpBanner 3 = levelUpStar
-float[] currentSize = { titleBannerX, titleBannerY, alertBanner, LevelUpBanner, levelUpStar };
-boolean[] scaleDown = { true, true, true, true, true };
 
 void screenHandler() {
   // Function to manage screen changes
-
+  
   switch(currentScreen) {
 
   case "title": 
@@ -77,6 +75,7 @@ void screenHandler() {
     
     UIManager();
     //currentScreen = "level up"; // temp instant transition
+    
     break;
 
   case "level up": 
@@ -115,6 +114,12 @@ void screenHandler() {
  
 */
     
+// Current sizes and scaling status for "pulsing" graphic animations
+// Note: Each animated graphic uses a unique index from these arrays
+// 0, 1 = title screen banner, 2 = alert banner, 3 = level up banner, 4 = level up star, 5 = upgrade screen arrow, 6 = upgrade screen icon
+float[] currentSize = { titleBannerX, titleBannerY, alertBanner, LevelUpBanner, levelUpStar, upgradeArrow, upgradeButtonIcon };
+boolean[] scaleDown = { true, true, true, true, true, true, true };
+
     
 String renderButton(String buttonText, float x, float y) {
   // Renders an interactive button with provided buttonText at X,Y coords

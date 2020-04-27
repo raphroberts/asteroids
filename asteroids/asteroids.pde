@@ -98,13 +98,13 @@ void setup() {
   
   // Shield icons
   iconsUI[3] = requestImage("images/icons/icon_shield1.png");
-  iconsUI[4] = requestImage("images/icons/icon_shield2.png");
   iconsUI[5] = requestImage("images/icons/icon_shield3.png");
-  
+  iconsUI[7] = requestImage("images/icons/icon_shield2.png");
+  iconsUI[8] = requestImage("images/icons/icon_thrust3.png");
+
   // Thrust icons
   iconsUI[6] = requestImage("images/icons/icon_thrust1.png");
-  iconsUI[7] = requestImage("images/icons/icon_thrust2.png");
-  iconsUI[8] = requestImage("images/icons/icon_thrust3.png");
+  iconsUI[4] = requestImage("images/icons/icon_thrust2.png");
   
   // Offline weapon
   iconsUI[9] = requestImage("images/icons/icon_offline.png");
@@ -142,7 +142,7 @@ void setup() {
   textFont(gameFont); 
   
   // misc - refactor?
-  
+  cursor = loadImage("images/cursor.png");
   
 }
 
