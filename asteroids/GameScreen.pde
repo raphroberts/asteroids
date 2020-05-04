@@ -89,16 +89,16 @@ void renderStars() {
 
 /*
 
- ___              _           
+  ___              _           
  / _ \__ _____ _ _| |__ _ _  _ 
- | (_) \ V / -_) '_| / _` | || |
+| (_) \ V / -_) '_| / _` | || |
  \___/ \_/\___|_| |_\__,_|\_, |
- |__/ 
+                           |__/ 
  
  */
 
 // UI icons images
-PImage[] iconsUI = new PImage[10];
+PImage[] iconsUI = new PImage[11];
 
 // Positioning of UI elements
 final int basicPadding = 20;
@@ -325,9 +325,9 @@ void drawShieldUI() {
 
 /*
 
- ___     _ _ _    _             
+  ___     _ _ _    _             
  / __|___| | (_)__(_)___ _ _  ___
- | (__/ _ \ | | (_-< / _ \ ' \(_-<
+| (__/ _ \ | | (_-< / _ \ ' \(_-<
  \___\___/_|_|_/__/_\___/_||_/__/
  
  */

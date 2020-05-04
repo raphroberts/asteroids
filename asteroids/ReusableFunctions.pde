@@ -125,11 +125,27 @@ String renderButton(String buttonText, float x, float y) {
   return null; //delete this, temp to prevent error
 }
 
+void populateImageArray(PImage[] arrayName, String prefix, int arrayLength){
+  // populates the provided PImage array with images (e.g images/ship1.png, images/ship2.png etc)
+  // arrayName = name of the array to populate
+  // prefix = url and file name
+  // arrayLength = number of images in the array
+  
+  for (int i=0; i<=arrayLength; i++){
+    arrayName[i] = loadImage(prefix + (i+1) + ".png");
+  }
+}
 
 int randomInt(int low, int high) {
   // Returns a random integer
   
   return (int)round(random(low, high));
+}
+
+void mouseReleased() { 
+  //generic function for all mouseReleased events
+  
+  mouseDown = false;
 }
 
 float pulseImage(int maxSize, int minSize, float speed, int scaleIndex, boolean noBounce) {

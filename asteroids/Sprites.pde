@@ -51,6 +51,12 @@ void initialiseSprites() {
   bossStrength = bossInitialStrength;
   bossSpeed = bossInitialSpeed;
   bossDefeated = false;
+  
+  //Bullet setup
+  bulletLocation = new PVector(width/2, height/2);
+  
+  // Default weapon
+  changeWeapon(1);
 
 }
 
@@ -166,13 +172,7 @@ float bulletSize = 1;
 
 // Array list for storing bullet data
 //index 0 = bullet ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = initial rotation, 7 = bulletType, 8 = bullet damage
-/*
- object ID can be used for bullet type, e.g:
- 0 = green lazer
- 1 = triple fire
- 2 = rapid fire
- 3 = high speed (etc.)
- */
+
 ArrayList<Float[]> bulletObject = new ArrayList<Float[]>(); 
 
 int weaponIndex = 1; //0 = single pulse laser
@@ -190,12 +190,13 @@ void createBullet() {
   // shoot bullet as long as gun is reloaded
   if (gunReloaded && weaponCooldownTick > weaponCooldown) {
     weaponCooldownTick = 0;
-    //create an asteroid at the given x, y coords, with size = "large" or "small"
+    
+    // Set bullet location/rotation to match ship
     bulletLocation.x = shipLocation.x;
     bulletLocation.y = shipLocation.y;
-
-    //PVector initialVelocity = new PVector(randomInt(-4, 4), randomInt(-4, 4));
     bulletRotation = shipRotation;
+    
+    // Add bullet depending on current weapon that is firing it
     //index 0 = bullet ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = initial rotation, 7 = bulletType, 8 = bullet damage
     if (weaponIndex == 1) { //standard laser gun
       bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation, 1.0, 8.0});
@@ -206,8 +207,6 @@ void createBullet() {
     }
     else if (weaponIndex == 2) { //triple shot
       bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation, 2.0, 15.0});
-      //bulletObject.add(new Float[] {float(bulletID), bulletLocation.x-20, bulletLocation.y-20, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation});
-      //bulletObject.add(new Float[] {float(bulletID), bulletLocation.x+20, bulletLocation.y+20, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation});
       soundArray[bulletshotIndex].rewind();
       soundArray[bulletshotIndex++].play();
       if (bulletshotIndex > 2) //allow mulitple sound channels for this bullet
@@ -229,19 +228,16 @@ void createBullet() {
 }
 
 void drawAndMoveBullets() {
-  //iterate through all enemyObjects and draw them, also move them
+  //iterate through all bullet objects draw and update their positions
 
   for (int i = 0; i < bulletObject.size(); i++) {
     Float[] obj = bulletObject.get(i);
     PVector bulletCoords = new PVector(obj[1], obj[2]);
     PVector bulletVelocity = new PVector(obj[4], obj[5]);
     int bulletType = round(obj[7]);
-
-    //draw
-    //image(enemyGraphics[i], objCoords.x, objCoords.y);
     
     translate(bulletCoords.x, bulletCoords.y);
-    rotate(shipRotation);
+    rotate(obj[6]);
     noStroke();
     
     if (bulletType == 1) {
@@ -260,7 +256,7 @@ void drawAndMoveBullets() {
     }
     
     
-    rotate(-shipRotation);
+    rotate(-obj[6]);
     translate(-bulletCoords.x, -bulletCoords.y);
     fill(255);
 

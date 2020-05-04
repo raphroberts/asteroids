@@ -25,9 +25,6 @@ void titleSetup() {
   titleShipX = width / 2;
   titleShipY = height + titleShipPadding;
   
-  titleShip[0] = loadImage("images/title_screen_ship.png");
-  titleShip[1] = loadImage("images/title_screen_ship_thruster.png");
-  
   // initialise starfield
   generateStars();
     

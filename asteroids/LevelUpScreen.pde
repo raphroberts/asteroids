@@ -6,7 +6,6 @@ int upgradeScreenIndexLimit = 4;
 
 // Graphics
 PImage cursor;
-PImage upgradeLock;
 
 // Navigation arrows
 boolean leftArrowTintActive = false;
@@ -44,61 +43,10 @@ void stopPulseUpgrade(int pulseIndex){
   image(iconsUI[pulseIndex], width/2, height/4 + upGradeOffset);  
 }
 
-void renderCurrentUpgrade(){
-  // Render current upgrade
-  
-  for (int i = 0; i <= upgradeScreenIndexLimit; i++){
-    // Render the upgrade unless it has already been activated
-    if (i == upgradeScreenIndex){
-      // pulse the upgrade if the mouse is hovering over it
-      if (upgradeTintActive) {
-        pulseUpgrade(i);
-      }
-      else {
-        stopPulseUpgrade(i); 
-      }
-      textSize(26);
-      text(upGradeTitles[i], width/2, 300);
-      textSize(16);
-      text(upGradeDescriptions[i], width/2, 270, width/2, 100);
-      if (upGradeActive[i]){
-        image(upgradeLock, width/2, height/2);
-      }
-    } 
-  } 
-  
-}
-
-String[] upGradeTitles = { "Continuous Fire", "Triple shot", "Enforcer", "Shield MK 2", "Thruster MK 2" };
-String[] upGradeDescriptions = { "Upgrades single shot cannon to fire continuously when holding down the fire button", "Shoot three streams of bullets", "Charges a high power laser beam", "Increase shield capacity", "Increases ship speed" };
-boolean[] upGradeActive = { false, false, false, false, false };
-
-void upgradeScreen() {
-  // Handles selection of ship upgrades
-  
- // Set cursor to crosshair image
-  cursor(cursor);
-  
-  // Not sure what this is for steve?
-  accelerate = false;
-  
-  // Skip upgrade screen if all upgrades already taken
-  if (areAllUpgradesEnabled()) { 
-    continueLevel = true;    
-    return;
-  }
-  
-  // Stop thruster sound if it is playing
-  if (soundArray[13].isPlaying()) {
-    soundArray[13].pause(); // stop thruster sound
-  }
-    
-  //temp upgrade fix, remove taken upgrades  
-  //activeUpgradeOnlyFix();
+void renderUpgradeScreen(){
+  // Draws the upgrade screen and handles mouseover effect on elements
   
   background(backgroundImage[2]);
-
-  
 
   if (leftArrowTintActive) {
     tint(tintValue);
@@ -119,104 +67,7 @@ void upgradeScreen() {
   else {
     image(upgradeScreenImage[1], width - width/8, height /2);
   }
-
-renderCurrentUpgrade();
-
-/*  
-  // Triple pulse laser upgrade
-  if (upgradeScreenIndex == 0) {
-    if (upgradeTintActive) {
-      pulseUpgrade(1);
-    }
-    else {
-      stopPulseUpgrade(1); 
-    }
-    // Triple pulse laser upgrade
-    textSize(gameTextSizeMain);
-    image(upgradeScreenImage[2], width/2, height/2);
-    //strokeWeight(1);
-    //text("Through unique engineering, three standard lasers are combined together to fire at once, offering a three times greater combined rpm, with the same damage per bullet.", width/2, height - 50);
-    fill(255);
-    text("Stats\nMax firerate: 36rps\nDamage per shot: 6", width - 100, height / 2);
-  }
   
-  else if (upgradeScreenIndex == 1) {
-    // Blue billy upgrade
-   if (upgradeTintActive) {
-      tint(#FFA295);
-      image(shipGraphic[2], width/2, height - 160);  
-      tint(255);
-    }
-    else {
-      image(shipGraphic[2], width/2, height - 160);  
-    }
-    //text("Triple Pulse Laser", width/2, height - 100);
-    textSize(gameTextSizeMain);
-    image(upgradeScreenImage[2], width/2, height - 20);
-    //strokeWeight(1);
-    //text("Through unique engineering, three standard lasers are combined together to fire at once, offering a three times greater combined rpm, with the same damage per bullet.", width/2, height - 50);
-    fill(255);
-    text("Stats\nMax firerate: 0.5rps\nDamage per shot: 250\nCooldown: 1 second", width - 100, height / 2);
-  }
-  
-  else if (upgradeScreenIndex == 2) {
-    // MK2 Shield upgrade
-     if (upgradeTintActive) {
-        tint(#FFA295);
-        image(shieldGraphic[2], width/2, height - 160);  
-        tint(255);
-      }
-      else {
-        image(shieldGraphic[2], width/2, height - 160);  
-      }
-    //text("Triple Pulse Laser", width/2, height - 100);
-    textSize(gameTextSizeMain);
-    image(upgradeScreenImage[2], width/2, height - 20);
-    //strokeWeight(1);
-    //text("Through unique engineering, three standard lasers are combined together to fire at once, offering a three times greater combined rpm, with the same damage per bullet.", width/2, height - 50);
-    fill(255);
-    text("Stats\nHitpoints: 1500\nRecharge rate: x2.5 Standard", width - 100, height / 2);
-  }
-  
-  else if (upgradeScreenIndex == 3) {
-    // Thruster upgrade
-     if (upgradeTintActive) {
-        tint(#FFA295);
-        image(iconsUI[8], width/2, height - 160);  
-        tint(255);
-      }
-      else {
-        image(iconsUI[8], width/2, height - 160);  
-      }
-    //text("Triple Pulse Laser", width/2, height - 100);
-    textSize(gameTextSizeMain);
-    image(upgradeScreenImage[2], width/2, height - 20);
-    //strokeWeight(1);
-    //text("Through unique engineering, three standard lasers are combined together to fire at once, offering a three times greater combined rpm, with the same damage per bullet.", width/2, height - 50);
-    fill(255);
-    text("Stats\nMax Speed: 4\nManvouerability: 7", width - 100, height / 2);
-  }
-
-  else if (upgradeScreenIndex == 4) {
-    // Rapid fire upgrade
-     if (upgradeTintActive) {
-        tint(#FFA295);
-        image(iconsUI[9], width/2, height - 160);  
-        tint(255);
-      }
-      else {
-        image(iconsUI[9], width/2, height - 160);  
-      }
-    //text("Triple Pulse Laser", width/2, height - 100);
-    textSize(gameTextSizeMain);
-    image(upgradeScreenImage[2], width/2, height - 20);
-    //strokeWeight(1);
-    //text("Through unique engineering, three standard lasers are combined together to fire at once, offering a three times greater combined rpm, with the same damage per bullet.", width/2, height - 50);
-    fill(255);
-    text("Rapid fire upgrade", width - 100, height / 2);
-  }
- */
- 
   // Check if mouse is hovering over arrows
   if (mouseX >= width - width/3) { 
     rightArrowTintActive = true;
@@ -232,13 +83,41 @@ renderCurrentUpgrade();
   }
   
   // Check if mouse is hovering over upgrade
-  
   if (mouseX >= width/3 && mouseX <= width - width/3) {
     upgradeTintActive = true;
       }
   else {
     upgradeTintActive = false;
-  }
+  }  
+
+}
+
+void renderCurrentUpgrade(){
+  // Render the upgrade that has been browsed to
+  
+  for (int i = 0; i <= upgradeScreenIndexLimit; i++){
+    // Render the upgrade unless it has already been activated
+    if (i == upgradeScreenIndex){
+      // pulse the upgrade if the mouse is hovering over it
+      if (upgradeTintActive) {
+        pulseUpgrade(i);
+      }
+      else {
+        stopPulseUpgrade(i); 
+      }
+      textSize(26);
+      text(upGradeTitles[i], width/2, 300);
+      textSize(16);
+      text(upGradeDescriptions[i], width/2, 270, width/2, 100);
+      if (upGradeActive[i]){
+        image(upgradeScreenImage[2], width/2, height/2);
+      }
+    } 
+  } 
+}
+
+void checkForSelection(){
+  // Handles UI clicks on upgrade screen
   
   if (mousePressed && !mouseDown) {
     mouseDown = true;
@@ -250,7 +129,7 @@ renderCurrentUpgrade();
       if (upgradeScreenIndex == 0) {
         rapidFireUpgradeEnabled = true;
         gunReloaded = false;
-        iconsUI[0] = requestImage("images/icons/icon_single2.png");
+        iconsUI[0] = iconsUI[10];
       }
       else if (upgradeScreenIndex == 1)
         tripleLaserUpgradeEnabled = true;
@@ -284,57 +163,52 @@ renderCurrentUpgrade();
         upgradeScreenIndex = 0;
     }
   }
-}
-
-/*
-void activeUpgradeOnlyFix() {
-  boolean found = false;
-  int currentIndex = upgradeScreenIndex;
-  int iterations = 0;
-  while (!found && iterations < 2) {
-    if (upgradeScreenIndex == 0 && tripleLaserUpgradeEnabled)
-      cycleUpgradeUI();
-    if (upgradeScreenIndex == 1 && magnusEnforcedUpgradeEnabled)
-      cycleUpgradeUI();
-    if (upgradeScreenIndex == 2 && MK2ShieldUpgradeEnabled)
-      cycleUpgradeUI();
-    if (upgradeScreenIndex == 3 && thrusterUpgradeEnabled)
-      cycleUpgradeUI();
-    if (upgradeScreenIndex == 4 && rapidFireUpgradeEnabled)
-      cycleUpgradeUI();
-    else {
-      found = true;
-    }
-    iterations++;
-  }
-}
-*/
-
-void cycleUpgradeUI() {
   
-  // Cycle through weapon upgrades
-  if (leftArrowTintActive) 
-    upgradeScreenIndex--;
-  else if (rightArrowTintActive)
-    upgradeScreenIndex++;
-  else
-    upgradeScreenIndex++; 
-  if (upgradeScreenIndex < 0)
-    upgradeScreenIndex = upgradeScreenIndexLimit;
-  else if (upgradeScreenIndex > upgradeScreenIndexLimit)
-    upgradeScreenIndex = 0;
 }
+
+String[] upGradeTitles = { "Continuous Fire", "Triple shot", "Enforcer", "Shield MK 2", "Thruster MK 2" };
+String[] upGradeDescriptions = { "Upgrades single shot cannon to fire continuously when holding down the fire button", "Shoot three streams of bullets", "Charges a high power laser beam", "Increase shield capacity", "Increases ship speed" };
+boolean[] upGradeActive = { false, false, false, false, false };
+
+void upgradeScreen() {
+  // Handles selection of ship upgrades
+  
+ // Set cursor to crosshair image
+  cursor(cursor);
+  
+  // Stop ship from accelerating
+  accelerate = false;
+  
+  // Skip upgrade screen if all upgrades already taken
+  if (areAllUpgradesEnabled()) { 
+    continueLevel = true;    
+    return;
+  }
+  
+  // Stop thruster sound if it is playing
+  if (soundArray[13].isPlaying()) {
+    soundArray[13].pause(); // stop thruster sound
+  }
+  
+  // Render the upgrade screen
+  renderUpgradeScreen();
+  
+  // Render the current upgrade
+  renderCurrentUpgrade();
+ 
+  // Check if an upgrade has been selected
+  checkForSelection();
+  
+}
+
 
 boolean areAllUpgradesEnabled() {
   //check whether all upgrades are already enabled
+  
   if (tripleLaserUpgradeEnabled && magnusEnforcedUpgradeEnabled && MK2ShieldUpgradeEnabled
     && thrusterUpgradeEnabled) {
     return true;
     }
    
    return false; 
-}
-
-void mouseReleased() { //generic function for all mouseReleased throughout the game. Refactor somewhere central. Can be used for other things, just ensure mouseDown = false is kept
-  mouseDown = false;
 }
