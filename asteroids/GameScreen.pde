@@ -27,10 +27,6 @@ PVector lastCollisionLocation = new PVector();
 int smallAsteroidSoundIndex = 14;
 int largeAsteroidSoundIndex = 17;
 
-// Starfield
-ArrayList<int[]> starObject = new ArrayList<int[]>(); 
-int numberOfStars = 120;
-
 void renderExplosion() {
   // Calculates current frame of asteroid exploding animation
 
@@ -49,41 +45,6 @@ void generateSmoke() {
 
   for (int i = 0; i < numSmokeFrames; i++) {
     smokeAnimFrameArray[i] = loadImage("images/smoke_frames/smoke_" + i + ".png");
-  }
-}
-
-void generateStars() {
-  // create random starfield data
-
-  for (int i = 1; i <= numberOfStars; i++) {
-    //index 0 = x coord, 1 = y coord, 2 = size
-    starObject.add(new int[] {randomInt(0, width + screenPadding * 2), randomInt(0, height + screenPadding * 2), randomInt(3, 4)});
-    //starObject.add(new int[] {100, 400, 4});
-  }
-}
-
-void renderStars() {
-  // Render starfield to screen
-
-  for (int i = 0; i < starObject.size(); i++) {
-    //Retrieve the X,Y coordinates of the current star
-    int[] obj = starObject.get(i);
-    PVector starLocation = new PVector(obj[0], obj[1]); 
-
-    strokeWeight(obj[2]);
-    if (obj[2] < 4) {
-      stroke(randomInt(70, 120));
-      point(starLocation.x, starLocation.y - shipLocation.y);
-      point(starLocation.x, starLocation.y - shipLocation.y - (height + (screenPadding*2)));
-      point(starLocation.x, starLocation.y - shipLocation.y + (height + (screenPadding*2)));
-    } else {
-      stroke(randomInt(100, 190));
-      if ((starLocation.y - shipLocation.y) < height / 2) {
-        point(starLocation.x, (starLocation.y - shipLocation.y) * 2);
-        point(starLocation.x, ((starLocation.y - shipLocation.y) * 2) - (height*2)+ (screenPadding*4));
-        point(starLocation.x, ((starLocation.y - shipLocation.y) * 2) + (height*2)+ (screenPadding*4));
-      }
-    }
   }
 }
 
@@ -229,6 +190,7 @@ void drawWeaponIcons() {
 
 void changeWeapon(int index) {
   // Handle weapon changes
+  // Index: whether shield is basic or upgraded version
 
   weaponIndex = index;
   if (index == 1 || index == 2)
@@ -346,9 +308,6 @@ void checkCollision() {
 
   boolean collisionDetected = false; //is there a collision this frame?
  
- // TEMP FOR TESTING
- bossDefeated = true;
- 
   if (bossActivated) {
     // Iterate over every bullet and check if it collided with the boss
     for (int j = 0; j < bulletObject.size(); j++) {
@@ -430,7 +389,6 @@ void damageShip(float amount) {
 
   shieldHP = shieldHP - amount;
   if (shieldHP < 0) {
-    println("ship collision");
     currentScreen = "game over";
   }
 
@@ -439,7 +397,7 @@ void damageShip(float amount) {
     shieldWarningTriggered = true;
     thread("shieldCriticalSoundSequence");
   }
-  if (shieldHP*1.0/initialHP >= 0.5)
+  if (shieldHP/initialHP >= 0.5)
     shieldWarningTriggered = false;
 }
 

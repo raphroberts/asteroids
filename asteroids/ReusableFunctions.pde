@@ -117,6 +117,10 @@ void screenHandler() {
 float[] currentSize = { titleBannerX, titleBannerY, alertBanner, LevelUpBanner, levelUpStar, upgradeArrow, upgradeButtonIcon };
 boolean[] scaleDown = { true, true, true, true, true, true, true };
 
+// Starfield
+ArrayList<int[]> starObject = new ArrayList<int[]>(); 
+int numberOfStars = 120;
+
     
 String renderButton(String buttonText, float x, float y) {
   // Renders an interactive button with provided buttonText at X,Y coords
@@ -135,6 +139,42 @@ void populateImageArray(PImage[] arrayName, String prefix, int arrayLength){
     arrayName[i] = loadImage(prefix + (i+1) + ".png");
   }
 }
+
+void generateStars() {
+  // create random starfield data
+
+  for (int i = 1; i <= numberOfStars; i++) {
+    //index 0 = x coord, 1 = y coord, 2 = size
+    starObject.add(new int[] {randomInt(0, width + screenPadding * 2), randomInt(0, height + screenPadding * 2), randomInt(3, 4)});
+  }
+}
+
+void renderStars() {
+  // Render starfield to screen
+
+  for (int i = 0; i < starObject.size(); i++) {
+    //Retrieve the X,Y coordinates of the current star
+    int[] obj = starObject.get(i);
+    PVector starLocation = new PVector(obj[0], obj[1]); 
+    strokeWeight(obj[2]);
+
+    // Larger stars are brighter and move faster than others
+    if (obj[2] < 4) {
+      stroke(randomInt(70, 120));
+      point(starLocation.x, starLocation.y - shipLocation.y);
+      point(starLocation.x, starLocation.y - shipLocation.y - (height + (screenPadding*2)));
+      point(starLocation.x, starLocation.y - shipLocation.y + (height + (screenPadding*2)));
+    } else {
+      stroke(randomInt(100, 190));
+      if ((starLocation.y - shipLocation.y) < height / 2) {
+        point(starLocation.x, (starLocation.y - shipLocation.y) * 2);
+        point(starLocation.x, ((starLocation.y - shipLocation.y) * 2) - (height*2)+ (screenPadding*4));
+        point(starLocation.x, ((starLocation.y - shipLocation.y) * 2) + (height*2)+ (screenPadding*4));
+      }
+    }
+  }
+}
+
 
 int randomInt(int low, int high) {
   // Returns a random integer
@@ -501,7 +541,6 @@ void keyPressed() {
   if (key == 'p') {
     if (!gameStarted) {
       gameStarted = true;
-      // note: replace this with mouse interaction with button
       while (!preloadingFinished) //wait for preloading to finish before starting game
         delay(100);
       currentScreen = "game";
