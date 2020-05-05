@@ -124,31 +124,38 @@ void checkForSelection(){
     
     // If an upgrade was selected, activate it and continue the game
     if (upgradeTintActive) {
-      
-      
-      if (upgradeScreenIndex == 0) {
+      if (upgradeScreenIndex == 0 && !rapidFireUpgradeEnabled) {
         rapidFireUpgradeEnabled = true;
         gunReloaded = false;
         iconsUI[0] = iconsUI[10];
+        upGradeActive[upgradeScreenIndex] = true;
+        continueLevel = true;  
       }
-      else if (upgradeScreenIndex == 1)
+      else if (upgradeScreenIndex == 1 && !tripleLaserUpgradeEnabled) {
         tripleLaserUpgradeEnabled = true;
-      else if (upgradeScreenIndex == 2)
+        upGradeActive[upgradeScreenIndex] = true;
+        continueLevel = true;  
+      }
+      else if (upgradeScreenIndex == 2 && !magnusEnforcedUpgradeEnabled) {
         magnusEnforcedUpgradeEnabled = true;
-      else if (upgradeScreenIndex == 3) {
+        upGradeActive[upgradeScreenIndex] = true;
+        continueLevel = true;  
+      }
+      else if (upgradeScreenIndex == 3 && !MK2ShieldUpgradeEnabled) {
         MK2ShieldUpgradeEnabled = true;
         shieldImageIndex = 2;
         changeShield(2);  
+        upGradeActive[upgradeScreenIndex] = true;
+        continueLevel = true;  
       }
       else if (upgradeScreenIndex == 4) {
         thrusterUpgradeEnabled = true;
         thrusterImageIndex = 2;
         changeThruster(2);
+        upGradeActive[upgradeScreenIndex] = true;
+        continueLevel = true;  
       }
       noCursor();
-      
-      upGradeActive[upgradeScreenIndex] = true;
-      continueLevel = true;  
     }
     
     // If a navigation arrow was pressed, scroll to the next/previous upgrade

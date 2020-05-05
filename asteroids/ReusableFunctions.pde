@@ -26,6 +26,37 @@ float titleBannerY = 80;
 String currentScreen = "title";
 PImage[] backgroundImage = new PImage[4]; // background image array
 
+void restartGame() {
+  stopAllSounds();
+  currentScreen = "title";
+}
+
+void stopAllSounds() {
+  //stop all current sounds, music
+  for (int i = 0; i < soundArray.length; i++) {
+    try {
+      soundArray[i].pause();
+    }
+    catch (NullPointerException e) {}
+  }
+  for (int i = 0; i < musicArray.length; i++) {
+    try {
+      musicArray[i].pause();
+    }
+    catch (NullPointerException e) {}
+  }
+}
+
+void ExampleShipDestructionFunction() {
+  stopAllSounds();
+  //do all the animation etc.
+  delay(2000); //temp dummy wait where the ship sequence should be
+  //finish animatino etc.
+  
+  //then set the playerDeathSequence to false
+  playerDeathSequence = false;
+}
+
 void screenHandler() {
   // Function to manage screen changes
   
@@ -37,42 +68,44 @@ void screenHandler() {
     break;
 
   case "game": 
-    // Display game screen
-    
-    // display game screen
-    background(backgroundImage[1]);
-
-    // Render the starfield
-    // (located in GameScreen.PDE)
-    renderStars();
-    
-    // If rapidFire enabled and standard gun selected, shoot a bullet
-    if ( rapidFireUpgradeEnabled && frameCount % 5 > 3 && !levelComplete && weaponIndex == 1){
-      createBullet();
+    if (!gamePaused) {
+      // Display game screen
+      
+      // display game screen
+      background(backgroundImage[1]);
+  
+      // Render the starfield
+      // (located in GameScreen.PDE)
+      renderStars();
+      
+      // If rapidFire enabled and standard gun selected, shoot a bullet
+      if ( rapidFireUpgradeEnabled && frameCount % 5 > 3 && !levelComplete && weaponIndex == 1){
+        createBullet();
+      }
+  
+      // Update bullet locations
+      // (located in Sprites.PDE)
+      drawAndMoveBullets();
+      
+      // Move the ship
+      moveShip();
+      
+      // Update bullet locations
+      // (located in Sprites.PDE)
+      drawAndMoveEnemies();
+      
+      // Check for collisions
+      // (located in GameScreen.PDE)
+      checkCollision();
+      rechargeShield();
+      
+      // render explosion if asteroid was hit
+      renderExplosion();
+      
+      UIManager();
+      //currentScreen = "level up"; // temp instant transition
     }
-
-    // Update bullet locations
-    // (located in Sprites.PDE)
-    drawAndMoveBullets();
-    
-    // Move the ship
-    moveShip();
-    
-    // Update bullet locations
-    // (located in Sprites.PDE)
-    drawAndMoveEnemies();
-    
-    // Check for collisions
-    // (located in GameScreen.PDE)
-    checkCollision();
-    rechargeShield();
-    
-    // render explosion if asteroid was hit
-    renderExplosion();
-    
-    UIManager();
-    //currentScreen = "level up"; // temp instant transition
-    
+      
     break;
 
   case "level up": 
@@ -91,14 +124,18 @@ void screenHandler() {
       gameLevel = gameLevel + 1;
       currentScreen = "game";
       thread("levelSequence");
-      
     }
     break;
   
   case "game over": 
     // display game overscreen
-    gameOverScreen();
-    break;
+    if (!playerDeathSequence) {
+      gameOverScreen();
+      break;
+    }
+    else {
+      ExampleShipDestructionFunction();
+    }
   }
 }
 
@@ -546,6 +583,12 @@ void keyPressed() {
       currentScreen = "game";
       generateStars();
       thread("levelSequence");
+    }
+    else if (!gamePaused) {
+      gamePaused = true;
+    }
+    else {
+      gamePaused = false;
     }
   }
 

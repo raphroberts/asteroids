@@ -51,6 +51,9 @@ void initialiseSprites() {
   bossStrength = bossInitialStrength;
   bossSpeed = bossInitialSpeed;
   bossDefeated = false;
+  bossLaughed = false;
+  bossThisLevel = false;
+  deathAnimationFinished = false;
   
   //Bullet setup
   bulletLocation = new PVector(width/2, height/2);
@@ -409,7 +412,7 @@ void drawAndMoveEnemies() {
   
   // Collision data
   int bossSize = 80;
-  final int bossInitialStrength = 1000;
+  int bossInitialStrength = 250; // updated now when boss is defeated
   int bossStrength = bossInitialStrength;
   final float bossDamage = 0.03;
   
@@ -476,6 +479,7 @@ void handleBoss(){
   image(bossGraphic[2], 0, 0);
   rotate( - indicatorRotation );
   translate( - bossLocation.x, - bossLocation.y - bossIndicatorOffsetY);
+
   
   // if boss is within health range, he gets mad and plunges towards player
   if (bossStrength < bossInitialStrength/2){
@@ -483,12 +487,17 @@ void handleBoss(){
     if (bossGraphicIndex == 0){
       bossGraphicIndex = 3;
       if (!bossLaughed) {
-        soundArray[21].rewind();
+        //the boss will laugh once when he's mad
+        soundArray[21].rewind(); //laugh sound
         soundArray[21].play();
         bossLaughed = true;
       }
     }
-    bossSpeed = 1.6;
+    bossSpeed = bossInitialSpeed * gameLevel * 1.6;
+    
+  }
+  else {
+    bossSpeed = bossInitialSpeed * gameLevel;
   }
   if(bossStrength < 1){
    // stop boss following player and play explosion animations

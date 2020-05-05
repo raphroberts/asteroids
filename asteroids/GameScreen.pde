@@ -4,6 +4,9 @@
 int score = 0;
 int screenPadding = 40; // padding allowance for objects to float off screen
 
+boolean gamePaused = false;
+boolean playerDeathSequence = false;
+
 // Temp
 
 boolean continueLevel = false; //delete this when upgrade screen is implemented
@@ -389,6 +392,7 @@ void damageShip(float amount) {
 
   shieldHP = shieldHP - amount;
   if (shieldHP < 0) {
+    playerDeathSequence = true;
     currentScreen = "game over";
   }
 
@@ -489,6 +493,10 @@ boolean bossActivated = false;
 
 int levelSequence() { 
   // the main level manager, instantiator, and controller
+  
+  //reset boss strength, increase initial strength
+   bossInitialStrength = 250 * gameLevel; 
+   bossStrength = bossInitialStrength;
 
   //music sequence, modulo of the gameLevel, except level 1 which has its own theme
   //these are all the combinations possible from modulo 4, for 4 songs (+1 for the level1 only theme)
@@ -574,5 +582,6 @@ int levelSequence() {
   delay(4000);
   //end level
   currentScreen="level up";
+  
   return 1;
 }
