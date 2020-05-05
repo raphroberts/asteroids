@@ -26,11 +26,6 @@ float titleBannerY = 80;
 String currentScreen = "title";
 PImage[] backgroundImage = new PImage[4]; // background image array
 
-void restartGame() {
-  stopAllSounds();
-  currentScreen = "title";
-}
-
 void stopAllSounds() {
   //stop all current sounds, music
   for (int i = 0; i < soundArray.length; i++) {
@@ -49,7 +44,14 @@ void stopAllSounds() {
 
 void ExampleShipDestructionFunction() {
   stopAllSounds();
-  //do all the animation etc.
+  
+  renderExplosion();
+   if(explosionFrame == 15){
+     explosionFrame = 0;
+     lastCollisionLocation.x = bossLocation.x + random(-125,125);
+     lastCollisionLocation.y = bossLocation.y + random(-35,35);
+  }
+   
   delay(2000); //temp dummy wait where the ship sequence should be
   //finish animatino etc.
   
@@ -128,14 +130,16 @@ void screenHandler() {
     break;
   
   case "game over": 
-    // display game overscreen
+    gameOverScreen();
+    break;
+    /* display game overscreen
     if (!playerDeathSequence) {
       gameOverScreen();
       break;
     }
     else {
       ExampleShipDestructionFunction();
-    }
+    }*/
   }
 }
 
@@ -577,12 +581,15 @@ void keyPressed() {
   
   if (key == 'p') {
     if (!gameStarted) {
-      gameStarted = true;
-      while (!preloadingFinished) //wait for preloading to finish before starting game
+        score = 0;
+      
+        while (!preloadingFinished) //wait for preloading to finish before starting game
         delay(100);
-      currentScreen = "game";
       generateStars();
       thread("levelSequence");
+      gameStarted = true;
+      resetReady = false;
+      currentScreen = "game";
     }
     else if (!gamePaused) {
       gamePaused = true;

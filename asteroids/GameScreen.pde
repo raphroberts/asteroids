@@ -9,7 +9,7 @@ boolean playerDeathSequence = false;
 
 // Temp
 
-boolean continueLevel = false; //delete this when upgrade screen is implemented
+boolean continueLevel = false;
 String centralScreenText = "";
 
 
@@ -485,7 +485,7 @@ void rechargeShield() {
  
  */
 
-int gameLevel = 2; //auto-increment upon level up
+int gameLevel = 1; //auto-increment upon level up
 
 // Level status tracking
 boolean levelComplete = false;
@@ -494,94 +494,100 @@ boolean bossActivated = false;
 int levelSequence() { 
   // the main level manager, instantiator, and controller
   
-  //reset boss strength, increase initial strength
-   bossInitialStrength = 250 * gameLevel; 
-   bossStrength = bossInitialStrength;
-
-  //music sequence, modulo of the gameLevel, except level 1 which has its own theme
-  //these are all the combinations possible from modulo 4, for 4 songs (+1 for the level1 only theme)
-  if (gameLevel == 1) 
-    fadeInSongCoroutine("level1");
-  else if (gameLevel % 4 == 0)
-    fadeInSongCoroutine("trueepic");
-  else if (gameLevel % 4 == 1)
-    fadeInSongCoroutine("modulo4");
-  else if (gameLevel % 4 == 2)
-    fadeInSongCoroutine("thrust");
-  else if (gameLevel % 4 == 3) 
-    fadeInSongCoroutine("epic");
-
-
-  int asteroidsToSpawnPerCycle = (int)pow(gameLevel, 2);
-  int numberOfCycles = gameLevel + 1;
-
-  if (gameLevel == 1)
-    numberOfCycles = numberOfCycles * 2 + 1;
-  else if (gameLevel == 2)
-    numberOfCycles = numberOfCycles * 2;
-
-  if (debug){
-    asteroidsToSpawnPerCycle = 1;
-    numberOfCycles = 1;
-  }
-
-  int spawnDelay = (int)(1 / (gameLevel * 0.5) * 3000);
-  if (debug)
-    println("Starting level " + gameLevel + " with " + asteroidsToSpawnPerCycle + " asteroids spawning per cycle over " + " number of cycles: " + numberOfCycles + ". Spawn delay: " + spawnDelay); // delete this 
-  for (int cycle = 1; cycle <= numberOfCycles; cycle++) {
-    if (debug)
-      //println("Spawning cycle: " + cycle + " of " + numberOfCycles);
-      for (int asteroidCounter = 1; asteroidCounter <= asteroidsToSpawnPerCycle; asteroidCounter++) {
-        if (!gameStarted)
-          return 1;
-        float rand = random(1);
-        if (rand < 0.8)
-          createAsteroid(0, 0, "large");
-        else
-          createAsteroid(0, 0, "small");
-        float randDelay = random(spawnDelay);
-        //println("Spawn Delay is under: " + min((int)randDelay * numberOfCycles/cycle, (int(10000 / (gameLevel * cycle * 0.5)))));
-        if (enemyObject.size() < 2) { //early spawn if asteroids left are small in numer
-          delay(1000);
-          continue;
-        }
-        delay(min((int)randDelay * numberOfCycles/cycle, (int(10000 / (gameLevel * cycle * 0.5))))); //lower spawning cycles spawn with a greater delay
-      }
-    for (int delay = 0; delay < 10; delay++) {
-      if (enemyObject.size() < 5) { //early spawn if asteroids left are small in numer
-        if (gameLevel <3) {
-          delay(5000);
-        } else {
-          delay(2000);
-        }
-        break;
-      }
-      delay(1000);
+  if(currentScreen == "game"){
+  
+    //reset boss strength, increase initial strength
+     bossInitialStrength = 250 * gameLevel; 
+     bossStrength = bossInitialStrength;
+  
+    //music sequence, modulo of the gameLevel, except level 1 which has its own theme
+    //these are all the combinations possible from modulo 4, for 4 songs (+1 for the level1 only theme)
+    if (gameLevel == 1) 
+      fadeInSongCoroutine("level1");
+    else if (gameLevel % 4 == 0)
+      fadeInSongCoroutine("trueepic");
+    else if (gameLevel % 4 == 1)
+      fadeInSongCoroutine("modulo4");
+    else if (gameLevel % 4 == 2)
+      fadeInSongCoroutine("thrust");
+    else if (gameLevel % 4 == 3) 
+      fadeInSongCoroutine("epic");
+  
+  
+    int asteroidsToSpawnPerCycle = (int)pow(gameLevel, 2);
+    int numberOfCycles = gameLevel + 1;
+  
+    if (gameLevel == 1)
+      numberOfCycles = numberOfCycles * 2 + 1;
+    else if (gameLevel == 2)
+      numberOfCycles = numberOfCycles * 2;
+  
+    if (debug){
+      asteroidsToSpawnPerCycle = 1;
+      numberOfCycles = 1;
     }
+  
+    int spawnDelay = (int)(1 / (gameLevel * 0.5) * 3000);
+    if (debug)
+      println("Starting level " + gameLevel + " with " + asteroidsToSpawnPerCycle + " asteroids spawning per cycle over " + " number of cycles: " + numberOfCycles + ". Spawn delay: " + spawnDelay); // delete this 
+    for (int cycle = 1; cycle <= numberOfCycles; cycle++) {
+      if (debug)
+        //println("Spawning cycle: " + cycle + " of " + numberOfCycles);
+        for (int asteroidCounter = 1; asteroidCounter <= asteroidsToSpawnPerCycle; asteroidCounter++) {
+          if (!gameStarted)
+            return 1;
+          float rand = random(1);
+          if (rand < 0.8)
+            createAsteroid(0, 0, "large");
+          else
+            createAsteroid(0, 0, "small");
+          float randDelay = random(spawnDelay);
+          //println("Spawn Delay is under: " + min((int)randDelay * numberOfCycles/cycle, (int(10000 / (gameLevel * cycle * 0.5)))));
+          if (enemyObject.size() < 2) { //early spawn if asteroids left are small in numer
+            delay(1000);
+            continue;
+          }
+          delay(min((int)randDelay * numberOfCycles/cycle, (int(10000 / (gameLevel * cycle * 0.5))))); //lower spawning cycles spawn with a greater delay
+        }
+      for (int delay = 0; delay < 10; delay++) {
+        if (enemyObject.size() < 5) { //early spawn if asteroids left are small in numer
+          if (gameLevel <3) {
+            delay(5000);
+          } else {
+            delay(2000);
+          }
+          break;
+        }
+        delay(1000);
+      }
+    }
+  
+    while (enemyObject.size() != 0 && currentScreen == "game" && gameStarted)
+      delay(100); //wait for all asteroids to be destroyed
+  
+    fadeInSongCoroutine("none");
+  
+    if (gameLevel %2 == 0) { //boss sequence only on even levels
+      bossThisLevel = true;
+      bossActivated = true;
+      bossSequence();
+    }
+  
+    
+    if (currentScreen == "game"){
+      //End level sequence
+      fadeInSongCoroutine("upgrade");
+      soundArray[9].rewind();
+      soundArray[9].play();
+      
+      levelComplete = true;
+      bossActivated = false;
+      delay(4000);
+      //end level
+      currentScreen="level up";
+    }
+    
+    
   }
-
-  while (enemyObject.size() != 0)
-    delay(100); //wait for all asteroids to be destroyed
-
-  fadeInSongCoroutine("none");
-
-  if (gameLevel %2 == 0) { //boss sequence only on even levels
-    bossThisLevel = true;
-    bossActivated = true;
-    bossSequence();
-  }
-
-  
-  //End level sequence
-  fadeInSongCoroutine("upgrade");
-  soundArray[9].rewind();
-  soundArray[9].play();
-  
-  levelComplete = true;
-  bossActivated = false;
-  delay(4000);
-  //end level
-  currentScreen="level up";
-  
   return 1;
 }

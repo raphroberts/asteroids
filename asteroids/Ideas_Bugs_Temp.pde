@@ -6,6 +6,43 @@
                 |_|                      
 */
 
+void resetGame() {
+  stopAllSounds();
+  
+  // Re-initialise ship and boss 'start of level' state
+  initialiseSprites();
+  
+  // Empty enemy asteroid array
+  enemyObject = new ArrayList<int[]>(); 
+  
+  // Reset game states
+  levelComplete = true;
+  bossActivated = false;
+  continueLevel = false;
+  levelComplete = false; 
+  gameStarted = false;
+  
+  // Rebuild icon image array
+  populateImageArray(iconsUI, "images/icons/icon_", 10);
+  
+  // Reset shield and thruster
+  changeThruster(1);
+  changeShield(1);
+  
+  // Reset upgrades
+  tripleLaserUpgradeEnabled = false;
+  magnusEnforcedUpgradeEnabled = false;
+  MK2ShieldUpgradeEnabled = false;
+  thrusterUpgradeEnabled = false;
+  rapidFireUpgradeEnabled = false;
+  upGradeActive = new boolean[]{ false, false, false, false, false };
+  
+  // Empty star field and reset title screen
+  starObject = new ArrayList<int[]>(); 
+  titleSetup();
+      
+}
+
 
 
 /*
