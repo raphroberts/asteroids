@@ -148,7 +148,7 @@ void checkForSelection(){
         upGradeActive[upgradeScreenIndex] = true;
         continueLevel = true;  
       }
-      else if (upgradeScreenIndex == 4) {
+      else if (upgradeScreenIndex == 4 && !thrusterUpgradeEnabled) {
         thrusterUpgradeEnabled = true;
         thrusterImageIndex = 2;
         changeThruster(2);
@@ -213,7 +213,7 @@ boolean areAllUpgradesEnabled() {
   //check whether all upgrades are already enabled
   
   if (tripleLaserUpgradeEnabled && magnusEnforcedUpgradeEnabled && MK2ShieldUpgradeEnabled
-    && thrusterUpgradeEnabled) {
+    && thrusterUpgradeEnabled && rapidFireUpgradeEnabled) {
     return true;
     }
    
