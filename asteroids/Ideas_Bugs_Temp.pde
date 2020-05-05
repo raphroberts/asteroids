@@ -9,9 +9,6 @@
 void resetGame() {
   stopAllSounds();
   
-  // Re-initialise ship and boss 'start of level' state
-  initialiseSprites();
-  
   // Empty enemy asteroid array
   enemyObject = new ArrayList<int[]>(); 
   

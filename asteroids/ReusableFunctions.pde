@@ -585,6 +585,7 @@ void keyPressed() {
       
         while (!preloadingFinished) //wait for preloading to finish before starting game
         delay(100);
+      initialiseSprites();
       generateStars();
       thread("levelSequence");
       gameStarted = true;
