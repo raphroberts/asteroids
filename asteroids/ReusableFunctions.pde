@@ -1,12 +1,9 @@
-// FUNCTIONS AND GLOBALS THAT DON'T RELATE ONLY TO ONE SCREEN
+// FUNCTIONS AND GLOBALS THAT ARE USED ACROSS SCREENS
 
 // Game font globals
 PFont gameFont;
 final int gameTextSizeMain = 16;
 final int mainFontColour = 255;
-
-PImage[] levelStatusImage = new PImage[4];
-PImage[] upgradeScreenImage = new PImage[10];
 
 // Animated image initial sizes
 float alertBanner = 250;
@@ -24,10 +21,13 @@ float titleBannerY = 80;
 */
  
 String currentScreen = "title";
-PImage[] backgroundImage = new PImage[4]; // background image array
+
+// The background images in the game
+PImage[] backgroundImage = new PImage[4];
 
 void stopAllSounds() {
-  //stop all current sounds, music
+  // Stops all current SFX and music
+  
   for (int i = 0; i < soundArray.length; i++) {
     try {
       soundArray[i].pause();
@@ -42,30 +42,13 @@ void stopAllSounds() {
   }
 }
 
-void ExampleShipDestructionFunction() {
-  stopAllSounds();
-  
-  renderExplosion();
-   if(explosionFrame == 15){
-     explosionFrame = 0;
-     lastCollisionLocation.x = bossLocation.x + random(-125,125);
-     lastCollisionLocation.y = bossLocation.y + random(-35,35);
-  }
-   
-  delay(2000); //temp dummy wait where the ship sequence should be
-  //finish animatino etc.
-  
-  //then set the playerDeathSequence to false
-  playerDeathSequence = false;
-}
-
 void screenHandler() {
-  // Function to manage screen changes
+  // Main function to change between screens of the game
   
   switch(currentScreen) {
 
   case "title": 
-    // display title screen
+    // Display title screen
     titleScreen();
     break;
 
@@ -73,11 +56,9 @@ void screenHandler() {
     if (!gamePaused) {
       // Display game screen
       
-      // display game screen
       background(backgroundImage[1]);
   
       // Render the starfield
-      // (located in GameScreen.PDE)
       renderStars();
       
       // If rapidFire enabled and standard gun selected, shoot a bullet
@@ -85,41 +66,46 @@ void screenHandler() {
         createBullet();
       }
   
-      // Update bullet locations
-      // (located in Sprites.PDE)
+      // Update and draw the bullets
       drawAndMoveBullets();
       
-      // Move the ship
+      // Update and draw the ship
       moveShip();
       
-      // Update bullet locations
-      // (located in Sprites.PDE)
+      // Update and move enemies
       drawAndMoveEnemies();
       
       // Check for collisions
-      // (located in GameScreen.PDE)
       checkCollision();
       rechargeShield();
       
-      // render explosion if asteroid was hit
+      // Render explosion if an asteroid was hit
       renderExplosion();
       
+      // Render the UI and overlays
       UIManager();
-      //currentScreen = "level up"; // temp instant transition
+
+    }
+    else{
+      // Let player know that game is paused
+      fill(0,100);
+      rect(width/2, height/2, width/2,height/8);
+      fill(255);
+      text("Game paused, press P to continue",width/2,height/2);
     }
       
     break;
 
   case "level up": 
-    // display level up screen
-    shieldHP = maxShieldHP; // replenish shield
+    // Display the upgrade screen
     
-    // Reset sprite positions
+    // Shield replenishes between levels
+    shieldHP = maxShieldHP;
+    
+    // Reset ship and sprite data
     initialiseSprites();
     
-    if (!continueLevel)
-      upgradeScreen();
-    
+    // Continue to the next level if player is finished, otherwise display the upgrades
     if (continueLevel) {
       continueLevel = false;
       levelComplete = false;  
@@ -127,19 +113,16 @@ void screenHandler() {
       currentScreen = "game";
       thread("levelSequence");
     }
+    else{
+      upgradeScreen();
+    }
     break;
   
   case "game over": 
+    // Display the game over screen
+    
     gameOverScreen();
     break;
-    /* display game overscreen
-    if (!playerDeathSequence) {
-      gameOverScreen();
-      break;
-    }
-    else {
-      ExampleShipDestructionFunction();
-    }*/
   }
 }
 
@@ -156,22 +139,16 @@ void screenHandler() {
 // Note: Each animated graphic uses a unique index from these arrays
 // 0, 1 = title screen banner, 2 = alert banner, 3 = level up banner, 4 = level up star, 5 = upgrade screen arrow, 6 = upgrade screen icon
 float[] currentSize = { titleBannerX, titleBannerY, alertBanner, LevelUpBanner, levelUpStar, upgradeArrow, upgradeButtonIcon };
+// Track whether images are pulsing up or down
 boolean[] scaleDown = { true, true, true, true, true, true, true };
 
-// Starfield
+// Starfield data
 ArrayList<int[]> starObject = new ArrayList<int[]>(); 
 int numberOfStars = 120;
 
-    
-String renderButton(String buttonText, float x, float y) {
-  // Renders an interactive button with provided buttonText at X,Y coords
-  // Used on title screen, upgrade screens, game over screen
-
-  return null; //delete this, temp to prevent error
-}
 
 void populateImageArray(PImage[] arrayName, String prefix, int arrayLength){
-  // populates the provided PImage array with images (e.g images/ship1.png, images/ship2.png etc)
+  // Populates the provided PImage array with images (e.g images/ship1.png, images/ship2.png etc)
   // arrayName = name of the array to populate
   // prefix = url and file name
   // arrayLength = number of images in the array
@@ -182,7 +159,7 @@ void populateImageArray(PImage[] arrayName, String prefix, int arrayLength){
 }
 
 void generateStars() {
-  // create random starfield data
+  // Create random starfield data
 
   for (int i = 1; i <= numberOfStars; i++) {
     //index 0 = x coord, 1 = y coord, 2 = size
@@ -191,7 +168,7 @@ void generateStars() {
 }
 
 void renderStars() {
-  // Render starfield to screen
+  // Render starfield to screen with parralax effect relative to ship location
 
   for (int i = 0; i < starObject.size(); i++) {
     //Retrieve the X,Y coordinates of the current star
@@ -224,7 +201,7 @@ int randomInt(int low, int high) {
 }
 
 void mouseReleased() { 
-  //generic function for all mouseReleased events
+  // Generic function for all mouseReleased events
   
   mouseDown = false;
 }
@@ -269,22 +246,34 @@ float pulseImage(int maxSize, int minSize, float speed, int scaleIndex, boolean 
      
 */
 
-// LIBRARIES
-
-// Music/SFX Globals
+// Libraries
 import ddf.minim.*;
-boolean preloadingFinished = false;
+Minim minim;
 
-void preloading() { //call asynchronously
-  //load title screen music
+// State tracking and config
+boolean preloadingFinished = false;
+int playingIndex = 0;
+int shieldSoundIndex;
+boolean shieldWarningTriggered = false;
+int bulletshotIndex = 0;
+int laserShotIndex = 10;
+int shieldSoundEndDelay = 10;
+int shieldSoundTick = 0;
+boolean endingShieldSound = false;
+
+// SFX and Music arrays
+AudioPlayer[] musicArray = new AudioPlayer[10];
+AudioPlayer[] soundArray = new AudioPlayer[30];
+
+void preloading() { 
+  // Loads music and SFX asynchronously, plays title music
   
   musicArray[0] = minim.loadFile("music/title.mp3");
-  
-  //musicArray[0] = new SoundFile(this, "music/title.mp3"); //force load the title theme first, make it a short loop
+
   if (currentScreen == "title")
     musicManager("title");
     
-  //preload game sfx
+  //Preload game sfx
   soundArray[0] = minim.loadFile("sounds/laserfire01.mp3"); //bullet 1
   soundArray[1] = minim.loadFile("sounds/laserfire01.mp3"); //bullet 1
   soundArray[2] = minim.loadFile("sounds/laserfire01.mp3"); //bullet 1
@@ -321,7 +310,7 @@ void preloading() { //call asynchronously
   
   preloadingFinished = true;
  
-  // Create array of music tracks
+  // Load music tracks into an array
   musicArray[1] = minim.loadFile("music/s2.mp3");
   musicArray[2] = minim.loadFile("music/ThrustSequence.mp3");
   musicArray[3] = minim.loadFile("music/victorytheme.mp3");
@@ -333,30 +322,10 @@ void preloading() { //call asynchronously
   musicArray[9] = minim.loadFile("music/boss2.mp3");
 }
 
-// MUSIC
-
-//SoundFile[] musicArray = new SoundFile[3];
-int playingIndex = 0;
-
-// SFX
-
-Minim minim;
-AudioPlayer[] musicArray = new AudioPlayer[10];
-
-
-AudioPlayer[] soundArray = new AudioPlayer[30];
-int shieldSoundIndex;
-boolean shieldWarningTriggered = false;
-int bulletshotIndex = 0;
-int laserShotIndex = 10;
-
-int shieldSoundEndDelay = 10;
-int shieldSoundTick = 0;
-boolean endingShieldSound = false;
-
-void fadeInSongCoroutine(String startSongString) { //WARNING: START ONLY VIA a thread() method
-  //fade out current song, then fade in the given song.
-  //Must be started as a coroutine/async only
+void fadeInSongCoroutine(String startSongString) {
+  // Fade out current song, then fade in the given song
+  // Must be called as a coroutine/async thread only
+  
   musicArray[playingIndex].shiftGain(musicArray[playingIndex].getGain(),-80, 5000);
   delay(2500);
   musicManager("none");
@@ -366,9 +335,10 @@ void fadeInSongCoroutine(String startSongString) { //WARNING: START ONLY VIA a t
 void musicManager(String song) {
   // Handles and plays game music
   
-  stopAllSongs(); //prevent song overlap, ensure any currently playing song is first stopped
+  // Stop any playing songs to prevent overlap
+  stopAllSongs();
   
-  //fade out, fade in, switch (cross over) ?
+  // Fade songs in and out
   
   switch (song) {
     case "none":
@@ -378,7 +348,7 @@ void musicManager(String song) {
       }
       break;
     case "title":
-      // Play title theme
+      // Play title theme STEVE might be good to list what each of these songs are?
       try {
         musicArray[0].rewind();
         musicArray[0].loop();
@@ -477,7 +447,7 @@ void musicManager(String song) {
          println("Song not yet loaded..");
        } 
      break;
-     case "boss2": //short teaser song for level 1
+     case "boss2": // Short teaser song for level 1
      try {
          musicArray[9].rewind();
          musicArray[9].loop();
@@ -501,13 +471,15 @@ void stopAllSongs() {
       }
     }
     catch (NullPointerException e) {
-      //We can catch a NullPointerException here since it will only occur for an unloaded async sound file
+      //We can catch a NullPointerException here since it will only occur for an unloaded async sound file STEVE, add catch code or just remove?
     }
   }
 }
 
 void shieldCriticalSoundSequence() {
-  //Only call this function asynchronously
+  // Plays sound to alert player that shields are low
+  // Note: only call this function asynchronously
+  
   soundArray[6].rewind();
   soundArray[6].setGain(-5);
   soundArray[6].play();
@@ -517,6 +489,8 @@ void shieldCriticalSoundSequence() {
 }
 
 void attentionLifeformSoundSequence() {
+  
+  // Boss spawn ('attention, unknown lifeform identified')
   soundArray[6].rewind();
   soundArray[6].setGain(-5);
   soundArray[6].play();
@@ -551,12 +525,11 @@ void keyPressed() {
   }
   if (key == 'w') {
     accelerate = true;
-    // render thruster
   }
   
   if (key == ' ') {
     createBullet();
-    // check for rapidfire upgrade (rapidfire only available on standard gun)
+    // If standard gun has rapid fire, reload it automatically
    if (rapidFireUpgradeEnabled && weaponIndex == 1){
       gunReloaded = true;
     }
@@ -567,14 +540,17 @@ void keyPressed() {
   
   //Change weapon
   if (key == '1') {
+    // Standard weapon
     changeWeapon(1);
     shipImageIndex = 0;
   }
   if (key == '2' && tripleLaserUpgradeEnabled) {
+    // Triple fire
     changeWeapon(2);
     shipImageIndex = 1;
   }
   if (key == '3' && magnusEnforcedUpgradeEnabled) {
+    // Recharging weapon
     changeWeapon(3);
     shipImageIndex = 2;
   }
@@ -582,12 +558,20 @@ void keyPressed() {
   if (key == 'p') {
     if (!gameStarted) {
         score = 0;
-      
-        while (!preloadingFinished) //wait for preloading to finish before starting game
+        // Wait for preloading to finish before starting game
+        while (!preloadingFinished) 
         delay(100);
+      
+      // Reset ship and boss data
       initialiseSprites();
+      
+      // Generate the starfield
       generateStars();
+      
+      // Handle level status
       thread("levelSequence");
+      
+      // Update states and change to game screen
       gameStarted = true;
       resetReady = false;
       currentScreen = "game";
@@ -604,7 +588,7 @@ void keyPressed() {
   if (key == 'c' && debug) {
     createAsteroid(0, 0, "large");
   }
-  if (key == 'n' && debug) { //temp for testing songs, delete in production
+  if (key == 'n' && debug) { //temp for testing songs, delete in production STEVE REMOVE?
     if (playingIndex == 0)
       musicManager("thrust");
     else if (playingIndex == 1)
@@ -612,7 +596,7 @@ void keyPressed() {
     else if (playingIndex == 2)
       musicManager("epic");
   }
-  if (key == 'b' && debug) { //temp, cycle and equip through diff shields, weapons. Normally this should only be possible at level up screen
+  if (key == 'b' && debug) { //temp, cycle and equip through diff shields, weapons. Normally this should only be possible at level up screen STEVE remove?
     if (shieldIndex == 1)
       changeShield(2);
     else if (shieldIndex == 2 && thrusterIndex == 1)

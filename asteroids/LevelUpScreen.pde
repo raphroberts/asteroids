@@ -4,14 +4,15 @@
 int upgradeScreenIndex = 0;
 int upgradeScreenIndexLimit = 4;
 
-// Graphics
+// Cursor and upgrade screen images
 PImage cursor;
+PImage[] upgradeScreenImage = new PImage[10];
 
-// Navigation arrows
+// Navigation state tracking
 boolean leftArrowTintActive = false;
 boolean rightArrowTintActive = false;
 boolean upgradeTintActive = false;
-boolean mouseDown = true; //a disgusting hack, but Processing has no mouseReleased boolean, only a function
+boolean mouseDown = true;
 
 // State of upgrades
 boolean tripleLaserUpgradeEnabled = false;
@@ -27,6 +28,14 @@ color tintValue = color(255, 0, 255);
 
 // Positioning data
 int upGradeOffset = 40;
+
+// Upgrade info text
+String[] upGradeTitles = { "Continuous Fire", "Triple shot", "Enforcer", "Shield MK 2", "Thruster MK 2" };
+String[] upGradeDescriptions = { "Upgrades single shot cannon to fire continuously when holding down the fire button", "Shoot three streams of bullets", "Charges a high power laser beam", "Increase shield capacity", "Increases ship speed" };
+
+// Upgrade status tracking whether upgrade is active or not
+boolean[] upGradeActive = { false, false, false, false, false };
+
 
 void pulseUpgrade(int pulseIndex){
   // Make upgrade icon pulse
@@ -44,30 +53,10 @@ void stopPulseUpgrade(int pulseIndex){
 }
 
 void renderUpgradeScreen(){
-  // Draws the upgrade screen and handles mouseover effect on elements
+  // Draws the upgrade screen background and handles mouseover effect on elements
   
   background(backgroundImage[2]);
 
-  if (leftArrowTintActive) {
-    tint(tintValue);
-    upgradeArrow =  pulseImage(48, 37, 0.9, 5, false);
-    image(upgradeScreenImage[0], width/8, height/2, upgradeArrow, upgradeArrow * 2); 
-    tint(255);
-  }
-  else {
-    image(upgradeScreenImage[0], width/8, height / 2);
-  }
-  
-  if (rightArrowTintActive) {
-    tint(tintValue);
-    upgradeArrow =  pulseImage(48, 37, 0.9, 5, false);
-    image(upgradeScreenImage[1], width - width/8, height/2, upgradeArrow, upgradeArrow * 2); 
-    tint(255);
-  }
-  else {
-    image(upgradeScreenImage[1], width - width/8, height /2);
-  }
-  
   // Check if mouse is hovering over arrows
   if (mouseX >= width - width/3) { 
     rightArrowTintActive = true;
@@ -81,7 +70,7 @@ void renderUpgradeScreen(){
   else {
     leftArrowTintActive = false;
   }
-  
+
   // Check if mouse is hovering over upgrade
   if (mouseX >= width/3 && mouseX <= width - width/3) {
     upgradeTintActive = true;
@@ -89,6 +78,28 @@ void renderUpgradeScreen(){
   else {
     upgradeTintActive = false;
   }  
+  
+  // If mouse is over left arrow, make the arrow pulse
+  if (leftArrowTintActive) {
+    tint(tintValue);
+    upgradeArrow =  pulseImage(48, 37, 0.9, 5, false);
+    image(upgradeScreenImage[0], width/8, height/2, upgradeArrow, upgradeArrow * 2); 
+    tint(255);
+  }
+  else {
+    image(upgradeScreenImage[0], width/8, height / 2);
+  }
+  
+  // If mouse is over right arrow, make the arrow pulse
+  if (rightArrowTintActive) {
+    tint(tintValue);
+    upgradeArrow =  pulseImage(48, 37, 0.9, 5, false);
+    image(upgradeScreenImage[1], width - width/8, height/2, upgradeArrow, upgradeArrow * 2); 
+    tint(255);
+  }
+  else {
+    image(upgradeScreenImage[1], width - width/8, height /2);
+  }
 
 }
 
@@ -96,9 +107,9 @@ void renderCurrentUpgrade(){
   // Render the upgrade that has been browsed to
   
   for (int i = 0; i <= upgradeScreenIndexLimit; i++){
-    // Render the upgrade unless it has already been activated
+    // Render the upgrade that has been browsed to, if it is allready activated let the player know
     if (i == upgradeScreenIndex){
-      // pulse the upgrade if the mouse is hovering over it
+      // Pulse the upgrade if the mouse is hovering over it
       if (upgradeTintActive) {
         pulseUpgrade(i);
       }
@@ -110,6 +121,7 @@ void renderCurrentUpgrade(){
       textSize(16);
       text(upGradeDescriptions[i], width/2, 270, width/2, 100);
       if (upGradeActive[i]){
+        // Display "Allready upgraded" banner
         image(upgradeScreenImage[2], width/2, height/2);
       }
     } 
@@ -173,10 +185,6 @@ void checkForSelection(){
   
 }
 
-String[] upGradeTitles = { "Continuous Fire", "Triple shot", "Enforcer", "Shield MK 2", "Thruster MK 2" };
-String[] upGradeDescriptions = { "Upgrades single shot cannon to fire continuously when holding down the fire button", "Shoot three streams of bullets", "Charges a high power laser beam", "Increase shield capacity", "Increases ship speed" };
-boolean[] upGradeActive = { false, false, false, false, false };
-
 void upgradeScreen() {
   // Handles selection of ship upgrades
   
@@ -210,7 +218,7 @@ void upgradeScreen() {
 
 
 boolean areAllUpgradesEnabled() {
-  //check whether all upgrades are already enabled
+  // Checks whether all upgrades have been enabled
   
   if (tripleLaserUpgradeEnabled && magnusEnforcedUpgradeEnabled && MK2ShieldUpgradeEnabled
     && thrusterUpgradeEnabled && rapidFireUpgradeEnabled) {

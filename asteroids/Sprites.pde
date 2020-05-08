@@ -25,11 +25,9 @@ int thrusterImageIndex = 1;
 PImage[] shieldGraphic = new PImage[3]; // ship image array
 int shieldImageIndex = 0;
 
-// Ship movement
-
+// Ship movement data
 PVector shipAcceleration;
 PVector shipVelocity;
-  
 float maxSpeed = 4;
 boolean accelerate = false;
 boolean rotateLeft = false;
@@ -40,6 +38,7 @@ float shipThrust = 0.1;
 PVector shipLocation = new PVector(width/2, height/2);
 
 void initialiseSprites() {
+  // Resets sprite data that needs resetting between levels
   
   // Reset ship PVector
   shipRotation = -1.56; // radians
@@ -64,7 +63,10 @@ void initialiseSprites() {
 }
 
 void moveShip() {
-  weaponCooldownTick++; //increase cooldown tick
+  // Move and render the player ship
+  
+  // Increase cooldown tick STEVE - is this for recharge weapon?
+  weaponCooldownTick++;
   
   // Handle ship movement & thruster sound
   if (accelerate) {
@@ -83,8 +85,9 @@ void moveShip() {
   if (abs(shipVelocity.y + shipAcceleration.y) <= maxSpeed) {
     shipVelocity.y = shipVelocity.y + shipAcceleration.y;
   }
-
-  decelerateShip();  //allow ship to lose velocity when thrusted in different direction
+  
+  // Lose velocity when ship thrusted in different direction
+  decelerateShip();
 
   shipLocation.add(shipVelocity);
   if (rotateLeft) {
@@ -106,6 +109,7 @@ void moveShip() {
     shipLocation.y = height + screenPadding;
   }
   
+  // Move the and rotate the draw matrix to match the ship
   translate(shipLocation.x, shipLocation.y);  
   rotate(shipRotation);
   
@@ -122,18 +126,14 @@ void moveShip() {
     image(thrusterGraphic[thrusterImageIndex], -50, 0);
   }
   
+  // Reset the draw matrix
   rotate(-shipRotation);
   translate(-shipLocation.x, -shipLocation.y);
 
-  if (debug) {
-    //println("Acceleration: " + shipAcceleration);
-    //println("Velocity: " + shipVelocity);
-    //println("Location: " + shipLocation);
-  }
 }
 
 void decelerateShip() {
-  // Handle ship deceleration
+  // Handles ship deceleration
   
   if (shipAcceleration.x >= 0.01) {
     shipAcceleration.sub(0.01, 0);
@@ -162,7 +162,11 @@ void decelerateShip() {
 */
 
 
-// WEAPON GLOBALS
+// WEAPON & BULLET GLOBALS
+
+// Bullet data is stored in an array list as follows:
+// 0 = bullet ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = initial rotation, 7 = bulletType, 8 = bullet damage
+ArrayList<Float[]> bulletObject = new ArrayList<Float[]>(); 
 
 boolean gunReloaded = true;
 PVector bulletVelocity;
@@ -170,27 +174,24 @@ PVector bulletLocation;
 float bulletRotation = 0; // radians
 
 int bulletSpeed = 18;
-int bulletID = 1; // can be used later for different bullet types
+int bulletID = 1;
 float bulletSize = 1;
 
-// Array list for storing bullet data
-//index 0 = bullet ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = initial rotation, 7 = bulletType, 8 = bullet damage
-
-ArrayList<Float[]> bulletObject = new ArrayList<Float[]>(); 
-
-int weaponIndex = 1; //0 = single pulse laser
+int weaponIndex = 1; // 0 = single pulse laser
 int shieldIndex = 1;
 int thrusterIndex = 1;
-boolean gameStarted = false;
+boolean gameStarted = false; // track whether shot can be fired or not
 
-int weaponCooldown = -1; //must wait this # of frames per shot 
-int weaponCooldownTick = 0; //current ticket of cooldown
+int weaponCooldown = -1; // Must wait this # of frames per shot 
+int weaponCooldownTick = 0; // Current tick of cooldown
+
+// Shield text to display
 String shieldName = "Basic";
 String thrusterName = "Standard";
 
 void createBullet() {
-  // Create a new bullet when the ship fires the gun
-  // shoot bullet as long as gun is reloaded
+  // Create a new bullet and play associated sound as long as the gun is ready (reloaded and recharged)
+  
   if (gunReloaded && weaponCooldownTick > weaponCooldown) {
     weaponCooldownTick = 0;
     
@@ -200,7 +201,6 @@ void createBullet() {
     bulletRotation = shipRotation;
     
     // Add bullet depending on current weapon that is firing it
-    //index 0 = bullet ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = initial rotation, 7 = bulletType, 8 = bullet damage
     if (weaponIndex == 1) { //standard laser gun
       bulletObject.add(new Float[] {float(bulletID), bulletLocation.x, bulletLocation.y, bulletSize, (bulletSpeed * cos(bulletRotation)), (bulletSpeed * sin(bulletRotation)), bulletRotation, 1.0, 8.0});
       soundArray[bulletshotIndex].rewind();
@@ -231,7 +231,7 @@ void createBullet() {
 }
 
 void drawAndMoveBullets() {
-  //iterate through all bullet objects draw and update their positions
+  // Iterate through all bullet objects, Render them and update their positions
 
   for (int i = 0; i < bulletObject.size(); i++) {
     Float[] obj = bulletObject.get(i);
@@ -257,16 +257,15 @@ void drawAndMoveBullets() {
       fill(#31A5FF);
       rect(20, 0, 35, 10);
     }
-    
-    
+        
     rotate(-obj[6]);
     translate(-bulletCoords.x, -bulletCoords.y);
     fill(255);
 
-    //move
+    // Update location of bullet
     if (obj[7] != 4.0) { // laser beam moves faster, so check for it
-      obj[1] = obj[1] + (int)(bulletSpeed * cos(obj[6])); //move in x direction given the object velocity
-      obj[2] = obj[2] + (int)(bulletSpeed * sin(obj[6])); //move in y direction given the object velocity
+      obj[1] = obj[1] + (int)(bulletSpeed * cos(obj[6])); 
+      obj[2] = obj[2] + (int)(bulletSpeed * sin(obj[6])); 
     }
     else {
       obj[1] = obj[1] + (int)(bulletSpeed * cos(obj[6]) * 2); 
@@ -283,59 +282,50 @@ void drawAndMoveBullets() {
  
  */
 
-// Array list to store enemy object data
-//index 0 = object ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = HP (>=0 if relevant, else -1)
 /*
-object ID as follows. This must match the enemyGraphics ID:
- 0 = large asteroid ID 1
- 1 = large asteroid ID 2
- 2 = large asteroid ID 3
- 3 = small asteroid ID 1
- 4 = small asteroid ID 2
- 5 = small asteroid ID 3
- */
+  Asteroids are stored as an array list
+  index 0 = object ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = HP (>=0 if relevant, else -1), 7 = enemyDamage
+  object ID relates to appearance as per enemyGraphics array: 0-2 = large asteroid images and 3-5 = small asteroid images
+*/
+
 ArrayList<int[]> enemyObject = new ArrayList<int[]>(); 
 
 // Asteroid graphic images (large and small)
 PImage[] enemyGraphics = new PImage[6]; //index should correspond to enemyObject ID
 
 void createAsteroid(int x, int y, String size) {
-  //create an asteroid at the given x, y coords, with size = "large" or "small"
+  // Create an asteroid at the given x, y coords, with size = "large" or "small"
   
-  //pick random asteroid from ID 0-2
   int ID;
   PVector initialVelocity = new PVector(0, 0);
     
   switch (size) {
     case "large":
+      // Add a large asteroid to array list
+      // Use random ID (PNG image) and random velocity      
       ID = randomInt(0, 2);
-      initialVelocity = new PVector(random(-gameLevel + -2, gameLevel + 2), random(-gameLevel + -2, gameLevel + 2)); //initial velocity
+      initialVelocity = new PVector(random(-gameLevel + -2, gameLevel + 2), random(-gameLevel + -2, gameLevel + 2));
       initialVelocity = preventStationaryVelocity(initialVelocity);
-      
-      //index 0 = object ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = HP (>=0 if relevant, else -1), 7 = enemyDamage
       enemyObject.add(new int[] {ID, x, y, enemyGraphics[ID].width, (int)initialVelocity.x, (int)initialVelocity.y, 1, 5});
       break;
   
     case "small":
+      // Add a small asteroid to array list
+      // Use random ID (PNG image) and random velocity
       ID = randomInt(3, 5);
-      initialVelocity = new PVector(random(-gameLevel + -2, gameLevel + 2) * 2, random(-gameLevel + -2, gameLevel + 2) * 2); //initial velocity, small asteroid is twice as fast
+      initialVelocity = new PVector(random(-gameLevel + -2, gameLevel + 2) * 2, random(-gameLevel + -2, gameLevel + 2) * 2);
       initialVelocity = preventStationaryVelocity(initialVelocity);
-      
-      //index 0 = object ID, 1 = x coord, 2 = y coord, 3 = hitbox size, 4 = x velocity, 5 = y velocity, 6 = HP (>=0 if relevant, else -1), 7 = enemyDamage
       enemyObject.add(new int[] {ID, x, y, enemyGraphics[ID].width * 2, (int)initialVelocity.x, (int)initialVelocity.y, 1, 1});
       break;
     default:
+      // Catch errors if function not called properly
       println("WARNING: createAsteroid called with " + size + " instead of large or small");
   }
-  
-  if (debug)
-      {
-        //println("Spawned asteroid with initialVelocity: " + initialVelocity);
-      }
 }
 
 PVector preventStationaryVelocity(PVector initialVelocity) {
-  //prevent stationary objects. Give them some velocity if it has 0 velocity.
+  // Prevent stationary objects. Give them some velocity if they have 0 velocity.
+  
   if ((initialVelocity.x < 1 && initialVelocity.x > 0) || (initialVelocity.x < 0 && initialVelocity.x > -1)) 
     initialVelocity = new PVector(random(1, 3), random(1, 3));
   else if ((initialVelocity.y < 1 && initialVelocity.y > 0) || (initialVelocity.y < 0 && initialVelocity.y > -1))
@@ -352,14 +342,14 @@ void drawAndMoveEnemies() {
     PVector objCoords = new PVector(obj[1], obj[2]);
     PVector objVelocity = new PVector(obj[4], obj[5]);
 
-    //draw
+    // Draw the enemy
     image(enemyGraphics[obj[0]], objCoords.x, objCoords.y);
 
-    //move
+    // Update their positions
     obj[1] = obj[1] + (int)objVelocity.x;
     obj[2] = obj[2] + (int)objVelocity.y;
 
-    //Screen overlap check
+    // If enemy has left the screen, wrap it around the other side
     if (obj[1] > width + screenPadding) {
       obj[1] = 0 - screenPadding;
     }
@@ -398,7 +388,7 @@ void drawAndMoveEnemies() {
   PImage[] bossBladeGraphic = new PImage[2]; // ship image array
   int bossBladeGraphicIndex = 0;
   
-    // Animation data
+  // Animation data
   float bossBladeAngle;
   
   // Movement data
@@ -429,10 +419,11 @@ void drawAndMoveEnemies() {
 void bossSequence() {
   // Start the boss sequence
   
+  // Play boss spawn sound
   thread("attentionLifeformSoundSequence");
   
-  // Here we have 2 boss themes, alternating based upon even level number
-  if (gameLevel % 4 == 0) 
+  // Play boss music, alternating each time we encounter the boss
+  if (gameLevel % 2 == 0) 
     fadeInSongCoroutine("boss1");
   else
     fadeInSongCoroutine("boss2");
@@ -447,19 +438,19 @@ void bossSequence() {
 void handleBoss(){
   // Handles boss related functionality
 
-  //get vector pointing from ship to Boss
+  // Get vector pointing from ship to Boss
   PVector target = PVector.sub (shipLocation,bossLocation);
   
-  // normalize to a unit vector in which each component is [0..1]
+  // Normalize to a unit vector in which each component is [0..1]
   target.normalize();
 
-  // multiply target vector by speed to get vector from [0..speed]
+  // Multiply target vector by speed to get vector from [0..speed]
   target.mult (bossSpeed);
   
   // Move the boss vector towards the ship
   bossLocation.add (target);
   
-  // Spin and render his blade
+  // Spin and render the blade
   bossBladeAngle = bossBladeAngle + 4;
   translate(bossLocation.x, bossLocation.y + bossBladeOffsetY);
   rotate( radians(bossBladeAngle) );
@@ -467,11 +458,11 @@ void handleBoss(){
   rotate(- radians(bossBladeAngle));
   translate(- bossLocation.x, - bossLocation.y - bossBladeOffsetY);
   
-  // Render his body
+  // Render the body
   image(bossGraphic[bossGraphicIndex], bossLocation.x, bossLocation.y);
   bossGraphicIndex = 0;
   
-  // Render his health indicator
+  // Render the health indicator
   indicatorRotation = norm(bossStrength, 0, bossInitialStrength);
   indicatorRotation *= 4.5;
   translate(bossLocation.x, bossLocation.y + bossIndicatorOffsetY);
@@ -479,28 +470,27 @@ void handleBoss(){
   image(bossGraphic[2], 0, 0);
   rotate( - indicatorRotation );
   translate( - bossLocation.x, - bossLocation.y - bossIndicatorOffsetY);
-
-  
-  // if boss is within health range, he gets mad and plunges towards player
+ 
+  // If boss has reached half strenth, it gets mad and plunges towards player
   if (bossStrength < bossInitialStrength/2){
-    // animate blinking light
+    // Animate blinking light
     if (bossGraphicIndex == 0){
       bossGraphicIndex = 3;
       if (!bossLaughed) {
-        //the boss will laugh once when he's mad
-        soundArray[21].rewind(); //laugh sound
+        // The boss will laugh once when he's mad
+        soundArray[21].rewind();
         soundArray[21].play();
         bossLaughed = true;
       }
     }
+    // Movement speed of the boss is based on game level and whether it is mad
     bossSpeed = bossInitialSpeed * gameLevel * 1.6;
-    
   }
   else {
     bossSpeed = bossInitialSpeed * gameLevel;
   }
   if(bossStrength < 1){
-   // stop boss following player and play explosion animations
+   // Boss is dead so stop it following player and play explosion animations
    target = new PVector(bossLocation.x,height * 2); 
    bossSpeed = bossInitialSpeed;
    renderExplosion();

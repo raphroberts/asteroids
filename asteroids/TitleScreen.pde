@@ -15,17 +15,18 @@ int titleShipPadding = 140;
 
 // Ship shrink factor when it loops around
 final int titleShipShrink = 100;
+
 // Thruster animation on title ship
 int thrusterCount = 0;
 
 
 void titleSetup() {
-  // set up title screen values
+  // Set up title screen values
   
   titleShipX = width / 2;
   titleShipY = height + titleShipPadding;
   
-  // initialise starfield
+  // Initialise starfield
   generateStars();
     
 }

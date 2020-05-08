@@ -14,13 +14,13 @@
  - Globals/Functions that are used across screens sit in "ReusableFunctions.PDE"
  - Globals are stored under the large (ASCII art) headings they relate to
  - minim library used for sounds, found here: http://code.compartmental.net/tools/minim/ 
- - Can be installed directly via Sketch > Imporant Library > Add Library > Minim
+ - Minim can be installed directly via Sketch > Imporant Library > Add Library > Minim
  - This library approved for assignment according to COSC 101 stack Unit Coordinator
  
 */
 
-// Debug switch (renders var information when enabled)
-boolean debug = true; //print stats to console for debugging purposes
+// Debug switch to assist testing (currently this reduces asteroid count)
+boolean debug = false;
 
 // SETTINGS
 
@@ -38,13 +38,13 @@ void setup() {
   // Title screen setup
   titleSetup();
   
-  //General
+  // General
   frameRate(60);  
   rectMode(CENTER); 
   imageMode(CENTER);
   textSize(26);
   
-  //Ship setup
+  // Ship setup
   shipAcceleration = new PVector(0, 0);
   shipAcceleration.limit(0.1);
   shipVelocity = new PVector(0, 0);
@@ -63,7 +63,7 @@ void setup() {
   populateImageArray(backgroundImage, "images/backgrounds/background_", 2); // background images
   populateImageArray(titleShip, "images/titleScreenUI/title_", 1); // title screen ship
  
-  //preload assets async
+  // Preload assets async
   thread("preloading");
   
   // generate smoke animation image array
