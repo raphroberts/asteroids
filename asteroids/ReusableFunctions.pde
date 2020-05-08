@@ -348,7 +348,7 @@ void musicManager(String song) {
       }
       break;
     case "title":
-      // Play title theme STEVE might be good to list what each of these songs are?
+      // plays the title theme title.mp3
       try {
         musicArray[0].rewind();
         musicArray[0].loop();
@@ -360,6 +360,7 @@ void musicManager(String song) {
       }
       break;
     case "epic":
+      // Plays the epic theme s2.mp3
       try {
         musicArray[1].rewind();
         musicArray[1].loop();
@@ -371,6 +372,7 @@ void musicManager(String song) {
       }
       break;
     case "thrust":
+      // plays the thrust theme ThrustSequence.mp3
       try {
        musicArray[2].rewind(); 
        musicArray[2].loop();
@@ -382,6 +384,7 @@ void musicManager(String song) {
      }
      break;
      case "victory":
+       // plays the victory theme victorytheme.mp3
        try {
          musicArray[3].rewind();
          musicArray[3].loop();
@@ -393,6 +396,7 @@ void musicManager(String song) {
        } 
      break;
     case "upgrade":
+      // plays the upgrade theme upgradeTheme.mp3
      try {
          musicArray[4].rewind();
          musicArray[4].loop();
@@ -404,10 +408,11 @@ void musicManager(String song) {
        } 
      break;
    case "level1":
+     // plays the level 1 theme level1.mp3
      try {
          musicArray[5].rewind();
          musicArray[5].play();
-         musicArray[5].shiftGain(-50, -3, 5000); //out gain is -50, in gain is -1
+         musicArray[5].shiftGain(-50, -3, 5000); 
          playingIndex = 5;
        }
        catch (NullPointerException e) {
@@ -415,10 +420,11 @@ void musicManager(String song) {
        } 
      break;
   case "trueepic": 
+    // plays the true epic theme trueepic.mp3
      try {
          musicArray[6].rewind();
          musicArray[6].loop();
-         musicArray[6].shiftGain(-50, -10, 5000); //out gain is -50, in gain is -1
+         musicArray[6].shiftGain(-50, -10, 5000); 
          playingIndex = 6;
        }
        catch (NullPointerException e) {
@@ -426,10 +432,11 @@ void musicManager(String song) {
        } 
      break;
    case "modulo4": 
+     // plays the modulo4 theme modulo4.mp3
      try {
          musicArray[7].rewind();
          musicArray[7].loop();
-         musicArray[7].shiftGain(-50, -3, 5000); //out gain is -50, in gain is -1
+         musicArray[7].shiftGain(-50, -3, 5000); 
          playingIndex = 7;
        }
        catch (NullPointerException e) {
@@ -437,21 +444,23 @@ void musicManager(String song) {
        } 
      break;
     case "boss1": 
+      // plays the boss1 theme boss1.mp3
      try {
          musicArray[8].rewind();
          musicArray[8].loop();
-         musicArray[8].shiftGain(-50, -3, 5000); //out gain is -50, in gain is -1
+         musicArray[8].shiftGain(-50, -3, 5000);
          playingIndex = 8;
        }
        catch (NullPointerException e) {
          println("Song not yet loaded..");
        } 
      break;
-     case "boss2": // Short teaser song for level 1
+     case "boss2": 
+       // plays the boss2 theme boss2.mp3
      try {
          musicArray[9].rewind();
          musicArray[9].loop();
-         musicArray[9].shiftGain(-50, -3, 5000); //out gain is -50, in gain is -1
+         musicArray[9].shiftGain(-50, -3, 5000); 
          playingIndex = 9;
        }
        catch (NullPointerException e) {
@@ -471,7 +480,7 @@ void stopAllSongs() {
       }
     }
     catch (NullPointerException e) {
-      //We can catch a NullPointerException here since it will only occur for an unloaded async sound file STEVE, add catch code or just remove?
+      //We can catch a NullPointerException here since it will only occur for an unloaded async sound file
     }
   }
 }
@@ -582,30 +591,6 @@ void keyPressed() {
     else {
       gamePaused = false;
     }
-  }
-
-  // debug keys
-  if (key == 'c' && debug) {
-    createAsteroid(0, 0, "large");
-  }
-  if (key == 'n' && debug) { //temp for testing songs, delete in production STEVE REMOVE?
-    if (playingIndex == 0)
-      musicManager("thrust");
-    else if (playingIndex == 1)
-      musicManager("thrust");
-    else if (playingIndex == 2)
-      musicManager("epic");
-  }
-  if (key == 'b' && debug) { //temp, cycle and equip through diff shields, weapons. Normally this should only be possible at level up screen STEVE remove?
-    if (shieldIndex == 1)
-      changeShield(2);
-    else if (shieldIndex == 2 && thrusterIndex == 1)
-      changeThruster(2);
-    else
-      {
-        changeShield(1);
-        changeThruster(1);
-      }
   }
 }
 

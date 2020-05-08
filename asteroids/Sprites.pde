@@ -65,7 +65,7 @@ void initialiseSprites() {
 void moveShip() {
   // Move and render the player ship
   
-  // Increase cooldown tick STEVE - is this for recharge weapon?
+  // Increase cooldown tick for weapon recharge delay
   weaponCooldownTick++;
   
   // Handle ship movement & thruster sound
