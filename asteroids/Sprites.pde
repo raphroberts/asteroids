@@ -72,6 +72,7 @@ void moveShip() {
   if (accelerate) {
     shipAcceleration = new PVector(shipThrust * cos(shipRotation), shipThrust * sin(shipRotation));
     if (!soundArray[13].isPlaying()) {
+      // play ship thrust sound effect
       soundArray[13].rewind();
       soundArray[13].play();
     }

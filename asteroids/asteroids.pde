@@ -17,6 +17,9 @@
  - Minim can be installed directly via Sketch > Imporant Library > Add Library > Minim
  - This library approved for assignment according to COSC 101 stack Unit Coordinator
  
+ AUTHORS -
+   Raph Roberts
+   Steven Buchanan
 */
 
 // Debug switch to assist testing (currently this reduces asteroid count)
