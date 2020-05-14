@@ -65,13 +65,14 @@ void initialiseSprites() {
 void moveShip() {
   // Move and render the player ship
   
-  // Increase cooldown tick STEVE - is this for recharge weapon?
+  // Increase cooldown tick for weapon recharge delay
   weaponCooldownTick++;
   
   // Handle ship movement & thruster sound
   if (accelerate) {
     shipAcceleration = new PVector(shipThrust * cos(shipRotation), shipThrust * sin(shipRotation));
     if (!soundArray[13].isPlaying()) {
+      // play ship thrust sound effect
       soundArray[13].rewind();
       soundArray[13].play();
     }
@@ -404,7 +405,7 @@ void drawAndMoveEnemies() {
   int bossSize = 80;
   int bossInitialStrength = 250; // updated now when boss is defeated
   int bossStrength = bossInitialStrength;
-  final float bossDamage = 0.03;
+  final float bossDamage = 0.01;
   
   // Indicator rotation
   float indicatorRotation;
