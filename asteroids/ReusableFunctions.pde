@@ -46,16 +46,20 @@ void screenHandler() {
   // Main function to change between screens of the game
   
   switch(currentScreen) {
-  case "title": 
+  case "title":
+  
     // Display title screen
     titleScreen();
     break;
   case "game": 
     if (!gamePaused) {
+      
       // Display game screen    
       background(backgroundImage[1]);
+      
       // Render the starfield
       renderStars();
+      
       // If rapidFire enabled and standard gun selected, shoot a bullet
       if (
         rapidFireUpgradeEnabled &&
@@ -65,22 +69,30 @@ void screenHandler() {
       ){
         createBullet();
       }
+      
       // Update and draw the bullets
       drawAndMoveBullets();
+      
       // Update and draw the ship
       moveShip();
+      
       // Update and move enemies
       drawAndMoveEnemies();
+      
       // Check for collisions
       checkCollision();
-      // Recharge shield
+      
+      // Recharge shield slowly
       rechargeShield();
+      
       // Render explosion if an asteroid was hit
       renderExplosion();
+      
       // Render the UI and overlays
       UIManager();
     }
     else{
+      
       // Let player know that game is paused
       fill(0,100);
       rect(width/2, height/2, width/2,height/8);
@@ -89,11 +101,14 @@ void screenHandler() {
     }      
     break;
   case "level up": 
+  
     // Display and handle the upgrade screen    
     // Replenish shield (between levels)
     shieldHP = maxShieldHP;   
+    
     // Reset ship and sprite data
     initialiseSprites();  
+    
     // Continue to the next level if player is finished,
     // otherwise display the upgrades.
     if (continueLevel) {
@@ -108,6 +123,7 @@ void screenHandler() {
     }
     break;  
   case "game over": 
+  
     // Display the game over screen    
     gameOverScreen();
     break;
@@ -184,8 +200,12 @@ void populateImageArray(PImage[] arrayName, String prefix, int arrayLength){
 
 void generateStars() {
   // Create random starfield data
+  // Stars are stores in an array list, with values:
+  // 0-1 = PVector X,Y
+  // 2 = star 'size' (near or far)
 
   for (int i = 1; i <= numberOfStars; i++) {
+    
     //index 0 = x coord, 1 = y coord, 2 = size
     starObject.add(new int[] {
       randomInt(0, width + screenPadding * 2),
@@ -197,14 +217,20 @@ void generateStars() {
 }
 
 void renderStars() {
-  // Render starfield to screen with parralax effect relative to ship location
+  // Renders starfield to screen with parralax effect relative to ship location
+  // Positions are calculated as a multiple of screen height relative to ship
+  // location (1X and 2X) so they appear to loop seamlessly on screen-wraps
 
   for (int i = 0; i < starObject.size(); i++) {
-    //Retrieve the X,Y coordinates of the current star
+    
+    // Retrieve the X,Y coordinates of the current star
     int[] obj = starObject.get(i);
     PVector starLocation = new PVector(obj[0], obj[1]); 
+    
+    // Fetch star size (whether star is near or far)
     strokeWeight(obj[2]);
-    // Larger stars are brighter and move faster than others
+    
+    // Distant stars are dimmer and move faster than others
     if (obj[2] < 4) {
       stroke(randomInt(70, 120));
       point(starLocation.x, starLocation.y - shipLocation.y);
@@ -217,6 +243,8 @@ void renderStars() {
         starLocation.y - shipLocation.y + (height + (screenPadding*2))
       );
     } else {
+      
+      // Closer stars are brighter and move faster than others
       stroke(randomInt(100, 190));
       if ((starLocation.y - shipLocation.y) < height / 2) {
         point(starLocation.x, (starLocation.y - shipLocation.y) * 2);
@@ -314,8 +342,8 @@ void preloading() {
   
   // Load title music up-front
   musicArray[0] = minim.loadFile("music/title.mp3");
-  if (currentScreen == "title")
-    musicManager("title");    
+  if (currentScreen == "title") musicManager("title"); 
+    
   //Preload game sfx, some sounds are repeated to allow overlapped audio
   soundArray[0] = minim.loadFile("sounds/laserfire01.mp3"); //bullet 1
   soundArray[1] = minim.loadFile("sounds/laserfire01.mp3"); //bullet 1
@@ -342,6 +370,7 @@ void preloading() {
   soundArray[19] = minim.loadFile("sounds/largeRockDestroy.wav");
   soundArray[20] = minim.loadFile("sounds/prespeech.mp3");
   soundArray[21] = minim.loadFile("sounds/bosslaugh.wav");
+  
   // Balance gain (volume) of sounds
   soundArray[13].setGain(-20);
   soundArray[14].setGain(-10);
@@ -350,8 +379,10 @@ void preloading() {
   soundArray[17].setGain(-1);
   soundArray[18].setGain(-1);
   soundArray[19].setGain(-1);
+  
   // Register completion of preloading
   preloadingFinished = true;
+  
   // Load music tracks into an array
   musicArray[1] = minim.loadFile("music/s2.mp3");
   musicArray[2] = minim.loadFile("music/ThrustSequence.mp3");
@@ -383,15 +414,18 @@ void musicManager(String song) {
   
   // Stop any playing songs to prevent overlap
   stopAllSongs();  
+  
   // Fade songs in and out  
   switch (song) {
     case "none":
+    
       // Stop any song that is currently playing
       if (musicArray[playingIndex].isPlaying()) {
         musicArray[playingIndex].pause();
       }
       break;
     case "title":
+    
       // plays the title theme title.mp3
       try {
         musicArray[0].rewind();
@@ -404,6 +438,7 @@ void musicManager(String song) {
       }
       break;
     case "epic":
+    
       // Plays the epic theme s2.mp3
       try {
         musicArray[1].rewind();
@@ -416,6 +451,7 @@ void musicManager(String song) {
       }
       break;
     case "thrust":
+    
       // plays the thrust theme ThrustSequence.mp3
       try {
        musicArray[2].rewind(); 
@@ -428,6 +464,7 @@ void musicManager(String song) {
      }
      break;
      case "victory":
+     
        // plays the victory theme victorytheme.mp3
        try {
          musicArray[3].rewind();
@@ -440,6 +477,7 @@ void musicManager(String song) {
        } 
      break;
     case "upgrade":
+    
       // plays the upgrade theme upgradeTheme.mp3
      try {
          musicArray[4].rewind();
@@ -452,6 +490,7 @@ void musicManager(String song) {
        } 
      break;
    case "level1":
+   
      // plays the level 1 theme level1.mp3
      try {
          musicArray[5].rewind();
@@ -464,6 +503,7 @@ void musicManager(String song) {
        } 
      break;
   case "trueepic": 
+  
     // plays the true epic theme trueepic.mp3
      try {
          musicArray[6].rewind();
@@ -476,6 +516,7 @@ void musicManager(String song) {
        } 
      break;
    case "modulo4": 
+   
      // plays the modulo4 theme modulo4.mp3
      try {
          musicArray[7].rewind();
@@ -488,6 +529,7 @@ void musicManager(String song) {
        } 
      break;
     case "boss1": 
+    
       // plays the boss1 theme boss1.mp3
      try {
          musicArray[8].rewind();
@@ -500,6 +542,7 @@ void musicManager(String song) {
        } 
      break;
      case "boss2": 
+     
        // plays the boss2 theme boss2.mp3
      try {
          musicArray[9].rewind();
@@ -524,6 +567,7 @@ void stopAllSongs() {
       }
     }
     catch (NullPointerException e) {
+      
       // Ok to catch NPE here - only occurs from unloaded async file
     }
   }
@@ -587,6 +631,7 @@ void keyPressed() {
   }  
   if (key == ' ') {
     createBullet();
+    
     // If standard gun has rapid fire, reload it automatically
    if (rapidFireUpgradeEnabled && weaponIndex == 1){
       gunReloaded = true;
@@ -595,39 +640,53 @@ void keyPressed() {
       gunReloaded = false;
     }
   }  
+  
   //Change weapon
   if (key == '1') {
+    
     // Standard weapon
     changeWeapon(1);
     shipImageIndex = 0;
   }
   if (key == '2' && tripleLaserUpgradeEnabled) {
-    // Triple fire
+    
+    // Triple fire weapon
     changeWeapon(2);
     shipImageIndex = 1;
   }
   if (key == '3' && magnusEnforcedUpgradeEnabled) {
-    // Magnus enforcer
+    
+    // Magnus enforcer weapon
     changeWeapon(3);
     shipImageIndex = 2;
-  }  
+  }
+  
+  // Play or pause the game
   if (key == 'p' || key == 'P') {
+    // If game hasn't started, start it
     if (!gameStarted) {
-        score = 0;
-        // Wait for preloading to finish before starting game
-        while (!preloadingFinished) 
-        delay(100);     
+      score = 0;
+      
+      // Wait for preloading to finish before starting game
+      while (!preloadingFinished) 
+      delay(100);     
+        
       // Reset ship and boss data
       initialiseSprites();      
+      
       // Generate the starfield
       generateStars();      
+      
       // Handle level status
-      thread("levelSequence");      
+      thread("levelSequence");     
+      
       // Update states and change to game screen
       gameStarted = true;
       resetReady = false;
       currentScreen = "game";
     }
+    
+    // If game has started, pause or un-pause the game
     else if (!gamePaused) {
       gamePaused = true;
     }
@@ -650,7 +709,9 @@ void keyReleased() {
     accelerate = false;
   }
   if (key == ' ') {
+    
    // check for rapidfire upgrade (rapidfire only available on standard gun)
+   // Rapidfire = player doesn't need to release [space] to reload between shots
    if (rapidFireUpgradeEnabled && weaponIndex == 1){
       gunReloaded = false;
     }

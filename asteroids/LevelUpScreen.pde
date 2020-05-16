@@ -37,6 +37,7 @@ String[] upGradeTitles = {
   "Shield MK 2",
   "Thruster MK 2" 
 };
+
 String[] upGradeDescriptions = { 
   "Upgrades single shot cannon to fire continuously (holding down spacebar",
   "Shoot three streams of bullets",
@@ -49,7 +50,7 @@ String[] upGradeDescriptions = {
 boolean[] upGradeActive = { false, false, false, false, false };
 
 void pulseUpgrade(int pulseIndex){
-  // Makes upgrade icons pulse
+  // Makes upgrade icons pulse )scale up and down)
   
   tint(tintValue);
   upgradeButtonIcon =  pulseImage(50, 40, 0.9, 5, false);
@@ -73,7 +74,8 @@ void renderUpgradeScreen(){
   // Draws the upgrade screen background and handles mouseover effects
   
   background(backgroundImage[2]);
-  // Check if mouse is hovering over arrows
+  
+  // Check if mouse is over arrows, if yes, mark them for tint effect
   if (mouseX >= width - width/3) { 
     rightArrowTintActive = true;
   }
@@ -86,13 +88,15 @@ void renderUpgradeScreen(){
   else {
     leftArrowTintActive = false;
   }
-  // Check if mouse is hovering over upgrade
+  
+  // Check if mouse is over upgrade, if yes, mark for tint
   if (mouseX >= width/3 && mouseX <= width - width/3) {
     upgradeTintActive = true;
       }
   else {
     upgradeTintActive = false;
-  }    
+  }  
+  
   // If mouse is over left arrow, make the arrow pulse
   if (leftArrowTintActive) {
     tint(tintValue);
@@ -108,7 +112,8 @@ void renderUpgradeScreen(){
   }
   else {
     image(upgradeScreenImage[0], width/8, height / 2);
-  }  
+  } 
+  
   // If mouse is over right arrow, make the arrow pulse
   if (rightArrowTintActive) {
     tint(tintValue);
@@ -132,9 +137,11 @@ void renderCurrentUpgrade(){
   // Checks if the upgrade has already been applied after a previous level
   
   for (int i = 0; i <= upgradeScreenIndexLimit; i++){
+    
     // Render the upgrade that has been browsed to
     // If it is allready activated let the player know
     if (i == upgradeScreenIndex){
+      
       // Pulse the upgrade if the mouse is hovering over it
       if (upgradeTintActive) {
         pulseUpgrade(i);
@@ -142,11 +149,14 @@ void renderCurrentUpgrade(){
       else {
         stopPulseUpgrade(i); 
       }
+      
+      // Render upgrade description text
       textSize(26);
       text(upGradeTitles[i], width/2, 300);
       textSize(16);
       text(upGradeDescriptions[i], width/2, 270, width/2, 100);
       if (upGradeActive[i]){
+        
         // Display "Allready upgraded" banner
         image(upgradeScreenImage[2], width/2, height/2);
       }
@@ -158,7 +168,8 @@ void checkForSelection(){
   // Handles UI clicks on upgrade screen
   
   if (mousePressed && !mouseDown) {
-    mouseDown = true;    
+    mouseDown = true;
+
     // If an upgrade was selected, activate it and continue the game
     if (upgradeTintActive) {
       if (upgradeScreenIndex == 0 && !rapidFireUpgradeEnabled) {
@@ -193,7 +204,8 @@ void checkForSelection(){
         continueLevel = true;  
       }
       noCursor();
-    }    
+    } 
+    
     // If a navigation arrow was pressed, scroll to the next/previous upgrade
     else if (leftArrowTintActive) {
       upgradeScreenIndex --;
@@ -213,21 +225,27 @@ void upgradeScreen() {
   
  // Set cursor to crosshair image
   cursor(cursor);  
+  
   // Stop ship from accelerating
   accelerate = false;  
+  
   // Skip upgrade screen if all upgrades already taken
   if (areAllUpgradesEnabled()) { 
     continueLevel = true;    
     return;
   }  
+  
   // Stop thruster sound if it is playing
   if (soundArray[13].isPlaying()) {
     soundArray[13].pause(); // stop thruster sound
   }
+  
   // Render the upgrade screen
   renderUpgradeScreen();  
+  
   // Render the current upgrade
   renderCurrentUpgrade(); 
+  
   // Check if an upgrade has been selected
   checkForSelection();  
 }

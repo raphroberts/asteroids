@@ -44,10 +44,12 @@ void moveShip() {
   
   // Increase cooldown tick for weapon recharge delay
   weaponCooldownTick++;
+  
   // Handle ship acceleration, deceleration & looping thruster sound
   accelerateShip();
   decelerateShip();
   shipLocation.add(shipVelocity);
+  
   // Update rotation
   if (rotateLeft) {
     shipRotation -= shipRotationSpeed;
@@ -55,6 +57,7 @@ void moveShip() {
   if (rotateRight) {
     shipRotation += shipRotationSpeed;
   }
+  
   // Screen wrapping
   if (shipLocation.x > width + screenPadding) {
     shipLocation.x = 0 - screenPadding;
@@ -68,19 +71,24 @@ void moveShip() {
   if (shipLocation.y < 0 - screenPadding) {
     shipLocation.y = height + screenPadding;
   }  
+  
   // Move the and rotate the draw matrix to match the ship
   translate(shipLocation.x, shipLocation.y);  
   rotate(shipRotation);  
+  
   // If ship is being damaged, render shield
   if (isBeingDamaged){
     image(shieldGraphic[shieldImageIndex], 0, 0);
   }  
+  
   // Render ship
   image(shipGraphic[shipImageIndex], 0, 0);  
+  
   // If ship is thrusting, render thrusters
   if (accelerate){
     image(thrusterGraphic[thrusterImageIndex], -50, 0);
   }  
+  
   // Reset the draw matrix
   rotate(-shipRotation);
   translate(-shipLocation.x, -shipLocation.y);
@@ -183,28 +191,35 @@ void createBullet() {
   
   if (gunReloaded && weaponCooldownTick > weaponCooldown) {
     weaponCooldownTick = 0;    
+    
     // Set bullet location/rotation to match ship
     bulletLocation.x = shipLocation.x;
     bulletLocation.y = shipLocation.y;
     bulletRotation = shipRotation;    
+    
     // Add bullet depending on current weapon that is firing it
     if (weaponIndex == 1) {
+      
       // Standard laser gun
       spawnBullet(1,damageLaser);
       soundArray[bulletshotIndex].rewind();
       soundArray[bulletshotIndex++].play();
+      
       //Allow mulitple sound channels for this bullet
       if (bulletshotIndex > 2) bulletshotIndex = 0;
     }
     else if (weaponIndex == 2) { 
+      
       // Triple shot
       spawnBullet(2,damageTripleShot);
       soundArray[bulletshotIndex].rewind();
       soundArray[bulletshotIndex++].play();
+      
       //Allow mulitple sound channels for this bullet
       if (bulletshotIndex > 2) bulletshotIndex = 0;
     }
     else if (weaponIndex == 3) { 
+      
       // Magnum enforcer
       spawnBullet(3,damageEnforcer);
       soundArray[4].rewind();
@@ -242,6 +257,7 @@ void drawAndMoveBullets() {
     int bulletType = round(obj[7]);
     translate(bulletCoords.x, bulletCoords.y);
     rotate(obj[6]);
+    
     // Render bullet (appearance based on bullet type)
     if (bulletType == 1) {
       fill(#b6ed57);
@@ -260,6 +276,7 @@ void drawAndMoveBullets() {
     rotate(-obj[6]);
     translate(-bulletCoords.x, -bulletCoords.y);
     fill(255);
+    
     // Update location of bullet (enforcer moves slower)
     if (obj[7] != 4.0) {
       obj[1] = obj[1] + (int)(bulletSpeed * cos(obj[6])); 
@@ -299,6 +316,7 @@ void createAsteroid(int x, int y, String size) {
   PVector initialVelocity = new PVector(0, 0);    
   switch (size) {
     case "large":
+    
       // Add a large asteroid to array list
       // Use random ID (PNG image) and random velocity      
       ID = randomInt(0, 2);
@@ -319,6 +337,7 @@ void createAsteroid(int x, int y, String size) {
       );
       break;  
     case "small":
+    
       // Add a small asteroid to array list
       // Use random ID (PNG image) and random velocity
       ID = randomInt(3, 5);
@@ -339,6 +358,7 @@ void createAsteroid(int x, int y, String size) {
       });
       break;
     default:
+    
       // Catch errors if function not called properly
       println("createAsteroid called with " + size + " (needs large or small)");
   }
@@ -368,11 +388,14 @@ void drawAndMoveEnemies() {
     int[] obj = enemyObject.get(i);
     PVector objCoords = new PVector(obj[1], obj[2]);
     PVector objVelocity = new PVector(obj[4], obj[5]);
+    
     // Draw the enemy
     image(enemyGraphics[obj[0]], objCoords.x, objCoords.y);
-    // Update their positions
+    
+    // Update it's position
     obj[1] = obj[1] + (int)objVelocity.x;
     obj[2] = obj[2] + (int)objVelocity.y;
+    
     // If enemy has left the screen, wrap it around the other side
     if (obj[1] > width + screenPadding) {
       obj[1] = 0 - screenPadding;
@@ -444,7 +467,8 @@ void bossSequence() {
   // Start the boss sequence
   
   // Play boss spawn sound
-  thread("attentionLifeformSoundSequence");  
+  thread("attentionLifeformSoundSequence"); 
+  
   // Play boss music, alternating each time we encounter the boss
   if (gameLevel % 2 == 0) fadeInSongCoroutine("boss1");
   else fadeInSongCoroutine("boss2");    
@@ -457,26 +481,34 @@ void handleBoss(){
 
   // Get vector pointing from ship to Boss
   PVector target = PVector.sub (shipLocation,bossLocation);
+  
   // Normalize to a unit vector in which each component is [0..1]
   target.normalize();
+  
   // Multiply target vector by speed to get vector from [0..speed]
   target.mult (bossSpeed);
+  
   // Move the boss vector towards the ship
   bossLocation.add (target); 
+  
   // Render the boss graphics
   renderBoss();
+  
   // When boss reaches half strenth, it gets mad and plunges towards player
   if (bossStrength < bossInitialStrength/2){
+    
     // Animate blinking light
     if (bossGraphicIndex == 0){
       bossGraphicIndex = 3;
       if (!bossLaughed) {
+        
         // The boss will laugh once when he's mad
         soundArray[21].rewind();
         soundArray[21].play();
         bossLaughed = true;
       }
     }
+    
     // Movement speed of the boss is based on game level and whether it is mad
     bossSpeed = bossInitialSpeed * gameLevel * 1.6;
   }
@@ -484,6 +516,7 @@ void handleBoss(){
     bossSpeed = bossInitialSpeed * gameLevel;
   }
   if(bossStrength < 1){
+    
    // Boss is dead so stop it following player and play explosion animations
    target = new PVector(bossLocation.x,height * 2); 
    bossSpeed = bossInitialSpeed;
@@ -506,9 +539,11 @@ void renderBoss(){
   image(bossBladeGraphic[bossBladeGraphicIndex], 0, 0);
   rotate(- radians(bossBladeAngle));
   translate(- bossLocation.x, - bossLocation.y - bossBladeOffsetY);
+  
   // Render the body
   image(bossGraphic[bossGraphicIndex], bossLocation.x, bossLocation.y);
   bossGraphicIndex = 0;
+  
   // Render the health indicator (dial on the nose)
   indicatorRotation = norm(bossStrength, 0, bossInitialStrength);
   indicatorRotation *= 4.5;

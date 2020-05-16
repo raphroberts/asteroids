@@ -56,27 +56,38 @@ void setup() {
   shipVelocity = new PVector(0, 0);
   shipLocation = new PVector(width/2, height/2);
   
-  // Image arrays setup
+  // Image arrays setup..
+  
   // Ship with weapons
   populateImageArray(shipGraphic, "images/ship/ship_main_", 2);
+  
   // Ship thruster
   populateImageArray(thrusterGraphic, "images/ship/thruster_", 2); 
+  
   // Ship shield
   populateImageArray(shieldGraphic, "images/ship/ship_shield", 2); 
+  
   // Asteroids
   populateImageArray(enemyGraphics, "images/asteroids/asteroid_", 5); 
+  
   // Boss main
   populateImageArray(bossGraphic, "images/boss/boss_main", 3); 
+  
   // Boss blade
   populateImageArray(bossBladeGraphic, "images/boss/boss_blade", 1);
+  
   // Icons for game and upgrade screen UI
   populateImageArray(iconsUI, "images/icons/icon_", 10); 
+  
   // Game status graphics
   populateImageArray(levelStatusImage, "images/level_status/status_", 2);
+  
   // upgrade screen UI
   populateImageArray(upgradeScreenImage, "images/upgradeUI/upgrade_screen_", 2);
+  
   // background images
   populateImageArray(backgroundImage, "images/backgrounds/background_", 2); 
+  
   // title screen ship
   populateImageArray(titleShip, "images/titleScreenUI/title_", 1); 
  
