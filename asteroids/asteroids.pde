@@ -4,12 +4,11 @@
   / _ \\__ \ | | | _||   / (_) | || |) \__ \
  /_/ \_\___/ |_| |___|_|_\\___/___|___/|___/
  
- An implementation of the traditional Asteroids game
- Note: Requires processing sound library to be installed
+ An Asteroids game clone made with processing 3.5.4
  
  DEV NOTES:
  - Globals are stored under the large (ASCII art) headings they relate to
- - minim library used for sounds 
+ - Requires minim library for sounds and music
  - Minim can be installed directly via Sketch > Imporant Library 
  - (This library approved for assignment)
  
@@ -21,6 +20,7 @@
    Explanation & overview of the game is at https://youtu.be/UPa-HIOGEtU
    Game features: Ship upgrades, boss fights, level system, parralax starfields
    Graphics made in Blender & Illustrator. All sounds are royalty free.
+
 */
 
 // Debug switch to assist testing (currently this reduces asteroid count)
