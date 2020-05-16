@@ -25,10 +25,8 @@ void titleSetup() {
   
   titleShipX = width / 2;
   titleShipY = height + titleShipPadding;
-  
   // Initialise starfield
-  generateStars();
-    
+  generateStars();   
 }
 
 void titleScreen() {
@@ -36,12 +34,11 @@ void titleScreen() {
 
   // Render background
   background(backgroundImage[0]);
-
   // Render stars
   renderStars();
-
   // Render ship
   image(titleShip[0], titleShipX, titleShipY);
+  // Animate the thruster (by swapping the image)
   if (thrusterCount < 5){
     image(titleShip[1], titleShipX, titleShipY);
   }
@@ -49,15 +46,13 @@ void titleScreen() {
     thrusterCount = 0;
   }
   thrusterCount ++;
-  
+  // Move the ship
   titleShipY -= titleShipSpeed;
-  
+  // After one flythrough, reduce size and fly again at random location
   if (titleShipY < 0 - titleShipPadding){
     titleShipY = height + titleShipPadding;
     titleShipX = randomInt(0, width);
     titleShip[0].resize(titleShipShrink, 0);
     titleShip[1].resize(titleShipShrink, 0);
   } 
-
-
 }

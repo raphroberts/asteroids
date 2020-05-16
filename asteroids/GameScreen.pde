@@ -16,7 +16,7 @@ boolean continueLevel = false;
  | _||  _|  _/ -_) _|  _(_-<
  |___|_| |_| \___\__|\__/__/
  
- */
+*/
 
 // Explosion effect
 int explosionFrame;
@@ -29,9 +29,14 @@ int largeAsteroidSoundIndex = 17;
 
 void renderExplosion() {
   // Calculates current frame of asteroid exploding animation
+  // and draws the explosion at the location of the last collision.
 
   if (explosionFrame < 14 && lastCollisionLocation.y != 0) {
-    image(smokeAnimFrameArray[explosionFrame], lastCollisionLocation.x, lastCollisionLocation.y);
+    image(
+        smokeAnimFrameArray[explosionFrame],
+        lastCollisionLocation.x,
+        lastCollisionLocation.y
+        );
     if (frameCount % 2 > 0) {
       explosionFrame += 1;
     }
@@ -41,10 +46,10 @@ void renderExplosion() {
 }
 
 void generateSmoke() {
-  // Generates smokeAnimFrames array used for explosion effect
+  // Generates smokeAnimFrames array used for explosion effect.
 
   for (int i = 0; i < numSmokeFrames; i++) {
-    smokeAnimFrameArray[i] = loadImage("images/smoke_frames/smoke_" + i + ".png");
+    smokeAnimFrameArray[i] = loadImage("images/smoke_frames/smoke_" +i+ ".png");
   }
 }
 
@@ -55,8 +60,8 @@ void generateSmoke() {
 | (_) \ V / -_) '_| / _` | || |
  \___/ \_/\___|_| |_\__,_|\_, |
                            |__/ 
- 
- */
+
+*/
 
 // Array of level status overlay images
 PImage[] levelStatusImage = new PImage[4];
@@ -89,81 +94,101 @@ void UIManager() {
   // Render score
   textAlign(LEFT, TOP);
   text ("Score: " + score, basicPadding, basicPadding); // render score
-
   // Render current level
   textAlign(CENTER, TOP);
   text("Level: " + gameLevel, width/2, basicPadding);
-
   // Render shield
   drawShieldUI();
-
   // Render status update graphics (boss spawn / level complete)
   drawStatusGraphics();
-
-  // Render the recharge indicator (if recharging weapon active)
+  // Render weapon and upgrade icons
   drawWeaponRechargeIndicator();
-
-  // Render remaining icons and info
   drawWeaponIcons();
   drawShieldIcon();
   drawThrusterIcon();
 }
 
 void drawStatusGraphics(){
-  // Render status update graphics (boss spawn / level complete)
+  // Renders the status update graphics (boss spawn / level complete)
   
   if (levelComplete) {
     LevelUpBanner =  pulseImage(806, 780, 0.9, 3, false);
     image(levelStatusImage[1], width/2, height/2, LevelUpBanner, 114); 
     levelUpStar =  pulseImage(108, 100, 0.7, 4, false);
     image(levelStatusImage[0], width/2, height/3, levelUpStar, levelUpStar);
-  }
-  
+  }  
   // If boss has spawned, render boss alert icon
   if (bossActivated) {
     alertBanner =  pulseImage(263, 243, 0.3, 2, false);
-    image(levelStatusImage[2], width/2, height - height/5, alertBanner, alertBanner/2); 
+    image(
+      levelStatusImage[2],
+      width/2,
+      height - height/5,
+      alertBanner,
+      alertBanner/2
+    ); 
     handleBoss();
   }
 }
 
 void drawThrusterIcon(){
-// Render the thruster icon
+  // Renders the thruster icon based on upgrade (or not)
 
   fill(weaponFill);
   if (thrusterUpgradeEnabled)
-    image(iconsUI[8], width - weaponUIdist * 2, height - iconVerticalPadding - basicPadding);
+    image(
+      iconsUI[8],
+      width - weaponUIdist * 2,
+      height - iconVerticalPadding - basicPadding
+    );
   else
-    image(iconsUI[6], width - weaponUIdist * 2, height - iconVerticalPadding - basicPadding);
-
+    image(
+      iconsUI[6],
+      width - weaponUIdist * 2,
+      height - iconVerticalPadding - basicPadding
+    );
   fill(mainFontColour);
   textAlign(CENTER, TOP);
   textLeading(gameTextSizeMain);
-  text("Thrust:\n" + thrusterName, width - weaponUIdist * 2, height - textPaddingY);
+  text(
+    "Thrust:\n" + thrusterName,
+    width - weaponUIdist * 2,
+    height - textPaddingY
+  );
 }
 
 void drawShieldIcon(){
-  //Render the current shield info and icon
+  //Renders the current shield info and icon
   
   fill(weaponFill);
   if (MK2ShieldUpgradeEnabled)
-    image(iconsUI[3], width - shieldXPadding, height - iconVerticalPadding - basicPadding);
+    image(
+      iconsUI[3],
+      width - shieldXPadding,
+      height - iconVerticalPadding - basicPadding
+      );
   else
-    image(iconsUI[7], width - shieldXPadding, height - iconVerticalPadding - basicPadding);
-
+    image(
+    iconsUI[7],
+    width - shieldXPadding,
+    height - iconVerticalPadding - basicPadding
+    );
   fill(mainFontColour);
   textAlign(CENTER, TOP);
   textLeading(gameTextSizeMain);
-  text("Shield:\n" + shieldName, width - shieldXPadding, height - textPaddingY);
+  text(
+    "Shield:\n" + shieldName,
+    width - shieldXPadding,
+    height - textPaddingY
+    );
 }
 
 void drawWeaponRechargeIndicator(){
-  // Calculate and render weapon recharge indicator
+  // Calculates and renders the weapon recharge indicator
   
   noFill();
   strokeWeight(5);
-  int rechargePerc = 0;
-  
+  int rechargePerc = 0;  
   // Calculate weapon recharge if it's a slow recharging weapon
   if (weaponCooldown <= 10)
     rechargePerc = 50;
@@ -172,24 +197,25 @@ void drawWeaponRechargeIndicator(){
     float rechargeNorm = 50.0 / weaponCooldown;
     rechargePerc = (int)min((weaponCooldownTick * rechargeNorm), 50);
   }
-
-  // Draw recharge bar to UI
+  // Draw recharge bar to UI, color shield based upon HP
   noStroke();
-  fill(255 - (2.55 * rechargePerc), 2.2 * rechargePerc, 0, 255); //color shield based upon HP
+  fill(255 - (2.55 * rechargePerc), 2.2 * rechargePerc, 0, 255);
   if (magnusEnforcedUpgradeEnabled)
     rect(170, height - weaponBarPaddingY, rechargePerc, barSize);
-  fill(255);
-  
+  fill(255);  
 }
 
 void drawWeaponIcons() {
-  // Draw weapon icons and highlighting
+  // Draws the weapon icons and current weapon highlight
   
-  int startingX = 40;
-
+  int startingX = 40; // initial x-padding
   for (int i = 1; i <= 3; i++) {
-    //ensure weapon is unlocked first
-    if (i == 1 || i == 2 && tripleLaserUpgradeEnabled || i == 3 && magnusEnforcedUpgradeEnabled) {
+    // Ensure weapon is unlocked first
+    if (
+      i == 1 || 
+      i == 2 && tripleLaserUpgradeEnabled ||
+      i == 3 && magnusEnforcedUpgradeEnabled
+    ){
       if (i == weaponIndex) {
         fill(weaponFill);
         stroke(255);
@@ -213,10 +239,11 @@ void drawWeaponIcons() {
 }
 
 void changeWeapon(int index) {
-  // Handle weapon changes
-  // Index: whether shield is basic or upgraded version
+  // Handles weapon changes and cooldown/recharge applied
+  // index = index of weapon
 
-  weaponIndex = index;
+  weaponIndex = index;  
+  // If index is 3, weapon requires recharge/cooldown
   if (index == 1 || index == 2)
     weaponCooldown = 5;
   else if (index == 3)
@@ -224,7 +251,8 @@ void changeWeapon(int index) {
 }
 
 void changeShield(int index) {
-  // Handle shield changes
+  // Handles shield changes (based on whether shield is upgraded)
+  // index = index of shield to swap to
 
   shieldIndex = index;
   if (index == 1) {
@@ -243,7 +271,8 @@ void changeShield(int index) {
 }
 
 void changeThruster(int index) {
-  // Handle thruster changes
+  // Handles thruster changes (based on whether it is upgraded)
+  // index = index of thruster to swap to
 
   thrusterIndex = index;
   if (index == 1) {
@@ -260,83 +289,113 @@ void changeThruster(int index) {
 }
 
 void drawShieldUI() {
-  // Render shield status to the UI/overlay
+  // Renders shield status to the UI/overlay
 
   text("Shield", width - 195, basicPadding);
   noStroke();
   float shieldNorm;
-  int shieldPerc;
-  
+  int shieldPerc;  
   if (shieldHP > 500){
-    // Ship has been upgraded so there will be two shield bars
-    
-    // Render standard shield at full
+    // Ship has been upgraded so there will be two shield bars   
+    // First, render the standard shield at full
     fill(0, 200, 0);
     rect(width - shieldPaddingX, basicPadding * 1.5, shieldBarX, barSize);
-
     // Calculate upraded shield percentage
     shieldNorm = 100.0 / (maxShieldHP - 500); // Get Normal of shield
     shieldPerc = (int)((shieldHP - 500) * shieldNorm); // Get % of shield
-
     // Render blank "underlay"
     fill(weaponBlankFill); // Color shield based upon HP
-    rect(width - shieldPaddingX, basicPadding * 2, shieldBarX, barSize/2);
-    
-    // Render upraded shield value
-    fill(200 - (2.55 * shieldPerc), 0, 2.2 * shieldPerc); // Color shield based upon HP
+    // Ensure recharge of shield has not given false percentage
+    if (shieldPerc > 100) shieldPerc = 100;
+    rect(width - shieldPaddingX, basicPadding * 2, shieldBarX, barSize/2);    
+    // Render upraded shield value, colour based on percentage
+    fill(200 - (2.55 * shieldPerc), 0, 2.2 * shieldPerc); 
     rect(width - shieldPaddingX, basicPadding * 2, shieldPerc, barSize/2);
     fill(255);
     text(shieldPerc, width - 150, basicPadding);
   }
   else {
-    // Shield has not been upgraded, only one shield bar is rendered
-    
+    // Shield has not been upgraded, only one shield bar is rendered    
     // Calculate shield percentage
     shieldNorm = 100.0 / initialHP; // Get Normal of shield
-    shieldPerc = (int)(shieldHP * shieldNorm); // Get % of shield
-    
+    shieldPerc = (int)(shieldHP * shieldNorm); // Get % of shield    
     // Render blank "underlay"
     fill(weaponBlankFill); // Color shield based upon HP
-    rect(width - shieldPaddingX, basicPadding * 1.5, shieldBarX, barSize);
-    
-    // render standard shield value
-    fill(200 - (2.55 * shieldPerc), 2.2 * shieldPerc, 0); // Color shield based upon HP
+    rect(width - shieldPaddingX, basicPadding * 1.5, shieldBarX, barSize);    
+    // render standard shield value, colour based on percentage
+    fill(200 - (2.55 * shieldPerc), 2.2 * shieldPerc, 0); 
     rect(width - shieldPaddingX, basicPadding * 1.5, shieldPerc, barSize);
     fill(255);
     text(shieldPerc, width - 150, basicPadding);
-  }
-  
-  
+  }  
 }
 
 /*
-
   ___     _ _ _    _             
  / __|___| | (_)__(_)___ _ _  ___
 | (__/ _ \ | | (_-< / _ \ ' \(_-<
  \___\___/_|_|_/__/_\___/_||_/__/
  
- */
+*/
 
 // Shields & Damage
 int initialHP = 500;
 int maxShieldHP = initialHP;
 float shieldHP = maxShieldHP;
-int shieldRechargeDelay = 50; // Recharge 1 point this number of frames
-int shieldRechargeTick = 0; // Current recharge tick
 int weaponDamage = 2;
+
+// Number of frames between ship recharge & current frame count
+int shieldRechargeDelay = 50;
+int shieldRechargeTick = 0;
+
+// State tracking
 boolean isBeingDamaged = false; // Is ship currently undergoing damage?
+boolean collisionDetected; 
 
 void checkCollision() {
-  // Check for collisions between asteroid / ship and bullet / asteroid
+  // The main collision detection (for ship,bullets,asteroids,boss)
 
-  boolean collisionDetected = false; //is there a collision this frame?
- 
+  // Default to false for collisionDetected at function call
+  collisionDetected = false; 
+  checkBossCollisions();
+  checkAsteroidCollisions();
+  // If a collision is detected, play shield sound
+  if (collisionDetected) {
+    if (!isBeingDamaged) {
+      if (!endingShieldSound) soundArray[shieldSoundIndex].loop();
+      isBeingDamaged = true;
+    }
+  } else {
+    // Stop sound of shield if damage is active
+    if (isBeingDamaged) endingShieldSound = true;  
+    isBeingDamaged = false; // Ship is not currently being damaged
+  }
+  // Delay ending the shield sound and image to prevent "clicking" 
+  if (endingShieldSound) {
+    if (shieldSoundTick++ > shieldSoundEndDelay) {
+      soundArray[shieldSoundIndex].pause();
+      shieldSoundTick = 0;
+      endingShieldSound = false;
+    }
+  }
+}
+
+void checkBossCollisions(){
+  // Checks for boss collisions (bullet+boss or ship+boss)
+  // If a collision is detected, inflicts damage as appropriate
+  
   if (bossActivated) {
     // Iterate over every bullet and check if it collided with the boss
     for (int j = 0; j < bulletObject.size(); j++) {
-      PVector bulletHitbox = new PVector(bulletObject.get(j)[1], bulletObject.get(j)[2]);
-      if (dist(bulletHitbox.x, bulletHitbox.y, bossLocation.x, bossLocation.y) < bossSize) {
+      PVector bulletHitbox = new PVector(
+        bulletObject.get(j)[1], 
+        bulletObject.get(j)[2]);
+      if (dist(bulletHitbox.x,
+            bulletHitbox.y,
+            bossLocation.x,
+            bossLocation.y)
+            < bossSize)
+        {
         // Make boss "flash" to indicate it was hit
         bossGraphicIndex = 1;
         // Boss loses strength equivalent to current bullet's power
@@ -348,14 +407,22 @@ void checkCollision() {
         }
       }
       // Check if ship has collided with the boss
-      if (shipLocation.x > bossLocation.x - bossSize * 2 && shipLocation.x < bossLocation.x + bossSize * 2 && shipLocation.y > bossLocation.y - bossSize * 1.5 && shipLocation.y < bossLocation.y + bossSize * 1.5 ){
+      if (shipLocation.x > bossLocation.x - bossSize * 2 &&
+        shipLocation.x < bossLocation.x + bossSize * 2 &&
+        shipLocation.y > bossLocation.y - bossSize * 1.5 &&
+        shipLocation.y < bossLocation.y + bossSize * 1.5 ){
         // Damage the ship
         damageShip(bossDamage);
         collisionDetected = true;
       }
     }
-  } else {      
-    // Check if ship has hit an asteroid
+  }
+}
+
+void checkAsteroidCollisions(){
+    // Checks for asteroid collisions (asteroid+bullet or asteroid+ship)
+    // If a collision is detected, inflicts damage as appropriate
+    
     for (int i = 0; i < enemyObject.size(); i++) {
       // Retrieve the values from the enemyObject
       int[] obj = enemyObject.get(i);
@@ -363,16 +430,27 @@ void checkCollision() {
       PVector hitbox = new PVector(obj[1], obj[2]);
       int hitboxSize = obj[3];
       int enemyDamage = obj[7];
-      if (dist(shipLocation.x, shipLocation.y, hitbox.x, hitbox.y) < hitboxSize) {
+      if (dist(
+        shipLocation.x,
+        shipLocation.y,
+        hitbox.x,
+        hitbox.y) < hitboxSize){
         damageShip(enemyDamage);
         collisionDetected = true;
       }
       // Check if bullet has shot an asteroid
       for (int j = 0; j < bulletObject.size(); j++) {
-        PVector bulletHitbox = new PVector(bulletObject.get(j)[1], bulletObject.get(j)[2]); // location of this bullet 
-        if (dist(bulletHitbox.x, bulletHitbox.y, hitbox.x, hitbox.y) < hitboxSize) {
+        PVector bulletHitbox = new PVector(
+          bulletObject.get(j)[1],
+          bulletObject.get(j)[2]
+        );
+        if (dist(
+          bulletHitbox.x,
+          bulletHitbox.y,
+          hitbox.x,
+          hitbox.y) < hitboxSize) {
           bulletObject.remove(j);
-          boolean destroyed = damageEnemyObject(enemyObject.get(i)); //returns true if object destroyed, false if only damaged
+          boolean destroyed = damageEnemyObject(enemyObject.get(i));
           if (destroyed) { 
             // Remove asteroid
             enemyObject.remove(i);
@@ -380,42 +458,17 @@ void checkCollision() {
         }
       }
     }
-  }
-
-  // If a collision is detected, play shield sound
-  if (collisionDetected) {
-    if (!isBeingDamaged) {
-      if (!endingShieldSound)
-        soundArray[shieldSoundIndex].loop();
-      isBeingDamaged = true;
-    }
-  } else {
-    // Stop sound of shield if damage is active
-    if (isBeingDamaged)
-      endingShieldSound = true;  
-    isBeingDamaged = false; //ship is not currently being damaged
-  }
-
-  // Delay ending the shield sound and image to prevent "clicking" of shield sound, and allow power down
-  if (endingShieldSound) {
-    if (shieldSoundTick++ > shieldSoundEndDelay) {
-      soundArray[shieldSoundIndex].pause();
-      shieldSoundTick = 0;
-      endingShieldSound = false;
-    }
-  }
 }
 
 void damageShip(float amount) {
-  // Damage the ship's shield
-  // amount = amount of damage
+  // Damages the ship's shield
+  // amount = amount of damage to inflict
 
   shieldHP = shieldHP - amount;
   if (shieldHP < 0) {
     playerDeathSequence = true;
     currentScreen = "game over";
   }
-
   // Trigger warning when shields are low, but only once per threshold
   if (!shieldWarningTriggered && shieldHP*1.0/initialHP <= 0.3) {
     shieldWarningTriggered = true;
@@ -428,9 +481,8 @@ void damageShip(float amount) {
 boolean damageEnemyObject(int[] obj) {
   // Handles damage to enemies
   // obj = enemy object
-
+  
   obj[6] = obj[6] - weaponDamage;
-
   // If enemy object is 0 HP or lower, destroy
   if (obj[6] <= 0) { 
     switch (obj[0]) { 
@@ -446,22 +498,20 @@ boolean damageEnemyObject(int[] obj) {
       return true;
     }
   }
-
   return false;
 }
 
 void destroyLargeAsteroidSequence(int xcoord, int ycoord) {
-  // Destroy large asteroid and break it into smaller asteroids
+  // Destroys large asteroids and breaks into smaller asteroids
 
+  // Increase player score
   score = score + 50;
-
   // Randomly create between 2 or 3 small asteroids
   int smallAsteroids = randomInt(2, 5);
   for (int i = 1; i <= smallAsteroids; i++) {
     createAsteroid(xcoord, ycoord, "small");
-  }
-  
-  // Trigger explosion effect
+  }  
+  // Trigger explosion effect at location of destroyed asteroid
   lastCollisionLocation.x = xcoord;
   lastCollisionLocation.y = ycoord;
   explosionFrame = 0;
@@ -474,17 +524,15 @@ void destroyLargeAsteroidSequence(int xcoord, int ycoord) {
 }
 
 void destroySmallAsteroidSequence(int xcoord, int ycoord) {
-  // Destroy smaller asteroid
+  // Destroys smaller asteroids
 
-  // Trigger explosion effect
+  // Increase player score
+  score = score + 100;
+  // Trigger explosion effect at location of destroyed asteroid
   lastCollisionLocation.x = xcoord;
   lastCollisionLocation.y = ycoord;
   explosionFrame = 0;
   asteroidDead = true;
-  
-  // Increase player score
-  score = score + 100;
-  
   // Handle sound effects
   soundArray[smallAsteroidSoundIndex].rewind();
   soundArray[smallAsteroidSoundIndex].play();
@@ -492,9 +540,8 @@ void destroySmallAsteroidSequence(int xcoord, int ycoord) {
     smallAsteroidSoundIndex = 14;
 }
 
-
 void rechargeShield() {
-  // Recharge shield slowly over time
+  // Recharges shield slowly over time
 
   if (shieldRechargeTick++ > shieldRechargeDelay && shieldHP < maxShieldHP) {
     shieldRechargeTick = 0;
@@ -508,7 +555,7 @@ void rechargeShield() {
  | |__/ -_) V / -_) | | |\/| / _` | ' \/ _` / _` / -_) '  \/ -_) ' \  _|
  |____\___|\_/\___|_| |_|  |_\__,_|_||_\__,_\__, \___|_|_|_\___|_||_\__|
  
- */
+*/
 
 // Current level player has reached
 int gameLevel = 1;
@@ -523,9 +570,9 @@ int levelSequence() {
   if(currentScreen == "game"){
     // Reset boss strength, increase initial strength
      bossInitialStrength = 250 * gameLevel; 
-     bossStrength = bossInitialStrength;  
-     
-    // Select and play music sequence, modulo of the gameLevel, except level 1 which has its own theme
+     bossStrength = bossInitialStrength;       
+    // Select and play music sequence, modulo of the gameLevel
+    // Except level 1 which has its own theme
     if (gameLevel == 1) 
       fadeInSongCoroutine("level1");
     else if (gameLevel % 4 == 0)
@@ -535,27 +582,26 @@ int levelSequence() {
     else if (gameLevel % 4 == 2)
       fadeInSongCoroutine("thrust");
     else if (gameLevel % 4 == 3) 
-      fadeInSongCoroutine("epic");
-  
+      fadeInSongCoroutine("epic");  
     // Calculate number of asteroids to spawn based on current level
     int asteroidsToSpawnPerCycle = (int)pow(gameLevel, 2);
     int numberOfCycles = gameLevel + 1;
-  
+    // Level 1 and 2 have specific spawn cycles  
     if (gameLevel == 1)
       numberOfCycles = numberOfCycles * 2 + 1;
     else if (gameLevel == 2)
       numberOfCycles = numberOfCycles * 2;
-
-    // Debug code to enable quicker testing
+    // (Dev) if debug is active, only spawn one asteroid
     if (debug){
       asteroidsToSpawnPerCycle = 1;
       numberOfCycles = 1;
-    }
-    
+    }    
     // Randomly spawn asteroids based on current level
     int spawnDelay = (int)(1 / (gameLevel * 0.5) * 3000);
     for (int cycle = 1; cycle <= numberOfCycles; cycle++) {
-       for (int asteroidCounter = 1; asteroidCounter <= asteroidsToSpawnPerCycle; asteroidCounter++) {
+       for (int asteroidCounter = 1;
+            asteroidCounter <= asteroidsToSpawnPerCycle;
+            asteroidCounter++) {
         if (!gameStarted)
           return 1;
         float rand = random(1);
@@ -564,14 +610,19 @@ int levelSequence() {
         else
           createAsteroid(randomInt(0,width), 0 - screenPadding, "small");
         float randDelay = random(spawnDelay);
-        if (enemyObject.size() < 2) { // Early spawn if asteroids left are small in numer
+        // Early spawn if asteroids left are small in number
+        if (enemyObject.size() < 2) { 
           delay(1000);
           continue;
         }
-        delay(min((int)randDelay * numberOfCycles/cycle, (int(10000 / (gameLevel * cycle * 0.5))))); //lower spawning cycles spawn with a greater delay
+        // Lower spawning cycles spawn with a greater delay
+        delay(min((int)randDelay * numberOfCycles/cycle,
+          (int(10000 / (gameLevel * cycle * 0.5))))
+        );
         }
       for (int delay = 0; delay < 10; delay++) {
-        if (enemyObject.size() < 5) { // Early spawn if asteroids left are small in numer
+        // Early spawn if asteroids left are small in number
+        if (enemyObject.size() < 5) { 
           if (gameLevel <3) {
             delay(5000);
           } else {
@@ -581,31 +632,27 @@ int levelSequence() {
         }
         delay(1000);
       }
-    }
-    
+    }    
     // Wait for all asteroids to be destroyed
     while (enemyObject.size() != 0 && currentScreen == "game" && gameStarted)
-      delay(100); 
-  
-    fadeInSongCoroutine("none");
-  
+      delay(100);   
+    fadeInSongCoroutine("none");  
     // Spawn the boss (only on even levels)
     if (gameLevel %2 == 0) {
       bossThisLevel = true;
       bossActivated = true;
       bossSequence();
-    }
-  
-      //End level sequence
-      fadeInSongCoroutine("upgrade");
-      soundArray[9].rewind();
-      soundArray[9].play();
-      levelComplete = true;
-      bossActivated = false;
-      delay(4000);
-      
-      // End level and go to upgrades
-      currentScreen="level up";    
+    }  
+    //End level sequence
+    fadeInSongCoroutine("upgrade");
+    soundArray[9].rewind();
+    soundArray[9].play();
+    // Update game state booleans
+    levelComplete = true;
+    bossActivated = false;
+    delay(4000);
+    // End level and go to upgrade screen
+    currentScreen="level up";    
   }
   return 1;
 }
