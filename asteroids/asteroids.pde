@@ -5,6 +5,7 @@
  /_/ \_\___/ |_| |___|_|_\\___/___|___/|___/
  
  An Asteroids game clone made with processing 3.5.4
+ Overview of the game: https://youtu.be/UPa-HIOGEtU
  
  DEV NOTES:
  - Globals are stored under the large (ASCII art) headings they relate to
@@ -17,7 +18,6 @@
    Steven Buchanan
    
  FEATURES:
-   Explanation & overview of the game is at https://youtu.be/UPa-HIOGEtU
    Game features: Ship upgrades, boss fights, level system, parralax starfields
    Graphics made in Blender & Illustrator. All sounds are royalty free.
 
